@@ -1,0 +1,32 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/",
+  "title": "תרגול מתקדם",
+  "learningUnitId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02/",
+  "componentPurpose": "both",
+  "isAssessment": false,
+  "manufacture": "methodica",
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 4,
+  "masteryLevel": "advanced",
+  "order": 5,
+  "depthLevel": "core-curriculum-extended",
+  "cognitiveLevel": "higher-order-thinking",
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 20,
+  "createdAt": "2026-09-06T00:00:00.000Z",
+  "updatedAt": "2026-09-06T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-001/",
+      "title": "תרגול מתקדם",
+      "informationToBot": "מטרת הפריט: תרגול מתקדם. [טיוטה — לאישור מפתחת הלמידה]",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    }
+  ]
+}

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סידור פוסטרים על קיר האולם (יחס 3:4)</title>
+    <style>
+        :root {
+            --primary-color: #2b5c8f;
+            --secondary-color: #4a90e2;
+            --bg-color: #f4f7f9;
+            --card-bg: #ffffff;
+            --border-color: #dcdfe6;
+            --wall-color: #eef2f5;
+            --wall-border: #8c9ba5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #333;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 2.2em;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .controls-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .controls-card h2 {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 8px;
+        }
+
+        .rule-notice {
+            background-color: #e8f4fd;
+            border-right: 4px solid var(--secondary-color);
+            padding: 12px 14px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            color: #1a4971;
+            line-height: 1.6;
+        }
+
+        .rule-notice ul {
+            padding-right: 18px;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+
+        .rule-notice li {
+            margin-bottom: 4px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #dcdfe6;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: var(--primary-color);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .stats-box {
+            margin-top: 20px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.9em;
+        }
+
+        .stats-box div {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .wall-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .wall-title {
+            align-self: flex-start;
+            margin-bottom: 12px;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .wall-outer-wrapper {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto 1fr;
+            gap: 8px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 10px 0;
+        }
+
+        .dimension-width-label {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.95em;
+            padding-bottom: 4px;
+        }
+
+        .dimension-height-label {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.95em;
+            padding-right: 6px;
+        }
+
+        .canvas-wrapper {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            position: relative;
+            width: 100%;
+            background-color: var(--wall-color);
+            border: 4px solid var(--wall-border);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .poster-element {
+            position: absolute;
+            background-color: rgba(74, 144, 226, 0.88);
+            border: 2px solid #2b5c8f;
+            border-radius: 4px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            user-select: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            transition: all 0.2s ease-out;
+            z-index: 2;
+        }
+
+        .poster-x-label {
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 88%;
+            text-align: center;
+            font-size: 1.1em;
+            color: #ffffff;
+            font-weight: 800;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 2px 4px;
+            border-radius: 4px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            pointer-events: none;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .poster-y-label {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1em;
+            color: #ffffff;
+            font-weight: 800;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 4px 6px;
+            border-radius: 4px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.1;
+        }
+
+        .gap-visualizer {
+            position: absolute;
+            background-color: rgba(231, 76, 60, 0.12);
+            border: 1px dashed rgba(231, 76, 60, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75em;
+            color: #c0392b;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>סידור פוסטרים על קיר האולם</h1>
+    </header>
+
+    <div class="main-layout">
+        <div class="controls-card">
+            <h2>נתונים</h2>
+            <div class="rule-notice">
+                📌 <strong>נתוני הקיר והמרווחים:</strong>
+                <ul>
+                    <li>אורך הקיר: 4.5 מטרים (450 ס"מ)</li>
+                    <li>גובה הקיר: 2.8 מטרים (280 ס"מ)</li>
+                </ul>
+                יש לשמור על מרווח של 10 ס"מ בין כל זוג פוסטרים ומשולי הקירות בצדדים.
+            </div>
+
+            <div class="form-group">
+                <label for="posterCountSlider">בחירת כמות פוסטרים (2 עד 10):</label>
+                <div class="slider-container">
+                    <input type="range" id="posterCountSlider" min="2" max="10" value="3">
+                    <span class="slider-value" id="posterCountVal">3</span>
+                </div>
+            </div>
+
+            <div class="stats-box">
+                <div><span>כמות פוסטרים:</span><strong id="statCount">3</strong></div>
+                <div><span>מרווח אופקי:</span><strong>10 ס"מ</strong></div>
+                <div><span>יחס הפוסטר:</span><strong>3:4 (לאורך)</strong></div>
+            </div>
+        </div>
+
+        <div class="wall-container">
+            <div class="wall-title">תצוגת סידור הפוסטרים לאורך על הקיר</div>
+            
+            <div class="wall-outer-wrapper">
+                <div class="dimension-width-label">→ 450 ס"מ ←</div>
+                <div class="canvas-wrapper" id="canvasWrapper"></div>
+                <div class="dimension-height-label">→ 280 ס"מ ←</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const WALL_WIDTH = 450;
+    const WALL_HEIGHT = 280;
+    const GAP = 10;
+    const ASPECT_RATIO = 3 / 4; // עדכון יחס הפוסטר ל-3:4
+
+    const canvasWrapper = document.getElementById('canvasWrapper');
+    const slider = document.getElementById('posterCountSlider');
+    const sliderVal = document.getElementById('posterCountVal');
+    const statCount = document.getElementById('statCount');
+
+    function getScale() {
+        return canvasWrapper.clientWidth / WALL_WIDTH;
+    }
+
+    function updateCanvasSize() {
+        const scale = getScale();
+        canvasWrapper.style.height = (WALL_HEIGHT * scale) + 'px';
+        recalculateAndRender();
+    }
+
+    window.addEventListener('resize', updateCanvasSize);
+
+    slider.addEventListener('input', (e) => {
+        sliderVal.textContent = e.target.value;
+        recalculateAndRender();
+    });
+
+    function recalculateAndRender() {
+        const N = parseInt(slider.value, 10);
+        
+        let widthByX = (WALL_WIDTH - (N + 1) * GAP) / N;
+        let heightByX = widthByX / ASPECT_RATIO;
+
+        let finalWidth = widthByX;
+        let finalHeight = heightByX;
+
+        if (heightByX > WALL_HEIGHT) {
+            finalHeight = WALL_HEIGHT;
+            finalWidth = finalHeight * ASPECT_RATIO;
+        }
+
+        statCount.textContent = N;
+
+        renderWall(N, finalWidth, finalHeight);
+    }
+
+    function renderWall(N, posterW, posterH) {
+        const scale = getScale();
+        canvasWrapper.innerHTML = '';
+
+        const totalSpanX = N * posterW + (N + 1) * GAP;
+        const startX = (WALL_WIDTH - totalSpanX) / 2 + GAP;
+        const posY = (WALL_HEIGHT - posterH) / 2;
+
+        // Render Gaps
+        renderGapBox(startX - GAP, posY, GAP, posterH, scale, '10');
+        for (let i = 0; i < N - 1; i++) {
+            const gapX = startX + (i + 1) * posterW + i * GAP;
+            renderGapBox(gapX, posY, GAP, posterH, scale, '10');
+        }
+        renderGapBox(startX + N * posterW + (N - 1) * GAP, posY, GAP, posterH, scale, '10');
+
+        // Render Posters
+        for (let i = 0; i < N; i++) {
+            const posX = startX + i * (posterW + GAP);
+
+            const posterEl = document.createElement('div');
+            posterEl.className = 'poster-element';
+            
+            posterEl.style.width = (posterW * scale) + 'px';
+            posterEl.style.height = (posterH * scale) + 'px';
+            posterEl.style.left = (posX * scale) + 'px';
+            posterEl.style.top = (posY * scale) + 'px';
+
+            const titleSpan = document.createElement('span');
+            titleSpan.textContent = `#${i + 1}`;
+            posterEl.appendChild(titleSpan);
+
+            if (i === 0) {
+                const xLabel = document.createElement('div');
+                xLabel.className = 'poster-x-label';
+                xLabel.textContent = '→ x ←';
+                posterEl.appendChild(xLabel);
+
+                const yLabel = document.createElement('div');
+                yLabel.className = 'poster-y-label';
+                yLabel.innerHTML = '<span>↑</span><span>y</span><span>↓</span>';
+                posterEl.appendChild(yLabel);
+            }
+
+            canvasWrapper.appendChild(posterEl);
+        }
+    }
+
+    function renderGapBox(x, y, w, h, scale, text) {
+        const gapEl = document.createElement('div');
+        gapEl.className = 'gap-visualizer';
+        gapEl.style.width = (w * scale) + 'px';
+        gapEl.style.height = (h * scale) + 'px';
+        gapEl.style.left = (x * scale) + 'px';
+        gapEl.style.top = (y * scale) + 'px';
+        
+        if ((w * scale) > 8) gapEl.textContent = text;
+        canvasWrapper.appendChild(gapEl);
+    }
+
+    updateCanvasSize();
+</script>
+
+</body>
+</html>

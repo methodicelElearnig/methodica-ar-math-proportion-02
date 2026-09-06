@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מציאת המספר X החסר — חלק 07</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<!-- data-subject-theme activates the matching token override block in
+     css/style.css. :root holds the Science defaults; this one attribute is
+     the entire theme switch (720-design-guidelines → colors-and-gradients.md). -->
+<body data-subject-theme="math">
+
+  <div id="app">
+
+    <!-- ═══════════════════════════════════════════════════════
+         GLOBAL CHROME — outside every .screen, so it survives
+         navigation and is never hidden by display:none.
+         ═══════════════════════════════════════════════════════ -->
+
+    <!-- Report / Issue button. Opens #report-modal (wired in main.js).
+         Glyph is live inline SVG on currentColor because the hover state
+         is subject-themed; a PNG would freeze one theme's colour.
+         (720-templates → _global-components.md → Report / Issue button) -->
+    <button class="flag-btn" type="button" aria-label="מצאתם בעיה?">
+      <span class="flag-btn-icon">
+        <span class="flag-btn-glyph" aria-hidden="true">
+          <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none"><path d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z" fill="currentColor"/></svg>
+          <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none"><path d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z" fill="currentColor"/></svg>
+        </span>
+      </span>
+      <span class="flag-btn-label">מצאתם בעיה?</span>
+    </button>
+
+    <!-- Feedback popups and hint overlays live HERE — outside all .screen
+         divs. A popup inside a display:none screen is invisible no matter
+         what its z-index says. goTo() hides everything whose id ends in
+         -popup or -hint-overlay on every navigation. -->
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 00 — TransitionScreen  ·  spec slide 51
+         Hands the learner from the practice run into the class task.
+         Same lead/title shape as part 03's S7: the small line comes first
+         and the bold message is the title.
+         ═══════════════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 00  ·  spec slide 78  —  TransitionScreen — מסך הזנקה לשאלת השיא
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen active" data-screen="0" id="s0">
+      <div class="ts-content">
+        <p class="ts-lead" data-reveal="1">כל הכבוד!<br>הסתיים שלב התרגול.</p>
+        <p class="ts-tail" data-reveal="1">אם לא הצלחת לענות נכון על חלק מהשאלות,<br>חשוב להבין מה עדיין לא ברור ולפנות לצ'אט או למורה להסבר נוסף.</p>
+        <h1 class="ts-title" data-reveal="1">עכשיו מגיעה שאלת השיא</h1>
+        <p class="ts-tail" data-reveal="2">יש בה <span class="num">5</span> סעיפים. עליכם להצליח ב-<span class="num">4</span> לפחות.</p>
+        <div class="ts-character" data-reveal="2">
+          <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+        </div>
+      </div>
+      <button class="scq-back" id="s0-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s0-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="אפשר להתחיל!"><span>אפשר להתחיל!</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 01  ·  spec slide 79  —  FullImageWithTextOverlay — תערוכת הצילום
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="1" id="s1">
+      <img class="fiw-bg" src="assets/img/exhibition-hall.png" alt="אולם התערוכה עם פוסטרים על הקיר">
+      <div class="fiw-text" data-reveal="1" style="--x:40px; --y:391px; --w:1179px;">
+        <p>בשכבת ח מתקיימת השנה תערוכת צילום שבה יוצגו תמונות שהתלמידות והתלמידים צילמו בטלפון הנייד במהלך השנה.</p>
+        <p>ועדת התערוכה אחראית להגדיל חלק מהתמונות הנבחרות ולהדפיס אותן כפוסטרים שייתלו על קירות האולם.</p>
+        <p>לפני ההדפסה, צריך לתכנן במדויק:</p>
+        <p>כמה מקום יש על הקיר, כמה פוסטרים אפשר לתלות, ובאיזה מחיר כדאי להדפיס.</p>
+      </div>
+      <button class="scq-back" id="s1-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s1-continue" type="button" onclick="advanceScreen()" disabled>
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 02  ·  spec slide 80  —  ValueInputQuestion — סעיף א
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="2" id="s2">
+      <div class="hct-bubble hct-bubble--tail-down" style="--x:183px; --y:66px; --w:315px; --h:94px; --tail-x:40px;">זה הזמן להיעזר בכל מה שלמדנו<br>על פרופורציות כדי לעזור לוועדה<br>לתכנן את התערוכה!</div>
+      <!-- The deck's own character slot on this slide is 103,160 262x446
+           (image147.png, a stock comp). The companion pose takes the slot's
+           left edge and its own height, and starts 26px below the deck's y so
+           it clears this bubble's tail — the Figma bubble is 12px taller than
+           the producer's, and at y=160 the character's head sat inside it. -->
+      <div class="hct-character hct-character--fixed" data-pose="standing" style="--x:103px; --y:186px; width:262px; --h:356px; --anchor:bottom left;">
+        <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+      </div>
+      <!-- Deck: text right edge 1190, paragraphs at y = 125 / 171 / 218 / 301
+           and the two answer rows at 384 / 467 — an 83px step the template's
+           own 62px row pitch does not reproduce on its own. -->
+      <div class="viq-text" style="--x:578px; --y:120px; --w:612px;">
+        <p>א. מידות קיר האולם שעליו יתלו הפוסטרים הן:</p>
+        <p class="pgap" style="height:12px"></p>
+        <p>אורך <span class="num">4.5</span> מטרים</p>
+        <p class="pgap" style="height:13px"></p>
+        <p>גובה <span class="num">2.8</span> מטרים.</p>
+        <p class="pgap" style="height:51px"></p>
+        <p class="viq-ask">המירו את מידות הקיר לסנטימטרים (ס"מ):</p>
+      </div>
+      <div class="viq-answer viq-answer--spread" style="--x:760px; --y:369px; --w:430px;">
+        <span>אורך הקיר</span>
+        <span class="viq-field viq-field--slim">
+          <input class="viq-input" id="s2-in-len" type="number" step="any" inputmode="decimal" aria-label="אורך הקיר בסנטימטרים">
+        </span>
+        <span>ס"מ</span>
+      </div>
+      <div class="viq-answer viq-answer--spread" style="--x:760px; --y:452px; --w:430px;">
+        <span>גובה הקיר</span>
+        <span class="viq-field viq-field--slim">
+          <input class="viq-input" id="s2-in-hei" type="number" step="any" inputmode="decimal" aria-label="גובה הקיר בסנטימטרים">
+        </span>
+        <span>ס"מ</span>
+      </div>
+      <button class="scq-hint" id="s2-hint" type="button" onclick="Q.openHint(2)">
+        <span class="nav-label" data-label="אפשר רמז?"><span>אפשר רמז?</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true"><path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/><path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/><path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/><path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/><path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/><path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/><path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/><path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/></svg>
+      </button>
+      <button class="scq-back" id="s2-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s2-submit" type="button" onclick="Q.submit(2)" disabled>
+        <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 03  ·  spec slide 81  —  ValueInputQuestion + יישומון הפוסטרים — סעיף ב
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="3" id="s3">
+      <iframe scrolling="no" class="viq-widget" id="s3-widget" src="assets/widgets/posters-wall.html"
+              title="יישומון תליית הפוסטרים" loading="lazy"></iframe>
+      <!-- Deck box x=788 w=437, text right edge measured at 1217 in the PDF.
+           The spacers reproduce the producer's paragraph positions (bold line
+           at y=406, question at y=464) on this build's 24/1.4 line grid. -->
+      <div class="viq-text" style="--x:780px; --y:95px; --w:437px;">
+        <p>ב. את הפוסטרים על הקיר יש לתלות כך<br>שיישמר מרווח של <span class="num">10</span> ס"מ בין כל שני<br>פוסטרים סמוכים, וגם מרווח של <span class="num">10</span> ס"מ בין<br>הפוסטרים שבקצוות לבין שולי הקיר<br>בצדדים.</p>
+        <p class="pgap" style="height:59px"></p>
+        <p><strong>היעזרו ביישומון וחשבו:</strong></p>
+        <p class="pgap" style="height:10px"></p>
+        <p class="viq-ask">מה צריך להיות רוחב כל פוסטר, אם נרצה<br>לתלות <span class="num">5</span> פוסטרים על הקיר?</p>
+      </div>
+      <!-- Deck: field at x=1126 y=567, unit label ending at 1108 — the row's
+           right edge is 1214, not the 1220 an --x:920/--w:300 box gave it. -->
+      <div class="viq-answer viq-answer--spread" style="--x:1044px; --y:559px; --w:170px;">
+        <span class="viq-field">
+          <input class="viq-input" id="s3-in-w" type="number" step="any" inputmode="decimal" aria-label="רוחב הפוסטר בסנטימטרים">
+        </span>
+        <span>ס"מ</span>
+      </div>
+      <button class="scq-hint" id="s3-hint" type="button" onclick="Q.openHint(3)">
+        <span class="nav-label" data-label="אפשר רמז?"><span>אפשר רמז?</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true"><path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/><path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/><path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/><path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/><path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/><path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/><path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/><path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/></svg>
+      </button>
+      <button class="scq-back" id="s3-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s3-submit" type="button" onclick="Q.submit(3)" disabled>
+        <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 04  ·  spec slide 82  —  ValueInputQuestion — סעיף ג
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="4" id="s4">
+      <div class="viq-text" style="--x:273px; --y:100px; --w:943px;">
+        <p>ג. התלמידים התבקשו לצלם את התמונות בנייד ביחס בין רוחב לגובה התמונה של <span class="num">3:4</span>.</p>
+      </div>
+      <img class="viq-photo" src="assets/img/aspect-selector.png"
+           style="--x:679px; --y:192px; --w:373px; --h:97px;"
+           alt="בורר יחס הרוחב-גובה במצלמה: 3:4, 9:16, 1:1, Full">
+
+      <!-- Deck: lines at 352 / 399 / 446, right edge 1216. -->
+      <div class="viq-text" style="--x:245px; --y:347px; --w:971px;">
+        <p>על מנת שהתמונות לא יתעוותו, הפוסטרים יודפסו תוך שמירה על אותו יחס בין הרוחב לגובה.</p>
+        <p class="pgap" style="height:13px"></p>
+        <p>מצאנו שרוחב פוסטר הוא <span class="num">78</span> ס"מ.</p>
+        <p class="pgap" style="height:15px"></p>
+        <p class="viq-ask">מה גובה הפוסטר שישמור על הפרופורציה המתאימה?</p>
+      </div>
+      <!-- The field shares the question's line, to its LEFT: the deck puts the
+           box at 552,439 88x55 and the unit label at 491..533, so the row ends
+           at 640. Anchoring it at 780 laid the box over the question. -->
+      <div class="viq-answer viq-answer--spread" style="--x:480px; --y:441px; --w:160px;">
+        <span class="viq-field">
+          <input class="viq-input" id="s4-in-h" type="number" step="any" inputmode="decimal" aria-label="גובה הפוסטר בסנטימטרים">
+        </span>
+        <span>ס"מ</span>
+      </div>
+      <button class="scq-hint" id="s4-hint" type="button" onclick="Q.openHint(4)">
+        <span class="nav-label" data-label="אפשר רמז?"><span>אפשר רמז?</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true"><path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/><path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/><path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/><path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/><path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/><path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/><path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/><path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/></svg>
+      </button>
+      <button class="scq-back" id="s4-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s4-submit" type="button" onclick="Q.submit(4)" disabled>
+        <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 05  ·  spec slide 83  —  ValueInputQuestion — סעיף ד
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="5" id="s5">
+      <iframe scrolling="no" class="viq-widget" id="s5-widget" src="assets/widgets/posters-wall.html"
+              title="יישומון תליית הפוסטרים" loading="lazy"></iframe>
+      <!-- Deck box x=777 w=460, text right edge measured at 1228 in the PDF.
+           Three paragraphs at y=103 / 306 / 412 with the answer rows below
+           them, not beside them — the spacers put each one on its own y. -->
+      <div class="viq-text" style="--x:768px; --y:91px; --w:460px;">
+        <p>ד. שלוש תלמידות נוספות מצטרפות<br>לתערוכה, וכעת יש לחשב מחדש את רוחב<br>הפוסטרים.</p>
+        <p class="pgap" style="height:59px"></p>
+        <p class="viq-ask">מה יהיו ממדי כל פוסטר, אם נרצה לתלות <span class="num">8</span><br>פוסטרים?</p>
+        <p class="pgap" style="height:10px"></p>
+        <p>נזכיר כי היחס בין רוחב לגובה התמונות<br>המצולמות בטלפון הנייד הוא <span class="num">3:4</span>.</p>
+      </div>
+      <!-- Deck: both rows end at 1197 (label right edge). The previous
+           --x:880/--w:430 box ended at 1310, 30px past the canvas, which is
+           why both labels were sliced off at the right edge. -->
+      <div class="viq-answer viq-answer--spread" style="--x:957px; --y:493px; --w:240px;">
+        <span>רוחב:</span>
+        <span class="viq-field viq-field--slim">
+          <input class="viq-input" id="s5-in-w" type="number" step="any" inputmode="decimal" aria-label="רוחב הפוסטר בסנטימטרים">
+        </span>
+        <span>ס"מ</span>
+      </div>
+      <div class="viq-answer viq-answer--spread" style="--x:957px; --y:584px; --w:240px;">
+        <span>גובה:</span>
+        <span class="viq-field viq-field--slim">
+          <input class="viq-input" id="s5-in-h" type="number" step="any" inputmode="decimal" aria-label="גובה הפוסטר בסנטימטרים">
+        </span>
+        <span>ס"מ</span>
+      </div>
+      <button class="scq-hint" id="s5-hint" type="button" onclick="Q.openHint(5)">
+        <span class="nav-label" data-label="אפשר רמז?"><span>אפשר רמז?</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true"><path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/><path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/><path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/><path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/><path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/><path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/><path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/><path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/></svg>
+      </button>
+      <button class="scq-back" id="s5-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s5-submit" type="button" onclick="Q.submit(5)" disabled>
+        <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 06  ·  spec slide 84  —  SingleChoiceQuestion — סעיף ה
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="6" id="s6">
+      <img class="viq-photo" src="assets/img/print-shop.jpg" style="--x:123px; --y:135px; --w:347px; --h:461px;" alt="בית דפוס">
+      <div class="viq-text" style="--x:440px; --y:85px; --w:777px;">
+        <p>ה. התלמידות והתלמידים פנו לשני בתי דפוס להצעות מחיר כדי להדפיס<br>את הפוסטרים. התקבלו שתי הצעות מחיר:</p>
+        <p>דפוס <span class="num">1</span>: <span class="num">20</span> ₪ לכל <span class="num">500</span> סמ"ר</p>
+        <p>דפוס <span class="num">2</span>: <span class="num">15</span> ₪ לכל <span class="num">400</span> סמ"ר</p>
+        <p class="viq-ask">איזו הצעה משתלמת יותר?</p>
+      </div>
+      <div class="scq-answers scq-answers--at" style="--x:676px; --y:347px; --w:500px;">
+        <button class="scq-opt" id="s6-opt-a" type="button" onclick="Q.select(6, 'a')"><span class="scq-radio"></span><span class="scq-opt-text">דפוס <span class="num">1</span></span></button>
+        <button class="scq-opt" id="s6-opt-b" type="button" onclick="Q.select(6, 'b')"><span class="scq-radio"></span><span class="scq-opt-text">דפוס <span class="num">2</span></span></button>
+        <button class="scq-opt" id="s6-opt-c" type="button" onclick="Q.select(6, 'c')"><span class="scq-radio"></span><span class="scq-opt-text">שתי ההצעות משתלמות באותה מידה</span></button>
+        <button class="scq-opt" id="s6-opt-d" type="button" onclick="Q.select(6, 'd')"><span class="scq-radio"></span><span class="scq-opt-text">לא ניתן לקבוע</span></button>
+      </div>
+      <button class="scq-hint" id="s6-hint" type="button" onclick="Q.openHint(6)">
+        <span class="nav-label" data-label="אפשר רמז?"><span>אפשר רמז?</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true"><path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/><path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/><path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/><path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/><path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/><path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/><path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/><path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/></svg>
+      </button>
+      <button class="scq-back" id="s6-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s6-submit" type="button" onclick="Q.submit(6)" disabled>
+        <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 07  ·  spec slide 85  —  ValueInputQuestion — סעיף ו
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="7" id="s7">
+      <!-- Deck: right edge 1190, the sentence at 133 and the question at 180. -->
+      <div class="viq-text" style="--x:480px; --y:128px; --w:710px;">
+        <p>ו. הועד בחר בהצעה של דפוס <span class="num">2</span>, בה המחיר הוא <span class="num">15</span> ₪ לכל <span class="num">400</span> סמ"ר.</p>
+        <p class="pgap" style="height:15px"></p>
+        <p class="viq-ask">השלימו: מה יהיה מחיר ההדפסה של <span class="num">8</span> פוסטרים?</p>
+      </div>
+      <div class="viq-answer viq-answer--spread" style="--x:890px; --y:267px; --w:300px;">
+        <span class="viq-field">
+          <input class="viq-input" id="s7-in-price" type="number" step="any" inputmode="decimal" aria-label="מחיר ההדפסה בשקלים">
+        </span>
+        <span>ש"ח</span>
+      </div>
+      <button class="scq-hint" id="s7-hint" type="button" onclick="Q.openHint(7)">
+        <span class="nav-label" data-label="אפשר רמז?"><span>אפשר רמז?</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true"><path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/><path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/><path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/><path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/><path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/><path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/><path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/><path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/></svg>
+      </button>
+      <button class="scq-back" id="s7-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s7-submit" type="button" onclick="Q.submit(7)" disabled>
+        <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 08  ·  spec slide 86  —  FullImageWithTextOverlay — סיום
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="8" id="s8">
+      <img class="fiw-bg" src="assets/img/gallery-final.png" alt="הגלריה המוכנה על קירות האולם">
+      <div class="fiw-text" data-reveal="1" style="--x:90px; --y:333px; --w:1058px;">
+        <p>הגיע היום הגדול!</p>
+        <p>תכנון נכון של הפרופורציות והמחירים איפשר לוועדה להפוך את קירות האולם לגלריה אמיתית, שבה כל תמונה<br>המקום המתאים לה.</p>
+        <p>כל התלמידות והתלמידים התגאו מאוד בתמונות ובתערוכה.</p>
+        <p>תודה שעזרתם גם!</p>
+      </div>
+      <button class="scq-back" id="s8-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s8-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="סיימנו!"><span>סיימנו!</span></span>
+      </button>
+    </section>
+
+    <div class="scq-popup m-popup hidden" id="s2-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s2-popup-title"></span></div>
+      <div class="scq-popup-body" id="s2-popup-body"></div>
+    </div>
+    <div class="scq-hint-overlay hidden" id="s2-hint-overlay" onclick="Q.closeHintOnBackdrop(2, event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s2-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s2-hint-title"><svg class="scq-hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg> שימו לב</h2>
+          <div class="scq-hint-body"><p>העזרו ביחס ההמרה <span class="num">1</span> מטר = <span class="num">100</span> ס"מ.</p></div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="Q.closeHint(2)">
+          <span class="nav-label" data-label="חזרה לשאלה"><span>חזרה לשאלה</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scq-popup m-popup hidden" id="s3-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s3-popup-title"></span></div>
+      <div class="scq-popup-body" id="s3-popup-body"></div>
+    </div>
+    <div class="scq-hint-overlay hidden" id="s3-hint-overlay" onclick="Q.closeHintOnBackdrop(3, event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s3-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s3-hint-title"><svg class="scq-hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg> שימו לב</h2>
+          <div class="scq-hint-body"><p>כמה מרווחים של <span class="num">10</span> ס"מ נוצרו עבור <span class="num">5</span> פוסטרים?</p></div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="Q.closeHint(3)">
+          <span class="nav-label" data-label="חזרה לשאלה"><span>חזרה לשאלה</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scq-popup m-popup hidden" id="s4-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s4-popup-title"></span></div>
+      <div class="scq-popup-body" id="s4-popup-body"></div>
+    </div>
+    <div class="scq-hint-overlay hidden" id="s4-hint-overlay" onclick="Q.closeHintOnBackdrop(4, event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s4-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s4-hint-title"><svg class="scq-hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg> שימו לב</h2>
+          <div class="scq-hint-body"><p><strong>העזרו בטבלת הפרופורציה:</strong></p></div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="Q.closeHint(4)">
+          <span class="nav-label" data-label="חזרה לשאלה"><span>חזרה לשאלה</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scq-popup m-popup hidden" id="s5-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s5-popup-title"></span></div>
+      <div class="scq-popup-body" id="s5-popup-body"></div>
+    </div>
+    <div class="scq-hint-overlay hidden" id="s5-hint-overlay" onclick="Q.closeHintOnBackdrop(5, event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s5-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s5-hint-title"><svg class="scq-hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg> שימו לב</h2>
+          <div class="scq-hint-body"><p>התחילו בחישוב רוחב כל פוסטר - העזרו ביישומון.</p></div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="Q.closeHint(5)">
+          <span class="nav-label" data-label="חזרה לשאלה"><span>חזרה לשאלה</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scq-popup m-popup hidden" id="s6-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s6-popup-title"></span></div>
+      <div class="scq-popup-body" id="s6-popup-body"></div>
+    </div>
+    <div class="scq-hint-overlay hidden" id="s6-hint-overlay" onclick="Q.closeHintOnBackdrop(6, event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s6-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s6-hint-title"><svg class="scq-hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg> שימו לב</h2>
+          <div class="scq-hint-body"><p>בכדי להשוות בין ההצעות, צריך לדעת מה יהיה המחיר עבור <strong>אותו שטח</strong>.</p></div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="Q.closeHint(6)">
+          <span class="nav-label" data-label="חזרה לשאלה"><span>חזרה לשאלה</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scq-popup m-popup hidden" id="s7-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s7-popup-title"></span></div>
+      <div class="scq-popup-body" id="s7-popup-body"></div>
+    </div>
+    <div class="scq-hint-overlay hidden" id="s7-hint-overlay" onclick="Q.closeHintOnBackdrop(7, event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s7-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s7-hint-title"><svg class="scq-hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg> שימו לב</h2>
+          <div class="scq-hint-body"><p>מה השטח הכולל של <span class="num">8</span> פוסטרים?</p></div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="Q.closeHint(7)">
+          <span class="nav-label" data-label="חזרה לשאלה"><span>חזרה לשאלה</span></span>
+        </button>
+      </div>
+    </div>
+
+
+  </div><!-- /#app -->
+
+  <script src="../unit-js/motion.js?v=1"></script>
+  <!-- Cross-part navigation. Loads before main.js, which calls PartNav.init(). -->
+  <script src="../unit-js/partnav.js?v=1"></script>
+  <!-- Shared question contract (attempts, marking, popups, resume).
+       Loads before main.js, which registers each question with Q.define(). -->
+  <script src="../unit-js/question.js?v=1"></script>
+  <script src="script.js?v=1"></script>
+</body>
+</html>

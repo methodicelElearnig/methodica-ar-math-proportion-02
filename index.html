@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מציאת המספר X החסר</title>
+  <!-- ═══════════════════════════════════════════════════════════
+       UNIT ENTRY POINT — the single index.html for the whole lomda.
+
+       This unit ships as five sibling part folders, each a complete,
+       independently openable single-part project with its own
+       index.html (720-project-scaffold → multi-part-projects.md).
+       That is right for authoring and for DEV, but it leaves the
+       project ROOT without an entry point — and an LMS, a SCORM
+       package or a producer double-clicking the folder all expect
+       exactly one launch file at the top.
+
+       So this is a LAUNCHER, not a sixth part. It holds no screens
+       and no learner content; it resolves which part to open and
+       hands the tab over to it. The learner's real journey starts on
+       part 01 S0 and PartNav carries them across the boundaries from
+       there — this file is never returned to and deliberately leaves
+       no history entry.
+
+       Ported from methodica-math-central-tendency-03/index.html.
+       ═══════════════════════════════════════════════════════════ -->
+
+  <!-- No-JS path. A meta refresh cannot read the ?part= deep link, so it
+       always lands on part 01 — which is the unit's real beginning and
+       therefore the correct degradation. The part list below stays
+       visible either way, so nobody is ever stranded here. -->
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=methodica-math-proportion-02-01/index.html">
+  </noscript>
+
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Self-contained on purpose: the project root has no css/ folder, and
+       this page must not depend on any one part's stylesheet — a launcher
+       that breaks because part 01 was renamed is worse than no launcher.
+       The tokens below are the math theme block from
+       methodica-math-proportion-02-01/css/style.css, copied so that every
+       colour here is still a var(--subject-*) reference and not a raw HEX
+       in a subject-bound role (non-negotiable 4). */
+    :root {
+      --subject-100: #ead9ff;
+      --subject-500: #3b2fc2;
+      --subject-900: #2f2478;
+      --primary-action-gradient: linear-gradient(to bottom, #6f6ad5 9%, #4b35a5 38%, #270075 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; min-height: 100%;
+      direction: rtl;
+      font-family: 'Assistant', system-ui, sans-serif;
+      background: var(--primary-action-gradient);
+      background-attachment: fixed;
+      color: #fff;
+    }
+
+    main {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 28px; padding: 40px 24px; text-align: center;
+    }
+
+    h1 { font-size: 32px; font-weight: 700; }
+    .sub { font-size: 20px; font-weight: 400; opacity: 0.85; }
+
+    /* The spinner is the whole "we are working" signal in the normal case:
+       the redirect fires on DOMContentLoaded, so this card is on screen for
+       a frame or two and nothing else needs to say anything. */
+    .loading { display: flex; align-items: center; gap: 12px; font-size: 20px; }
+    .spinner {
+      width: 22px; height: 22px; flex: 0 0 auto;
+      border: 3px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* Respect the OS setting — this is chrome, not content. */
+    @media (prefers-reduced-motion: reduce) {
+      .spinner { animation: none; border-top-color: rgba(255, 255, 255, 0.35); }
+    }
+
+    /* ── The manual list ──────────────────────────────────────────
+       Always rendered, never hidden behind a failure. It is the no-JS
+       fallback, the "the redirect did not fire" fallback, and a genuinely
+       useful producer shortcut — all three at once, which is why it is
+       plain markup and not something JS has to build. */
+    .parts {
+      list-style: none;
+      display: grid; gap: 10px;
+      width: 100%; max-width: 560px;
+      text-align: right;
+    }
+    .parts a {
+      display: flex; align-items: baseline; gap: 12px;
+      padding: 14px 20px; border-radius: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: #fff; text-decoration: none;
+      font-size: 18px; line-height: 1.4;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .parts a:hover, .parts a:focus-visible {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #fff; outline: none;
+    }
+    .parts .num {
+      flex: 0 0 auto; font-weight: 700; font-variant-numeric: tabular-nums;
+      color: var(--subject-100);
+    }
+    .parts .name { flex: 1 1 auto; font-weight: 600; }
+    .parts .count { flex: 0 0 auto; font-size: 18px; opacity: 0.7; }
+
+    .hint { font-size: 18px; opacity: 0.7; max-width: 560px; }
+    .hint a { color: #fff; }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div>
+      <h1>מציאת המספר X החסר</h1>
+      <p class="sub">מתמטיקה · 7 חלקים</p>
+    </div>
+
+    <p class="loading" id="loading">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>פותח את הלומדה…</span>
+    </p>
+
+    <!-- Order and Hebrew names follow the part table in CLAUDE.md, which
+         takes them from the producer's own component descriptions on the
+         part-boundary slides (spec/screens/slide-002, -034, -050, -054, -065).
+         Screen counts are deliberately absent until the screens exist — a
+         count printed here before anything is built is a claim, not a fact. -->
+    <ul class="parts">
+      <li><a href="methodica-math-proportion-02-01/index.html"><span class="num">01</span><span class="name">הוק והקנייה</span><span class="count">חלקית</span></a></li>
+      <li><a href="methodica-math-proportion-02-02/index.html"><span class="num">02</span><span class="name">סטנדרטי</span><span class="count">בבנייה</span></a></li>
+      <li><a href="methodica-math-proportion-02-03/index.html"><span class="num">03</span><span class="name">תרגול בסיסי וסטנדרטי ב</span><span class="count">בבנייה</span></a></li>
+      <li><a href="methodica-math-proportion-02-04/index.html"><span class="num">04</span><span class="name">משימת כיתה</span><span class="count">בבנייה</span></a></li>
+      <li><a href="methodica-math-proportion-02-05/index.html"><span class="num">05</span><span class="name">תרגול מתקדם</span><span class="count">בבנייה</span></a></li>
+      <li><a href="methodica-math-proportion-02-06/index.html"><span class="num">06</span><span class="name">שאלת שיא א</span><span class="count">בבנייה</span></a></li>
+      <li><a href="methodica-math-proportion-02-07/index.html"><span class="num">07</span><span class="name">שאלת שיא ב</span><span class="count">בבנייה</span></a></li>
+    </ul>
+
+    <p class="hint">
+      הלומדה נפתחת מחלק 01. לכניסה ישירה לחלק אחר אפשר להוסיף
+      <code>?part=03</code> לכתובת, או לבחור מהרשימה.
+      לניווט חופשי בין כל המסכים: <a href="index_dev.html">index_dev.html</a>.
+    </p>
+  </main>
+
+<script>
+  'use strict';
+
+  /* The seven real part folders. A whitelist and not string interpolation on
+     the query value: ?part= arrives from a URL, and building a path out of
+     unvalidated input is how a launcher turns into an open redirect. An id
+     that is not on this list is ignored and the unit opens at 01.
+     06.09 — this read ['01'..'05'] from the unit it was ported from, so
+     ?part=06 and ?part=07 fell through to part 01 without a word. */
+  var PARTS = ['01', '02', '03', '04', '05', '06', '07'];
+  var FOLDER_PREFIX = 'methodica-math-proportion-02-';
+
+  function requestedPart() {
+    var raw = '';
+    try {
+      /* Both forms, because a hash survives an LMS that strips the query
+         string and a query survives one that strips the hash. */
+      raw = new URLSearchParams(window.location.search).get('part') || '';
+      if (!raw) {
+        var m = /(?:^#|[#&?])part=([^&]+)/.exec(window.location.hash);
+        if (m) raw = decodeURIComponent(m[1]);
+      }
+    } catch (e) { raw = ''; }
+
+    raw = String(raw).trim();
+    /* "3" and "03" are the same part to anyone typing the URL by hand. */
+    if (/^\d$/.test(raw)) raw = '0' + raw;
+    return PARTS.indexOf(raw) === -1 ? '01' : raw;
+  }
+
+  /* The query string rides along. An LMS puts session state there (and the
+     DEV harness puts ?dev=1 / ?cb=), and a launcher that drops it hands the
+     part a bare URL — the reference launcher carries it, and PartNav carries
+     it across every later boundary, so losing it HERE loses it for good. */
+  var target = FOLDER_PREFIX + requestedPart() + '/index.html' + window.location.search;
+
+  /* replace(), never assign(): this page is a doorway, and leaving it in
+     the history means the learner's browser Back button lands them back
+     here — which would immediately bounce them forward again, trapping
+     Back entirely. */
+  try {
+    window.location.replace(target);
+  } catch (e) {
+    /* Nothing to recover to but the list below, so say so rather than
+       leaving a spinner turning forever over a redirect that never fired. */
+    var el = document.getElementById('loading');
+    if (el) el.innerHTML = '<span>לא הצלחנו לפתוח את הלומדה אוטומטית — בחרו חלק מהרשימה.</span>';
+  }
+</script>
+</body>
+</html>

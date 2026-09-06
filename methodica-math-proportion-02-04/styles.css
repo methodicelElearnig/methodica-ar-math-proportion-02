@@ -1,0 +1,2438 @@
+/* ═══════════════════════════════════════════════════════
+   css/style.css  —  methodica-math-proportion-02  ·  part 01
+   Canvas: 1280 × 710 px   (720 reference engine)
+
+   Everything above "SCREEN STYLES" is the shared foundation and should
+   not need editing. Per-screen styles go below it, #sN-scoped, in
+   screen order.
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Local fonts (Assistant) ───────────────────────────
+   Loaded from assets/fonts/ — used before the Google Fonts CDN, so the
+   lomda renders correctly offline and inside an LMS with no outbound
+   network. The <link> in index.html stays as a fallback.
+   Delete any weight the project does not ship.
+   ───────────────────────────────────────────────────────── */
+@font-face { font-family: 'Assistant'; src: url('assets/fonts/Assistant-ExtraLight.ttf') format('truetype'); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Assistant'; src: url('assets/fonts/Assistant-Light.ttf')      format('truetype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Assistant'; src: url('assets/fonts/Assistant-Regular.ttf')    format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Assistant'; src: url('assets/fonts/Assistant-Medium.ttf')     format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Assistant'; src: url('assets/fonts/Assistant-SemiBold.ttf')   format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Assistant'; src: url('assets/fonts/Assistant-Bold.ttf')       format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Assistant'; src: url('assets/fonts/Assistant-ExtraBold.ttf')  format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+
+/* ─── Reset ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ═══ Subject theme tokens — Figma Variable Collection (720 UI Templates)
+   :root carries the DEFAULT (Science) theme; each additional theme is an
+   override block keyed by data-subject-theme on <body>. Switching theme
+   is that ONE attribute — never a HEX find-and-replace.
+   All values: 720-design-guidelines → references/colors-and-gradients.md
+   ═══════════════════════════════════════════════════════ */
+:root {
+  --subject-100: #d4f3ff;
+  --subject-200: #c7f0ff;
+  --subject-300: #b9ecff;
+  --subject-350: #b0dfff;
+  --subject-400: #00baff;
+  --subject-500: #019de5;
+  --subject-600: #0690d0;
+  --subject-700: #007ac6;
+  --subject-800: #0070c0;
+  --subject-900: #002060;
+  --subject-alpha-100: rgba(0, 186, 255, 0);
+  --subject-alpha-200: rgba(0, 186, 255, 0.3);
+  /* Official Subject/Gradient/Science Paint Style. Role-scoped name
+     because it is applied ONLY to confirmed primary actions (Continue /
+     Submit) — the Subject gradient's wider usage scope is not defined,
+     so this property must not be reused for other components. */
+  --primary-action-gradient: linear-gradient(to bottom, #005fbe 9%, #0059b2 23.361%, #003971 100%);
+}
+
+body[data-subject-theme="math"] {
+  --subject-100: #ead9ff;
+  --subject-200: #cec7ff;
+  --subject-300: #e1d9ff;
+  --subject-350: #b3b0ff;
+  --subject-400: #bdb3fc;
+  --subject-500: #3b2fc2;
+  --subject-600: #383896;
+  --subject-700: #5656cc;
+  --subject-800: #4b35a5;
+  --subject-900: #2f2478;
+  --subject-alpha-100: rgba(165, 28, 255, 0);
+  --subject-alpha-200: rgba(165, 28, 255, 0.3);
+  /* Official Subject/Gradient/Math Paint Style values (producer-confirmed
+     as canonical). Same role-scoping note as the Science counterpart. */
+  --primary-action-gradient: linear-gradient(to bottom, #6f6ad5 9%, #4b35a5 38%, #270075 100%);
+}
+
+/* ─── Global utility ───────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ─── Global ───────────────────────────────────────────── */
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  direction: rtl;                      /* RTL is the global default */
+  font-family: 'Assistant', sans-serif;
+  background: #fff;
+}
+
+/* ─── App Canvas ───────────────────────────────────────── */
+#app {
+  position: absolute;
+  /* Width/height are set dynamically by scaleApp() to fill the viewport
+     (in design coords). The 1280×710 fallback keeps the page sensible if
+     JS is still booting. */
+  width: 1280px; height: 710px;
+  transform-origin: top left;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* ─── Screens ──────────────────────────────────────────── */
+/* .screen fills #app (which fills the viewport) so chrome anchored to its
+   bottom/top edges reaches the actual screen edges on tablet aspect
+   ratios. Per-screen content stays positioned against the 1280-wide
+   design grid. */
+.screen {
+  position: absolute; inset: 0;
+  display: none; overflow: hidden;
+}
+.screen.active { display: block; }
+
+/* 74px white feedback bar at the bottom of every screen (Figma standard).
+   pointer-events:none so it never swallows a click meant for the buttons
+   sitting on it. */
+.screen::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 74px;
+  background: #fff;
+  border-top: 0.4px solid #AEAEAE;
+  pointer-events: none;
+  z-index: 9;
+}
+
+/* ═══════════════════════════════════════════════════════
+   GLOBAL COMPONENT — Report / Issue button (top-left).
+   Figma component set 207:3590. Visual only for now.
+   Theme-aware, not baked: the hover state binds Subject/500 on the
+   circle stroke, both glyph vectors, and the label — which is why the
+   glyph is live inline SVG on currentColor rather than a PNG.
+   ═══════════════════════════════════════════════════════ */
+.flag-btn {
+  position: absolute; top: 32px; left: 32px;
+  width: 88px;
+  /* Figma places the frame at 32,32 with its own pt-10 / px-4 / pb-8, so the
+     38px disc lands at (57, 42). Padding here rather than a nudged top/left
+     keeps the 88px box — the 80px label is centred on it. */
+  padding: 10px 4px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  z-index: 30;
+}
+.flag-btn-icon {
+  position: relative;
+  width: 38px; height: 38px; flex-shrink: 0;
+  border-radius: 1000px;
+  overflow: hidden;
+  background: #ececec;
+  border: 0.5px solid rgba(0, 0, 0, 0.06);
+  color: #484848;                       /* glyph colour — Natural, theme-independent */
+}
+.flag-btn:hover .flag-btn-icon,
+.flag-btn:focus-visible .flag-btn-icon {
+  background: #fff;
+  border: 0.7px solid var(--subject-500);
+  color: var(--subject-500);
+}
+/* Glyph box resolved to px for determinism (Figma's two states differ by
+   <0.12px on these offsets — below one rendered pixel). */
+.flag-btn-glyph {
+  position: absolute;
+  top: 11.74px;
+  left: calc(50% + 1px);
+  transform: translateX(-50%);
+  width: 12.34px; height: 17.63px;
+}
+.flag-btn-glyph-pole,
+.flag-btn-glyph-banner { position: absolute; display: block; }
+.flag-btn-glyph-pole   { inset: 0 93.38% 0 0; }
+.flag-btn-glyph-banner { inset: 3.49% 0 41.72% 0; }
+.flag-btn-label {
+  font-family: 'Assistant', sans-serif;
+  font-weight: 600; font-size: 14px; color: var(--subject-500);
+  text-align: center; width: 80px; line-height: normal;
+  direction: rtl; display: none;
+}
+.flag-btn:hover .flag-btn-label,
+.flag-btn:focus-visible .flag-btn-label { display: block; }
+
+/* ─── Shared: Continue Button — gradient pill, bottom-LEFT of the bar
+   (RTL: forward is left). Also serves every confirmed primary action
+   that reuses it: Submit / "צדקתי?" / "שנמשיך?". The ONLY consumer of
+   --primary-action-gradient.
+   ONE shared position rule — never per-screen overrides, or the button
+   drifts between screens. ── */
+.btn-continue {
+  position: absolute;
+  bottom: 17.5px; left: 34px;   /* true 39px-pill centering: (74-39)/2 = 17.5.
+                                   34 = the bar's 24px pad + Slot2's own 10px. */
+  z-index: 12;                  /* above the ::after white bar (z-index 9) */
+  min-width: 140px;
+  height: 39px;
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary-action-gradient);
+  color: #fff;
+  border: none; border-radius: 1000px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+  text-align: center; white-space: nowrap;
+}
+.btn-continue:not(:disabled):hover { font-weight: 600; }
+.btn-continue.hidden { display: none !important; }
+.btn-continue:disabled {
+  background: #AEAEAE;
+  color: #303030;
+  cursor: not-allowed;
+  opacity: 1;                   /* the browser default dims the label below the contrast floor */
+}
+
+/* ─── Back button — white pill, bottom-RIGHT of the bar. Never shown on
+   the first screen of a lomda. Same single-shared-rule discipline. ── */
+.scq-back {
+  position: absolute;
+  bottom: 17.5px; right: 34px;
+  z-index: 12;
+  width: auto; min-width: 140px; height: 39px; padding: 0 20px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
+  color: var(--subject-700);
+  font-family: 'Assistant', sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl; white-space: nowrap;
+}
+.scq-back:hover { font-weight: 600; border-width: 1.5px; }
+
+/* ─── Nav-button width consistency (Foundation rule) ────────
+   W(label) = max(box floor, intrinsic width of the SAME label at the
+   HOVER weight). Any button whose hover changes font-weight must never
+   resize/reflow between Default and Hover.
+   Mechanism: .nav-label stacks an invisible copy of the label at the
+   hover weight (a ::before fed by attr(data-label)) into the same grid
+   cell as the visible <span>, so the box always reserves the heavier
+   measurement. Not a DOM node and visibility:hidden keeps it out of the
+   accessibility tree — data-label always mirrors the visible text, never
+   authored separately from it (see setNavLabel() in js/main.js for every
+   place a button's label changes at runtime). */
+.nav-label { display: inline-grid; }
+.nav-label::before {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.nav-label > span { grid-area: 1 / 1; }
+
+
+/* ═══════════════════════════════════════════════════════
+   SCREEN STYLES — one clearly-headed block per screen, in order.
+   Shared component rules (.scq-*, .viq-*, …) go above the per-screen
+   blocks; per-screen overrides are #sN-scoped and never edit the
+   shared rule.
+   ═══════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════
+   REPORT MODAL — "מצאתם בעיה?"
+   Vendored from methodica-math-central-tendency-03-01, which vendored it
+   from examples/methodica-math-ratio-01 (template-library/ReportModal,
+   approved 09.08). Same behavior in every 720 project.
+
+   The .flag-btn rules above ship with the scaffold, but the scaffold has
+   no modal behind them — clicking the button did nothing. This block and
+   the markup in index.html are the missing half.
+   ═══════════════════════════════════════════════════════════ */
+.report-modal-overlay { position: absolute; inset: 0; z-index: 200; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; direction: rtl; }
+.report-modal-overlay[hidden] { display: none; }
+.report-modal-box { width: 520px; background: #ffffff; border-radius: 16px; padding: 36px 36px 28px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.35); display: flex; flex-direction: column; gap: 18px; direction: rtl; }
+.report-confirm-box { width: 420px; padding: 40px 36px 32px; gap: 20px; }
+.report-close-btn { position: absolute; top: 14px; left: 14px; width: 32px; height: 32px; border: none; background: none; font-size: 17px; color: #8A9AAA; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; outline: none; transition: background 0.12s, color 0.12s; }
+.report-close-btn:hover { background: #F0F2F5; color: #303030; }
+.report-close-btn:focus-visible { outline: 2px solid var(--subject-500); }
+.report-modal-title { font-size: 26px; font-weight: 700; color: #1A2744; line-height: 1.2; }
+.report-modal-body { font-size: 18px; color: #5A6A7A; line-height: 1.5; margin-top: -6px; }
+.report-field { display: flex; flex-direction: column; gap: 6px; }
+.report-label { font-size: 18px; font-weight: 600; color: #303030; }
+.required-star { color: #D32F2F; }
+.report-select { height: 44px; border: 2px solid #C9CED8; border-radius: 10px; padding: 0 14px; font-family: 'Assistant', sans-serif; font-size: 18px; color: #303030; background: #ffffff; direction: rtl; outline: none; cursor: pointer; transition: border-color 0.12s; }
+.report-select:focus { border-color: var(--subject-500); }
+.report-textarea { border: 2px solid #C9CED8; border-radius: 10px; padding: 12px 14px; font-family: 'Assistant', sans-serif; font-size: 18px; color: #303030; direction: rtl; resize: none; outline: none; transition: border-color 0.12s; line-height: 1.5; }
+.report-textarea:focus { border-color: var(--subject-500); }
+.report-char-count { font-size: 18px; color: #8A9AAA; text-align: left; direction: ltr; }
+.report-actions { display: flex; flex-direction: row; gap: 12px; direction: rtl; margin-top: 4px; }
+.report-error { color: #d33; font-size: 18px; margin: 4px 0 8px; direction: rtl; }
+.report-thanks { text-align: center; padding: 8px 0; direction: rtl; }
+.report-thanks p { font-size: 18px; color: #303030; line-height: 1.5; margin-bottom: 18px; }
+.report-submit-btn { height: 44px; padding: 0 32px; background: var(--primary-action-gradient); color: #ffffff; border: none; border-radius: 50px; font-family: 'Assistant', sans-serif; font-size: 18px; font-weight: 600; cursor: pointer; outline: none; transition: opacity 0.12s; }
+.report-submit-btn:hover { opacity: 0.88; }
+.report-submit-btn:focus-visible { outline: 3px solid var(--subject-500); outline-offset: 3px; }
+.report-cancel-btn { height: 44px; padding: 0 28px; background: #ffffff; color: #5A6A7A; border: 2px solid #C9CED8; border-radius: 50px; font-family: 'Assistant', sans-serif; font-size: 18px; font-weight: 400; cursor: pointer; outline: none; transition: border-color 0.12s, color 0.12s; }
+.report-cancel-btn:hover { border-color: #8A9AAA; color: #303030; }
+.report-cancel-btn:focus-visible { outline: 3px solid var(--subject-500); outline-offset: 3px; }
+
+/* ═══════════════════════════════════════════════════════
+   SHARED — SingleChoiceQuestion (question block, options, radio,
+   feedback popup).
+
+   PORTED VERBATIM from
+   examples/methodica-math-percent-02/methodica-math-percent-02-01/css/style.css
+   (lines 1096-1307), per 720-templates rule zero: "if a sibling part already
+   implements it, port that implementation verbatim". Reimplementing is how the
+   RTL flex-end bug shipped across six files.
+
+   Kept whole, including the glossary-tooltip and multi-select rules this part
+   does not use yet — trimming it would make the next diff against the sibling
+   noisy for no gain.
+   ═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   SHARED — SingleChoiceQuestion (question block, options, feedback
+   popup). Ported from methodica-science-mass-measure-01-01's
+   Figma-sourced #s1 (dpY9DTl41tzW8SKvcPWU0C, node 2085:4465) —
+   these classes are the shared/global SCQ component, reused as-is
+   across question screens.
+   ═══════════════════════════════════════════════════════ */
+
+/* Question block — Figma: top 139px, right 40px, width 1188px */
+.scq-question {
+  position: absolute; top: 139px; right: 40px;
+  width: 1200px; height: auto;
+}
+
+/* Image/widget placeholder (left) — 380×380 square. Stays a plain gray
+   box until a real image/widget is supplied; never invent a photo. */
+.scq-img {
+  position: absolute; left: 0; top: 0;
+  width: 380px; height: 380px; padding: 8px;
+}
+.scq-img-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  background: #f2f2f2; border: 1px solid rgba(174, 174, 174, 0.5);
+  border-radius: 16px; overflow: hidden;
+}
+.scq-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* Question text (right) — default: short single-run bold question,
+   Subject/500. For multi-part question text, a screen-scoped wrapper
+   overrides position to stack in normal flow. */
+.scq-qtext {
+  position: absolute; right: 0; top: 0;
+  width: 792px; height: auto;
+  display: flex; flex-direction: column; justify-content: flex-start; gap: 0;
+  padding-top: 16px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 24px; font-weight: 700; color: var(--subject-500);
+  text-align: right; direction: rtl; line-height: normal;
+}
+
+/* Answers (right, below the question text) */
+.scq-answers {
+  position: absolute; right: 0; top: 100px;
+  width: 604px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.scq-opt {
+  width: 604px; min-height: 46px;
+  border: 2px solid var(--subject-500); border-radius: 1000px;
+  background: #fff; padding: 7px 20px;
+  display: flex; align-items: center; gap: 10px;
+  direction: rtl; cursor: pointer;
+  font-family: 'Assistant', sans-serif;
+  overflow: visible;
+}
+.scq-opt-text {
+  flex: 1; text-align: right;
+  font-size: 22px; font-weight: 400; color: #222; line-height: 1.1;
+}
+.scq-opt:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.scq-opt:disabled { cursor: default; }
+.scq-opt.correct { background: #edf8ed; border: 2px solid #609e12; }
+.scq-opt.wrong   { background: #fff0f4; border: 2px solid #b20010; }
+
+/* Radio indicator (22px) — RTL: sits on the RIGHT (reading start) of the pill */
+.scq-radio {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border: 2px solid var(--subject-500); border-radius: 1000px;
+  position: relative; box-sizing: border-box;
+  order: -1;
+}
+.scq-opt.selected .scq-radio { background: var(--subject-500); }
+.scq-opt.correct  .scq-radio { background: #609e12; border-color: #609e12; }
+.scq-opt.wrong    .scq-radio { background: #b20010; border-color: #b20010; }
+.scq-opt.correct .scq-radio::after,
+.scq-opt.wrong .scq-radio::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+}
+.scq-opt.correct .scq-radio::after {
+  width: 13px; height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 12' fill='none'%3E%3Cpath d='M4.52036 12C4.12296 12.0002 3.74183 11.8126 3.46106 11.4787L0.258452 7.67744C-0.0861507 7.26814 -0.0861507 6.60467 0.258452 6.19536C0.603165 5.78619 1.16194 5.78619 1.50666 6.19536L4.52036 9.77374L12.4933 0.306878C12.8381 -0.102293 13.3968 -0.102293 13.7415 0.306878C14.0862 0.716179 14.0862 1.37966 13.7415 1.78896L5.57966 11.4787C5.29889 11.8126 4.91776 12.0002 4.52036 12Z' fill='white'/%3E%3C/svg%3E");
+}
+.scq-opt.wrong .scq-radio::after {
+  width: 11px; height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M13.6743 0.325691C13.4657 0.117151 13.1828 0 12.8879 0C12.5929 0 12.31 0.117151 12.1014 0.325691L7 5.42709L1.8986 0.325691C1.69 0.117151 1.40711 0 1.11215 0C0.817183 0 0.534294 0.117151 0.325691 0.325691C0.117151 0.534294 0 0.817183 0 1.11215C0 1.40711 0.117151 1.69 0.325691 1.8986L5.42709 7L0.325691 12.1014C0.117151 12.31 0 12.5929 0 12.8879C0 13.1828 0.117151 13.4657 0.325691 13.6743C0.534294 13.8829 0.817183 14 1.11215 14C1.40711 14 1.69 13.8829 1.8986 13.6743L7 8.57291L12.1014 13.6743C12.31 13.8829 12.5929 14 12.8879 14C13.1828 14 13.4657 13.8829 13.6743 13.6743C13.8829 13.4657 14 13.1828 14 12.8879C14 12.5929 13.8829 12.31 13.6743 12.1014L8.57291 7L13.6743 1.8986C13.8829 1.69 14 1.40711 14 1.11215C14 0.817183 13.8829 0.534294 13.6743 0.325691Z' fill='white'/%3E%3C/svg%3E");
+}
+
+/* Multi-select checkbox (MultipleChoiceQuestion) — SQUARE, distinct from
+   the circular `.scq-radio` above (SingleChoiceQuestion). Figma: node
+   196:6222 (default) / 462:6740 (selected) / 462:6758 (correct) / 462:6768
+   (incorrect), confirmed via get_design_context — not invented. Sits at
+   the pill's physical RIGHT, same side as `.scq-radio` (producer
+   correction: the exported Tailwind/React reference code carries no
+   `dir=rtl` marker, which misread as "icon renders left" on first pass —
+   but Figma's own rendered screenshot, and the producer's own side-by-side
+   check, both show it on the right, so `order:-1` is needed here too, same
+   trick `.scq-radio` already uses). All three "checked" states (selected/
+   correct/wrong) render the SAME checkmark glyph — Figma's own icon set
+   (node 196:6225) confirms multi-select never shows an X for a wrong pick,
+   only a red-filled check (the glyph means "you checked this," the color
+   means "right/wrong"), unlike single-choice's distinct X-for-wrong icon
+   above. */
+.mcq-check {
+  width: 20px; height: 20px; flex-shrink: 0;
+  border: 2px solid var(--subject-500); border-radius: 2px;
+  position: relative; box-sizing: border-box;
+  background: transparent;
+  order: -1;
+}
+.scq-opt.selected .mcq-check { background: var(--subject-500); border-color: var(--subject-500); }
+.scq-opt.correct  .mcq-check { background: #609e12; border-color: #609e12; }
+.scq-opt.wrong    .mcq-check { background: #b20010; border-color: #b20010; }
+.scq-opt.selected .mcq-check::after,
+.scq-opt.correct .mcq-check::after,
+.scq-opt.wrong .mcq-check::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 13px; height: 9px;
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12.7274 9.18767' fill='none'%3E%3Cpath d='M4.10955 9.18763C3.74828 9.18778 3.4018 9.04418 3.14655 8.78851L0.23509 5.87812C-0.0781857 5.56475 -0.0781857 5.05677 0.23509 4.74339C0.548465 4.43012 1.05645 4.43012 1.36982 4.74339L4.10955 7.48312L11.3577 0.234956C11.6711 -0.0783188 12.1791 -0.0783188 12.4925 0.234956C12.8057 0.548332 12.8057 1.05631 12.4925 1.36969L5.07255 8.78851C4.81731 9.04418 4.47083 9.18778 4.10955 9.18763Z' fill='white'/%3E%3C/svg%3E");
+}
+
+/* Word wrapper for an inline tooltip inside plain body text (not inside
+   a question title/option) — ported from methodica-science-mass-liquid-01-01. */
+.tooltip-word { position: relative; display: inline-block; }
+.term-underline {
+  font-weight: 700; color: var(--subject-700);
+  text-decoration: underline; text-decoration-skip-ink: none;
+  cursor: help;
+}
+.term-info {
+  position: absolute; top: -8px; left: 0; transform: translateX(-50%);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 15px; height: 15px; cursor: help;
+}
+/* Self-contained 15×15 SVG (Figma eSbp4bKHgBky0rakDb8l9N node 1580:17042).
+   The circle IS subject-themed: get_variable_defs on that node returns
+   {"Subject/500"}, so its fill is driven by var(--subject-500) on the
+   <rect> in index.html — NOT a baked hex. (A previous version of this
+   comment asserted the #019DE5 was a fixed, non-subject colour; that was
+   wrong — #019DE5 is simply Subject/500 as resolved in the Figma file's
+   Science mode.) Still keep the circle and the "i" inside this ONE
+   self-contained asset — the rule against a second CSS-drawn circle
+   behind the SVG stands; only the fill source changed. */
+.term-info-i { display: block; flex: 0 0 15px; width: 15px; height: 15px; }
+.term-tooltip {
+  position: absolute; bottom: calc(100% + 10px);
+  left: 50%; transform: translateX(-50%);
+  width: 260px;
+  background: #fff; border: 1px solid #aeaeae; border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  padding: 18px 15px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl; line-height: normal;
+  display: none; z-index: 40;
+}
+.tooltip-word:hover .term-tooltip,
+.term-info:hover .term-tooltip,
+.term-info:focus .term-tooltip,
+.term-info:focus-within .term-tooltip { display: block; }
+
+/* ── Feedback popup — draggable, no close button
+   (_global-components.md → Feedback popup system) ── */
+.scq-popup {
+  position: absolute;
+  /* Clear of the canvas edge and of the 74px navigation bar. It used to sit at
+     left:2 / bottom:76, which put the card half under the bar's top border and
+     bleeding off the left edge — it read as clipped rather than placed. */
+  left: 40px; bottom: 96px;
+  width: 426px;
+  height: auto;
+  /* Capped, because this unit has explanations the reference projects did
+     not: slide 13's runs to two annotated equations and five paragraphs,
+     which at `height:auto` grew a 587px card upward from bottom:96 and ran
+     its title off the top of the 710px canvas. The card stays put and its
+     BODY scrolls — 710 - 96 (bottom offset) - 56 (clear of the flag button)
+     = 558. */
+  max-height: 558px;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column; gap: 4px;
+  direction: rtl; z-index: 50;
+  cursor: move;
+}
+.scq-popup.hidden { display: none !important; }
+.scq-popup-header {
+  display: flex; align-items: flex-start; gap: 8px;
+  direction: ltr;
+  width: 100%;
+}
+.scq-popup-title {
+  flex: 1;
+  font-family: 'Assistant', sans-serif;
+  font-size: 20px; font-weight: 700;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0;
+  padding-top: 4px;
+}
+/* The scrolling part. min-height:0 is load-bearing: a flex child's default
+   min-height is auto, which refuses to shrink below its content and lets the
+   card overflow its own max-height instead of scrolling. */
+.scq-popup-body {
+  /* 06.09 — the 2px of padding with a matching negative margin is a rounding
+     guard, not spacing. A fractional content height (20px type at
+     line-height:normal) makes scrollHeight round UP one pixel past the height
+     flex hands the body, so a body that fits produced a scrollbar on a card
+     with room to spare (03/S1 was 317 in 316). The negative margin gives the
+     2px back to the flex layout, so the card's height and position do not
+     move; only bodies that genuinely exceed the 558px cap still scroll. */
+  overflow-y: auto; min-height: 0; direction: rtl;
+  padding-bottom: 2px; margin-bottom: -2px; }
+.scq-popup-body p {
+  font-family: 'Assistant', sans-serif;
+  font-size: 20px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0 0 4px;
+}
+.scq-popup-body p:last-child { margin-bottom: 0; }
+
+/* No separate .scq-bar/.scq-check here: the check/confirm button reuses
+   the shared .btn-continue (same size, same bottom-left position as
+   every other screen's Continue) per the global-components.md rule
+   that .btn-continue is "reused for gated continue/confirm actions" —
+   see 720-templates → _global-components.md → "Continue button". */
+
+/* ═══════════════════════════════════════════════════════
+   S1 — TextWithCallout (spec slide 4)
+   Right-aligned prose column with the density formula, and the companion
+   character bottom-left with a speech bubble.
+   ═══════════════════════════════════════════════════════ */
+.twc-body {
+  position: absolute; top: 64px; right: 40px; width: 1160px;
+  display: flex; flex-direction: column; gap: 18px;
+  text-align: right; direction: rtl;
+  font-family: 'Assistant', sans-serif; font-size: 24px; color: #222;
+  line-height: 1.45;
+}
+/* Figma frame 2147223643: the heading and its follow-up line are BLACK, not
+   subject-toned, and the heading is a size up from the line under it.
+   Sizes are the H-5 / subtitle pair off the 720 scale — 30 and 21 were both
+   off-scale. */
+.twc-title  { font-weight: 700; color: #303030; font-size: 40px; line-height: 1.2; }
+.twc-lead   { font-weight: 700; color: #303030; font-size: 24px; }
+.twc-para   { font-weight: 400; }
+.twc-strong { font-weight: 700; }
+
+/* The formula sits inline after its label, so the row is a flex line with
+   the fraction as one inline-block unit — inside the lavender pill the Figma
+   frame draws around the whole thing. The fill is --subject-100, the theme's
+   own light tint, so a subject switch carries it (non-negotiable 4). */
+.twc-formula-row {
+  align-self: flex-start;
+  display: flex; flex-direction: row; align-items: center;
+  gap: 14px; direction: rtl;
+  background: var(--subject-100); border-radius: 10px;
+  padding: 10px 22px;
+}
+.twc-fraction {
+  /* Inherits the body size: the formula inside the callout must not read
+     smaller than the sentence that introduces it. */
+  display: inline-flex; flex-direction: column; align-items: center;
+  font-size: inherit; line-height: 1.25;
+}
+/* The bar belongs to the numerator's underside, so numerator and
+   denominator stay centred on one axis regardless of their widths. */
+.twc-num { padding: 0 10px 2px; border-bottom: 2px solid #222; }
+.twc-den { padding: 2px 10px 0; }
+
+.twc-character {
+  /* row-reverse under direction:rtl puts the IMAGE physically left and the
+     bubble to its right, which is the Figma arrangement. */
+  position: absolute; left: 56px; bottom: 92px;
+  display: flex; flex-direction: row-reverse; align-items: center; gap: 0;
+  direction: rtl;
+}
+.twc-character img { width: 210px; height: auto; display: block; }
+/* Speech bubble with a tail pointing back at the character.
+
+   Outline is Subject/500 — every bubble in a 720 lomda shares that one
+   semantic role, so it follows the active subject theme. This used to be a
+   hardcoded #00b0f0; percent-02 records the same value as "a legacy
+   implementation value, not an intentional fixed blue", and hardcoded it
+   left a Science cyan sitting in a Math module. */
+.twc-bubble {
+  position: relative;
+  max-width: 260px; padding: 12px 18px;
+  background: #fff; border: 2px solid var(--subject-500); border-radius: 4px;
+  font-family: 'Assistant', sans-serif; font-size: 20px; color: #222;
+  text-align: center; direction: rtl; line-height: 1.3;
+}
+.twc-bubble::before,
+.twc-bubble::after {
+  content: ''; position: absolute; top: 50%;
+  width: 0; height: 0; border-style: solid;
+}
+/* Two triangles: the outer one draws the border, the inner one punches the
+   white fill back over it, so the tail keeps a 2px outline like the box. */
+.twc-bubble::before {
+  left: -16px; transform: translateY(-50%);
+  border-width: 10px 16px 10px 0;
+  border-color: transparent var(--subject-500) transparent transparent;
+}
+.twc-bubble::after {
+  left: -12px; transform: translateY(-50%);
+  border-width: 8px 13px 8px 0;
+  border-color: transparent #fff transparent transparent;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TransitionScreen  (this unit: S7 · slide 22, S9 · slide 30)
+   The .ts-* block itself is template code; only the per-screen figure
+   sizes below are screen-scoped.
+   ═══════════════════════════════════════════════════════ */
+#s7, #s9 { background: #fff; }
+.ts-content {
+  position: absolute; inset: 0 0 74px 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 40px;
+}
+.ts-title {
+  font-family: 'Assistant', sans-serif;
+  /* H-5, the 720 main-title token: 40 / 700 / Natural-800. It was 34px in
+     Subject/500 — a size that is not on the scale, in the question-title
+     colour. Both shipped reference lomdot (percent-02, ratio-01) render every
+     TransitionScreen title at 40/700/#303030, and Figma's title box (810x30,
+     cap-trimmed) measures back to ~40px type. */
+  font-size: 40px; font-weight: 700; color: #303030;
+  text-align: center; direction: rtl; line-height: 1.2; max-width: 810px;
+}
+/* Character on the LEFT, its bubble to the RIGHT — the arrangement the deck
+   uses on every transition screen (slide 5, 25, 35, 44). row-reverse under
+   direction:rtl is what puts the image first physically; plain `row` reversed
+   the pair and pointed the bubble's tail away from the character. */
+/* The bubble OVERLAPS the media rather than sitting beside it. The deck draws
+   it touching the character's cheek (slide 5); as a flex sibling it sat past
+   the media's edge, which reads fine against a tight still but drifts far away
+   once the animated clip replaces it — the clip is a wide frame with the
+   character centred in it, so half its width is empty. Positioning the bubble
+   at a PERCENTAGE of the media box keeps it on the character in both cases.
+   --bubble-x / --bubble-y are per-screen tuning knobs. */
+.ts-character {
+  position: relative;
+  display: flex; flex-direction: row-reverse; align-items: center;
+  direction: rtl;
+}
+.ts-character .twc-bubble {
+  position: absolute;
+  left: var(--bubble-x, 68%);
+  top: var(--bubble-y, 26%);
+  margin: 0;
+  z-index: 2;
+  /* max-content, not shrink-to-fit. An absolutely positioned box with only
+     `left` set is sized against the space left inside its containing block —
+     and that block is the character's own media box, ~210px on most transition
+     screens. At left:68% the bubble had ~60px to work with and collapsed into
+     a one-word-per-line column. */
+  width: max-content;
+  max-width: 260px;
+}
+/* Tail on the RIGHT edge, pointing right — for a bubble placed to the LEFT of
+   the character, which is the deck's arrangement wherever the character sits
+   at the left of its own frame (slide 35). Mirrors ::before/::after. */
+/* Tail on the BOTTOM edge, pointing down — for a bubble sitting ABOVE the
+   character. Same doubled-class specificity trick as the right-tail variant. */
+.twc-bubble.twc-bubble--tail-down::before {
+  top: auto; left: 40px; bottom: -16px; transform: none;
+  border-width: 16px 10px 0 10px;
+  border-color: var(--subject-500) transparent transparent transparent;
+}
+.twc-bubble.twc-bubble--tail-down::after {
+  top: auto; left: 43px; bottom: -12px; transform: none;
+  border-width: 13px 7px 0 7px;
+  border-color: #fff transparent transparent transparent;
+}
+
+/* Doubled class for specificity: the base .twc-bubble::before/::after are
+   declared further down the file, so a single-class variant loses `left` to
+   them on source order alone. */
+.twc-bubble.twc-bubble--tail-right::before {
+  left: auto; right: -16px;
+  border-width: 10px 0 10px 16px;
+  border-color: transparent transparent transparent var(--subject-500);
+}
+.twc-bubble.twc-bubble--tail-right::after {
+  left: auto; right: -12px;
+  border-width: 8px 0 8px 13px;
+  border-color: transparent transparent transparent #fff;
+}
+/* Same box-and-contain contract as .hct-character, for the same reason.
+   The deck places the companion on both transition screens at 221x211
+   (slides 22 and 30). */
+.ts-character { width: 221px; height: 211px; }
+.ts-character img, .ts-character video {
+  width: 100%; height: 100%; display: block;
+  object-fit: contain; object-position: bottom center;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SHARED — hint (רמז) button + overlay, feedback-popup motion wrapper
+   and popup action button.
+
+   PORTED VERBATIM from
+   examples/methodica-math-percent-02/methodica-math-percent-02-01/css/style.css
+   (lines 2504-2604), per 720-templates rule zero. The first pass here
+   invented `.btn-hint` / `.hint-overlay` / `.hint-box`; the shipped
+   component is `.scq-hint` / `.scq-hint-overlay` / `.scq-hint-popup`, and
+   two names for one component in one project is exactly what rule zero
+   exists to prevent.
+   ═══════════════════════════════════════════════════════ */
+.scq-hint {
+  position: absolute;
+  bottom: 17.5px; left: 190px;   /* 34 + continue 140 + gap 16 */
+  z-index: 12;
+  height: 39px; min-width: 140px;
+  padding: 0 20px;
+  background: #fff; border: 1px solid var(--subject-700); border-radius: 1000px;
+  color: var(--subject-500);
+  font-family: 'Assistant', sans-serif; font-size: 20px; font-weight: 400;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; direction: rtl;
+}
+.scq-hint:hover { font-weight: 600; }
+/* Disabled after one use (hint is a one-time reveal, not re-openable —
+   _question-template-defaults.md's hint policy note). */
+.scq-hint:disabled {
+  border-color: #aeaeae; color: #aeaeae; cursor: default; font-weight: 400;
+}
+.scq-hint:disabled .scq-hint-icon { color: #aeaeae; }
+.scq-hint-icon { width: 26px; height: 22.288px; flex-shrink: 0; color: var(--subject-500); }
+
+/* Hint overlay — the ESTABLISHED shared component (verified against
+   methodica-science-mass-measure-01-01, reused across 8 screens there;
+   my first pass here was a small ad-hoc popover, which was wrong — this
+   replaces it). Full-canvas centered modal, translucent white scrim,
+   Subject/500 card (this project's Math token, not that reference's
+   hardcoded Science blue), closes via backdrop click / Esc / the
+   "חזרה לשאלה" button. Closes/hides via the same global navigation-
+   cleanup rule as feedback popups (id ends in "-hint-overlay" — see
+   _global-components.md → Feedback popup system). Lives outside all
+   .screen divs, directly in #app, same as the feedback popups. */
+.scq-hint-overlay {
+  position: absolute; inset: 0;
+  z-index: 60;
+  background: rgba(255, 255, 255, 0.78);
+  display: flex; align-items: center; justify-content: center;
+}
+.scq-hint-overlay.hidden { display: none !important; }
+.scq-hint-popup {
+  background: var(--subject-500); border-radius: 48px;
+  padding: 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 546px; max-width: 92%;
+}
+.scq-hint-text {
+  width: 462px; max-width: 100%; direction: rtl;
+  display: flex; flex-direction: column; gap: 24px;
+  color: #fff;
+}
+.scq-hint-title {
+  width: 100%; text-align: right; position: relative;
+  padding-right: 56px;
+  font-family: 'Assistant', sans-serif; font-weight: 700; font-size: 32px;
+  color: #fff; line-height: normal; margin: 0;
+}
+/* Bulb icon inline before the title — inline SVG on currentColor (white,
+   inherited from .scq-hint-title), not a baked/filtered background image
+   like the reference's icon-idea-blue.svg + brightness/invert hack. */
+.scq-hint-title-icon {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 27.4px; display: block;
+}
+.scq-hint-body {
+  width: 100%; text-align: right;
+  font-family: 'Assistant', sans-serif; font-weight: 400; font-size: 24px;
+  color: #fff; line-height: normal;
+}
+.scq-hint-body p { margin: 0 0 12px; }
+.scq-hint-body p:last-child { margin-bottom: 0; }
+.scq-hint-close {
+  width: 196px; padding: 16px 40px;
+  border: none; border-radius: 1000px; background: #fff;
+  color: #303030;
+  font-family: 'Assistant', sans-serif; font-size: 24px; font-weight: 400;
+  cursor: pointer; white-space: nowrap;
+}
+/* Figma (eSbp4bKHgBky0rakDb8l9N, node 714:10894, "nav Buttons" set):
+   hover is SemiBold 600 (Body/B-7 token), not Bold 700 — confirmed by
+   pixel-measuring both states' rendered pills, which are the SAME
+   fixed width (~190px design px), so 600 is what actually fits without
+   wrapping. This project's own :hover{700} was heavier than the design
+   and didn't fit the fixed 196px box on one line — the bug this whole
+   fix addresses. */
+.scq-hint-close:hover { font-weight: 600; }
+
+/* View My Answer Toggle action button slot — _global-components.md →
+   Feedback popup system → "View My Answer Toggle". margin-top:20px on
+   the actions row (not popup gap:24px) nets 24px from the body per the
+   validated spacing contract; the popup's own base gap (4px, title→body)
+   stays untouched. */
+.scq-popup-actions:empty { margin-top: 0; }
+.scq-popup-actions { margin-top: 20px; }
+.popup-action {
+  height: 39px; padding: 0 20px;
+  background: #fff; border: 1px solid #484848; border-radius: 1000px;
+  color: #222; font-family: 'Assistant', sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+}
+.popup-action:hover { font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════
+   Inline equation fragments used inside feedback popups.
+   The PPTX carries these as OfficeMath, which the converter flattens to
+   bare digits ("614=37"), so they are laid out here as real fractions.
+   ═══════════════════════════════════════════════════════ */
+.eq-frac-row {
+  display: inline-flex; flex-direction: row; align-items: center;
+  gap: 10px; direction: ltr;
+  /* Sits ON the line when it appears mid-sentence — slide 15 puts two
+     fractions inside a running paragraph, and the default baseline
+     alignment lifts them above the text they belong to. */
+  vertical-align: middle;
+}
+.eq-frac {
+  display: inline-flex; flex-direction: column;
+  /* stretch, not center: the fraction BAR spans the whole fraction, so a
+     one-digit numerator over a three-digit denominator still gets a bar as
+     wide as the denominator. That is how the producer's own equations are
+     drawn (slides 43, 44, 48 and every feedback panel); centring left the
+     rule as a stub over the short term. */
+  align-items: stretch;
+  /* --eq-size, not a bare 20px, and it is NOT decoration: an .eq-frac sets
+     its OWN font-size, so it never inherits one from the box around it. A
+     `style="font-size:30px"` on the row therefore did nothing at all, and
+     every on-slide equation rendered at popup size — which is why slides
+     14, 18 and 19 came out with a fraction a third of the deck's. Set
+     --eq-size on any ancestor to scale the whole equation. */
+  font-size: var(--eq-size, 20px); line-height: 1.2;
+}
+.eq-num { padding: 0 8px 2px; border-bottom: 2px solid currentColor; text-align: center; }
+.eq-den { padding: 2px 8px 0; text-align: center; }
+.eq-eq  { font-size: var(--eq-size, 20px); }
+
+/* ═══════════════════════════════════════════════════════
+   SHARED — Progress Question strip (.progress-question)
+
+   PORTED VERBATIM from
+   examples/methodica-math-percent-02/methodica-math-percent-02-03/css/style.css,
+   per 720-templates rule zero.
+
+   Note the two rules that look like mistakes and are not:
+   correct and incorrect share the SAME solid subject circle (only the glyph
+   differs — colour does not encode correctness here), and the unvisited ring
+   is a box-shadow rather than a border so it consumes no layout and the icons
+   never shift as states change.
+   ═══════════════════════════════════════════════════════ */
+.progress-question {
+  position: absolute; top: 48px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: flex-start; justify-content: center;
+  gap: 4px; direction: rtl; z-index: 20;
+}
+.progress-question__item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; width: 43px; flex: 0 0 auto;
+}
+.progress-question__connector {
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 11.5px; width: 64px; flex: 0 0 auto;
+}
+.progress-question__connector-line {
+  width: 100%; height: 1.5px; border-radius: 2px;
+  background: #ececec;
+}
+.progress-question__connector--visited .progress-question__connector-line {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Icon — one 24x24 element per item, base rule = not-answered ("not
+   visited" in Figma's own naming), overridden per state below. The two
+   glyphs (check/X) are real DOM children so an arbitrary path shape is
+   available for both without needing two separate background-images;
+   they stay hidden unless their matching state class is present. */
+.progress-question__icon {
+  position: relative;
+  width: 24px; height: 24px; flex: 0 0 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1.5px #ececec;   /* ring, doesn't consume layout */
+}
+.progress-question__icon::after {
+  content: ''; position: absolute; inset: 0; margin: auto;
+  width: 7.2px; height: 7.2px; border-radius: 50%;
+  background: #d9d9d9; box-shadow: 0 0 0 1px #ececec;
+}
+.progress-question__icon-check,
+.progress-question__icon-x {
+  display: none;
+  position: absolute; inset: 0; margin: auto;
+  color: #fff;
+}
+.progress-question__icon-check { width: 12.7px; height: 9.2px; }
+.progress-question__icon-x { width: 10px; height: 10px; }
+
+/* Subject/300 is the documented token for exactly this role
+   ("progress-question current-state fill") — percent-02 ports it as a literal
+   #e1d9ff, which is the Math value frozen in place and would stay violet in a
+   Science build. Same pixel today, re-themeable tomorrow. */
+.progress-question__icon--current {
+  background: var(--subject-300); box-shadow: none;
+}
+.progress-question__icon--current::before {
+  content: ''; position: absolute; inset: 0; margin: auto;
+  width: 19.2px; height: 19.2px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 0 2px var(--subject-500);
+}
+.progress-question__icon--current::after {
+  background: var(--subject-500); box-shadow: none;   /* solid dot, no grey ring */
+  z-index: 1;   /* sit above the ::before ring */
+}
+
+.progress-question__icon--correct,
+.progress-question__icon--incorrect {
+  background: var(--subject-500); box-shadow: none;
+}
+.progress-question__icon--correct::after,
+.progress-question__icon--incorrect::after { content: none; }
+.progress-question__icon--correct .progress-question__icon-check { display: block; }
+.progress-question__icon--incorrect .progress-question__icon-x { display: block; }
+
+/* Figma gives this box a fixed 11px height (`nav text`, 15px type with
+   text-box-trim) so the strip measures 43px, not 51px — the trimmed cap
+   height, not the font's line box. Reproduced with an explicit height and
+   visible overflow rather than a squeezed line-height, which would clip
+   the Hebrew descenders. */
+.progress-question__label {
+  height: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Assistant', sans-serif;
+  font-size: 15px; font-weight: 400; color: #ececec;
+  text-align: right; white-space: nowrap; line-height: normal;
+  overflow: visible;
+}
+.progress-question__label--visited { color: #222; text-align: center; }
+
+
+/* ═══════════════════════════════════════════════════════
+   Click-gesture hint — Figma "Desktop Click Hint" (2852:21114):
+   static cursor; Ripple Ring 1/2 + 8 spark dots carry the 2s looping
+   timeline (keyframes taken verbatim from the Figma motion data).
+   Used on S1: over the first flip card (2881:25530 placement) and
+   beside the scrollbar with a slow drag-down drift (2808:22566 /
+   Cursor Drag 2904:27290 — click bursts along a vertical path).
+   ═══════════════════════════════════════════════════════ */
+.click-hint {
+  position: absolute;
+  width: 300px; height: 300px;
+  pointer-events: none;
+  z-index: 20;
+}
+.click-hint.hidden { display: none !important; }
+.click-hint__ripple1 {
+  position: absolute; left: 95px; top: 95px; width: 110px; height: 110px;
+  animation: hintR1Op 2s linear infinite, hintR1Scale 2s linear infinite;
+}
+.click-hint__ripple2 {
+  position: absolute; left: 136px; top: 136px; width: 28px; height: 28px;
+  animation: hintR2Op 2s linear infinite, hintR2Scale 2s linear infinite;
+}
+.click-hint__spark {
+  position: absolute; left: 148px; top: 148px; width: 5px; height: 5px;
+  animation: hintSparkOp 2s linear infinite, hintSparkMove 2s linear infinite;
+  animation-delay: var(--d, 0ms);
+}
+.click-hint__cursor {
+  position: absolute; left: 148px; top: 149px; width: 21.5px; height: 33px;
+}
+.click-hint img { width: 100%; height: 100%; display: block; }
+
+@keyframes hintR1Op {
+  0%   { animation-timing-function: cubic-bezier(0.2, 0.4, 0.4, 1); opacity: 0; }
+  5%   { animation-timing-function: ease-out; opacity: 0.85; }
+  35%  { animation-timing-function: ease-out; opacity: 0.65; }
+  45%  { animation-timing-function: cubic-bezier(0.6, 0, 1, 1); opacity: 0.35; }
+  50%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes hintR1Scale {
+  0%    { animation-timing-function: cubic-bezier(0.2, 0.4, 0.4, 1); scale: 0.05 0.05; }
+  7.5%  { animation-timing-function: ease-out; scale: 0.22 0.22; }
+  22.5% { animation-timing-function: ease-out; scale: 0.6 0.6; }
+  37.5% { animation-timing-function: ease-out; scale: 0.85 0.85; }
+  50%   { scale: 1 1; }
+  100%  { scale: 1 1; }
+}
+@keyframes hintR2Op {
+  0%   { animation-timing-function: cubic-bezier(0.05, 0.9, 0.1, 1); opacity: 0; }
+  3%   { animation-timing-function: cubic-bezier(0.4, 0, 1, 1); opacity: 0.75; }
+  10%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes hintR2Scale {
+  0%   { animation-timing-function: cubic-bezier(0.05, 0.9, 0.1, 1); scale: 0.2 0.2; }
+  3%   { animation-timing-function: cubic-bezier(0.4, 0, 1, 1); scale: 1 1; }
+  10%  { scale: 1.1 1.1; }
+  100% { scale: 1.1 1.1; }
+}
+@keyframes hintSparkOp {
+  0%    { animation-timing-function: cubic-bezier(0.05, 0.9, 0.1, 1); opacity: 0; }
+  8.5%  { animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94); opacity: 0.9; }
+  30%   { animation-timing-function: cubic-bezier(0.4, 0, 1, 1); opacity: 0.7; }
+  47.5% { opacity: 0; }
+  100%  { opacity: 0; }
+}
+@keyframes hintSparkMove {
+  0%    { animation-timing-function: cubic-bezier(0.05, 0.9, 0.1, 1); translate: 0 0; }
+  8.5%  { animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          translate: calc(var(--dx, 0px) * 0.725) calc(var(--dy, 0px) * 0.725); }
+  24%   { translate: var(--dx, 0px) var(--dy, 0px); }
+  100%  { translate: var(--dx, 0px) var(--dy, 0px); }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .click-hint { display: none !important; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   S6 · slides 11-22 — the guided exercise
+
+   One screen that builds up over twelve steps. Layout follows the deck: the
+   title across the top, a per-step instruction under it, the blue card on the
+   LEFT carrying whatever the step is asking, and the working area on the
+   RIGHT holding the recipe and the quantities table.
+   ═══════════════════════════════════════════════════════════ */
+/* ── Geometry: Figma "Guided Instruction Flow" (section 3147:29197) ────────
+   Read off the frame tree, which is drawn on a 1280x720 board with its bar at
+   y=649. This canvas is 710 with the bar at 636, so every y below is Figma's
+   minus 10 — that keeps the 14px the design leaves between the content block
+   and the bar.
+
+     Section Title        x=40   y=64   1200 x 30     -> .ge-title
+     Text+Title Content   x=580  y=134   660 x 49     -> .ge-lead
+     Img + Instruction    x=40   y=207  1200 x 428    -> .ge-body
+       Guided Step        x=40          461 x 236     -> .ge-card
+       Instruction        x=557         683 x 428     -> .ge-main
+         Text Slot        +32           619 x 206
+         Custom Content   +32, +250     619 x 158     -> .ge-work
+
+   Fills, radii and type are NOT from Figma — the MCP quota ran out before the
+   visual layer could be read, so they stay on the project's existing tokens.
+   Flagged for a second pass. */
+.ge-title {
+  position: absolute; top: 54px; right: 40px; left: 40px;
+  /* H-5 screen main title: 40 / 700 / Natural-800. */
+  font-family: 'Assistant', sans-serif; font-size: 40px; font-weight: 700;
+  color: #303030; text-align: center; margin: 0;
+}
+.ge-lead {
+  /* 660 wide, flush right — not the full 1200.
+     Weight 400, not 600: slide 13 bolds only the second half of this line
+     ("נבדוק קודם את היחס…"), which a wholly-600 line cannot express. The
+     steps whose whole lead IS bold carry their own <b>. */
+  position: absolute; top: 124px; right: 40px; width: 660px;
+  font-family: 'Assistant', sans-serif; font-size: 20px; font-weight: 400;
+  color: #222; text-align: right; direction: rtl; margin: 0; min-height: 26px;
+}
+.ge-body {
+  position: absolute; top: 197px; right: 40px; left: 40px; height: 428px;
+  display: flex; flex-direction: row-reverse; align-items: flex-start;
+  /* row-reverse under rtl runs the axis left-to-right, so flex-end packs the
+     pair against the RIGHT. With both children up they exactly fill the row
+     (461 + 56 + 683 = 1200); on a step whose card is hidden it keeps the
+     Instruction panel at Figma's x=557 instead of letting it slide left. */
+  justify-content: flex-end;
+  gap: 56px;   /* 557 - (40 + 461) */
+  direction: rtl;
+}
+/* The Instruction panel: fixed 683 with the design's own 32px inset, so its
+   text column measures the 619 Figma gives it. */
+/* A step whose instruction lives in the character's bubble has no lead line,
+   so the content rises into the band the lead would have used. */
+#s8.no-lead .ge-body { top: 140px; }
+
+/* No top padding: Figma's 20px inset assumes its own two-line lead ending at
+   183, so with our one-line lead the two gaps stacked into ~67px of white
+   between the instruction and the first sentence. The 32px side inset stays —
+   it is what gives the text column its 619. */
+.ge-main { flex: 0 0 683px; min-width: 0; padding: 0 32px;
+           display: flex; flex-direction: column;
+           align-items: stretch; justify-content: flex-start; }
+/* 44 is Figma's Text Slot -> Custom Content Slot step (250 - 206), and it
+   belongs between the TEXT and the working area — not between two paragraphs
+   of the same run. As a flat gap it stacked twice on the recipe step and
+   pushed the card under the navigation bar. */
+.ge-main > * + *                 { margin-top: 44px; }
+.ge-main > .ge-story + .ge-story { margin-top: 8px; }
+
+/* The subject-filled card. The deck uses it for BOTH the step's question and
+   its side note — same box, two jobs, so it is one component here too. The
+   fill is Subject/500 rather than the deck's raw blue, so it re-themes with
+   the rest of the lomda. */
+/* Guided Step. Measured off the card's own SVG: 461 x 278, rx 24, fill
+   #5749C4. That fill is NOT --subject-500 (#3b2fc2) or any other Math token —
+   it is a value the template carries on its own, so it is pinned here and
+   flagged for the designer to reconcile with the palette rather than snapped
+   to the nearest token. padding-top clears the 26px bulb band: the card's text
+   starts 74px down. */
+.ge-card {
+  flex: 0 0 461px; min-height: 278px; align-self: flex-start;
+  position: relative;
+  background: var(--subject-500); color: #fff; border-radius: 24px;
+  padding: 74px 29px 29px; direction: rtl; text-align: right;
+  font-family: 'Assistant', sans-serif; font-size: 18px; line-height: 1.45;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.ge-card[hidden] { display: none; }
+.ge-card .ge-q { font-weight: 600; }
+.ge-card .eq-frac-row, .ge-card .eq-frac { color: #fff; }
+
+/* 21 x 28 at (408.6, 26) inside the 461-wide card — 31px in from the right
+   edge. Absolute, because the card's padding-top already reserves its band. */
+.ge-bulb {
+  position: absolute; top: 26px; right: 31px;
+  width: 21px; height: 28px; color: #fff;
+}
+
+/* Option pills inside the card. Sized to their label rather than stretched:
+   the Figma card puts two short pills side by side at the reading edge, not a
+   row of equal thirds. */
+.ge-opt {
+  flex: 1 1 auto; min-width: 0;
+  border: 0; border-radius: 1000px; background: #fff;
+  padding: 12px 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.ge-opt-text {
+  font-family: 'Assistant', sans-serif; font-size: 18px; font-weight: 400;
+  color: var(--subject-500); text-align: right; direction: rtl;
+}
+.ge-opt-badge {
+  display: none; align-items: center; justify-content: center;
+  width: 18px; height: 18px; flex-shrink: 0; border-radius: 50%;
+}
+.ge-opt-badge svg { display: block; }
+.ge-badge-correct svg   { width: 10.4px; height: 7.5px; }
+.ge-badge-incorrect svg { width: 10px; height: 10px; }
+.ge-opt:hover:not(:disabled) { background: var(--subject-300); }
+.ge-opt:hover:not(:disabled) .ge-opt-text { font-weight: 600; }
+.ge-opt:hover { background: #f2f2f2; }
+.ge-opt:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+/* Resolved marks, ported from ratio-01's .s19-opt. BOTH outcomes take the same
+   Subject/300 fill and the same weight bump — colour does not encode
+   correctness here, the BADGE does. This build used to turn the wrong pill
+   solid red, which is not what the shipped card does. */
+.ge-opt.is-right, .ge-opt.is-wrong { background: var(--subject-300); }
+.ge-opt.is-right .ge-opt-text,
+.ge-opt.is-wrong .ge-opt-text { font-weight: 600; }
+.ge-opt.is-right .ge-badge-correct   { display: flex; background: #609e12; border: 2px solid #609e12; }
+.ge-opt.is-wrong .ge-badge-incorrect { display: flex; background: #b20010; border: 2px solid #b20010; }
+.ge-opt:disabled { cursor: default; }
+/* Choice Buttons is ONE 409x38 row in every Figma state, not a stack. Wraps
+   rather than shrinking below a readable width if a step ever carries more
+   options than the row can hold. */
+.ge-opts { display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px;
+            justify-content: flex-start; }   /* rtl: flex-start is the right */
+/* An option label is a short phrase; it never reads better broken. */
+.ge-opt { white-space: nowrap; }
+
+/* Wide-question variant: slide 21 puts the question and its four options in
+   the MAIN column with the card reduced to a working note beside it. */
+.ge-qbox {
+  width: 100%; border: 1px solid #222; border-radius: 4px;
+  padding: 18px 22px; direction: rtl; text-align: right;
+  font-family: 'Assistant', sans-serif; font-size: 18px; line-height: 1.5;
+  display: flex; flex-direction: column; gap: 14px;
+}
+/* The wide-question variant keeps its COLUMN. The card's Choice Buttons row
+   is a Figma detail of the Guided Step card only — inherited here it squeezed
+   four options into 340px and broke "3 כפות" across two lines. */
+.ge-qbox .ge-opts { flex-direction: column; flex-wrap: nowrap; align-self: flex-start; width: 340px; }
+.ge-qbox .ge-opts > .ge-opt { flex: 0 0 auto; }
+.ge-qbox .ge-opt {
+  border: 2px solid var(--subject-500); background: #fff; text-align: right;
+  display: flex; align-items: center; gap: 10px; font-size: 18px;
+}
+.ge-qbox .ge-opt::before {
+  content: ''; width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--subject-500); flex: 0 0 auto;
+}
+/* The wide variant marks its state on the RADIO, not beside it. It inherits
+   the card's badge spans, so a resolved option drew the mark twice — a red X
+   badge next to a solid red radio, a green check next to a solid green radio.
+   One indicator per option: the radio. */
+.ge-qbox .ge-opt-badge { display: none !important; }
+.ge-qbox .ge-opt.is-right { background: #fff; color: #222; border-color: #609e12; }
+.ge-qbox .ge-opt.is-right::before { background: #609e12; border-color: #609e12; }
+/* The wrong state has to restate colour for the same reason .is-right does.
+   In the card the wrong pill goes solid red, so the base rule pairs
+   `background:#b20010` with `color:#fff`; here the pill stays white and only
+   the radio turns red — and this override used to set ::before alone, so the
+   base rule's white TEXT survived on a white pill and the option's label
+   vanished the moment it was marked wrong. */
+.ge-qbox .ge-opt.is-wrong { background: #fff; color: #222; border-color: #b20010; }
+.ge-qbox .ge-opt.is-wrong::before { background: #b20010; border-color: #b20010; }
+
+/* Recipe card (step 0) and the quantities table (steps 1 on). */
+/* The recipe card carries the shake itself, beside the ingredient list —
+   image on the LEFT of the copy, which is where the deck puts it. */
+/* Sized to its contents and flush right, under the prose it belongs to.
+   Stretching it to the column's full 980px left most of the card empty. */
+.ge-recipe {
+  width: max-content; max-width: 100%; align-self: flex-start;
+  border: 1px solid #ccc; border-radius: 10px; padding: 16px 22px;
+  font-family: 'Assistant', sans-serif; font-size: 20px; direction: rtl;
+  text-align: right;
+  /* row-reverse under direction:rtl runs the main axis left-to-right, so
+     flex-end packs the pair against the card's RIGHT edge: the recipe text
+     flush right and the shake immediately beside it. Growing the body instead
+     pushed the shake to the far left with the width of the card between them. */
+  display: flex; flex-direction: row-reverse; align-items: center;
+  justify-content: flex-end; gap: 22px;
+}
+.ge-recipe-body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.ge-shake { width: 96px; height: auto; flex: 0 0 auto; display: block; }
+
+/* Ingredient icons sit at the reading start of their row label. */
+.ge-icon {
+  width: 26px; height: 26px; object-fit: contain;
+  vertical-align: middle; margin-left: 8px; display: inline-block;
+}
+.ge-recipe h2 { font-size: 20px; font-weight: 700; margin: 0 0 4px; }
+/* Full width, flush right. It was capped at 620px inside a centre-aligned
+   column, which floated the paragraph in the middle of the canvas — the deck
+   runs it to the right edge of the content area. */
+.ge-story {
+  font-family: 'Assistant', sans-serif; font-size: 20px; line-height: 1.5;
+  direction: rtl; text-align: right; width: 100%; max-width: none;
+  align-self: stretch; margin: 0;
+}
+/* 20px, matching .ge-story and the card beside it — at 18 the table read a
+   size smaller than everything else on the screen. */
+.ge-table { border-collapse: collapse; font-family: 'Assistant', sans-serif;
+            font-size: 20px; direction: rtl; }
+.ge-table th, .ge-table td {
+  border: 1px solid #222; padding: 8px 14px; text-align: center; white-space: nowrap;
+}
+.ge-table thead th { background: #ededed; font-weight: 700; }
+.ge-table .ge-rowhead { background: #ededed; font-weight: 700; }
+/* The row-GROUP column. "המרכיב" spans three rows, so it is set vertically —
+   the deck rotates it for the same reason: horizontally it would force the
+   column three times wider than the label needs. */
+.ge-table .ge-group {
+  background: #ededed; font-weight: 700; padding: 8px 6px;
+}
+.ge-table .ge-group--span > span {
+  display: inline-block; white-space: nowrap;
+  transform: rotate(-90deg);
+}
+.ge-table .ge-group--span {
+  /* Rotating the ELEMENT, not switching writing-mode: `vertical-rl` reorders
+     Hebrew glyphs (the label came out mirrored either way, with or without a
+     180deg correction). A rotated inline-block keeps normal RTL shaping and
+     just turns the finished line on its side. */
+  width: 42px; padding: 6px 0;
+}
+/* The deck highlights the row a step is working on in yellow. */
+.ge-table tr.is-active td, .ge-table tr.is-active th { background: #ffff00; }
+.ge-table td.ge-filled { font-weight: 700; }
+
+/* Step dots — twelve of them is a lot to read as a number, so the deck's own
+   "step after step" promise is shown as progress, not a count. */
+
+
+/* Companion-character video sits exactly where the still did. It does NOT set
+   its own width: the per-screen `.ts-character img, .ts-character video` rules
+   above own that, so the video and its fallback are always the same size. A
+   width:100% here overrode all of them and the 1280x720 clip filled the
+   canvas, pushing the copy off screen. */
+.char-vid, .char-still {
+  height: auto; display: block; object-fit: contain;
+}
+/* The clips are rendered on a near-white card (measured 249-252, against a
+   255 page), so the frame reads as a faint grey rectangle. A small brightness
+   lift clips that ground to pure white; the character sits far enough below it
+   to be untouched. */
+.char-vid { background: #fff; filter: brightness(1.04); }
+.char-vid.hidden, .char-still.hidden { display: none !important; }
+
+/* The clips are 1280x720 with the character centred in a lot of white, while
+   the still PNG is cropped tight to it. Matched at the same box width the
+   video character reads about 2.4x smaller, so the video gets its own wider
+   box — the extra width is the clip's own margin, not layout. */
+.ts-character video { width: 540px; }
+
+
+/* S8 · slide 24 — the bubble is stacked ABOVE the figure, not beside it, so
+   this block is a plain positioned box rather than the usual row. */
+.s8-character { display: block; direction: rtl; }
+
+
+
+/* S5 · slide 10 — the notebook still is a tall portrait crop where the
+   default character is almost square, so it needs its own width or it
+   towers over the title. */
+
+/* S6 · slides 11-12 — the character parks in the left column, which the
+   RTL layout leaves empty on these two steps. */
+/* The character no longer needs the column to step aside: the Instruction
+   panel is a fixed 683 anchored right, so it starts at 557 and the character's
+   56-238 band is clear on its own. */
+.ge-character {
+  position: absolute; left: 56px; bottom: 118px;
+  width: 182px; height: auto; display: block;
+}
+/* Sits above the character with the tail pointing down into it, as the deck
+   draws it. Anchored off the character's own left/bottom so the two move
+   together if the figure is ever resized. */
+.ge-bubble {
+  position: absolute; left: 96px; bottom: 323px;
+  z-index: 5; text-align: center;
+}
+.ge-bubble[hidden] { display: none; }
+.ge-character[hidden] { display: none; }
+
+/* ═══════════════════════════════════════════════════════
+   SHARED — numeric runs inside Hebrew text
+
+   720-design-guidelines → typography.md → "RTL text rules": numbers,
+   fractions and formulas embedded in Hebrew need explicit isolation or they
+   render in the wrong visual order. This is used 26 times across the part
+   and was MISSING — so "2 · y = 1 · 3" came out as "y = 1 · 3 · 2", the
+   leading term reordered to the end by the paragraph's RTL direction.
+   `isolate` (not `embed`) so the run cannot affect the text around it.
+   ═══════════════════════════════════════════════════════ */
+.num { direction: ltr; unicode-bidi: isolate; }
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TwoOptionSelection  (S0 · slide 3)
+
+   PORTED from examples/methodica-math-percent-02/…-01/css/style.css
+   (its own S0 character picker), per 720-templates rule zero. The two
+   characters have different native aspect ratios — the green one is
+   286×272, the yellow 134×272 — so the card image box is the template's
+   238px SQUARE with object-fit:contain rather than the deck's own two
+   different picture widths, which would make one card visibly wider than
+   the other.
+   ═══════════════════════════════════════════════════════ */
+#s0 { background: #fff; }
+
+.select-content {
+  position: absolute;
+  left: 50%; top: calc(50% - 37px);   /* centred above the 74px bottom bar */
+  transform: translate(-50%, -50%);
+  width: 810px;
+  display: flex; flex-direction: column; align-items: center; gap: 40px;
+}
+.select-head {
+  display: flex; flex-direction: column; gap: 8px;
+  align-items: center; width: 100%;
+}
+.select-title {
+  width: 100%; text-align: center;
+  font-size: 40px; font-weight: 700; color: #303030;
+  direction: rtl; line-height: 1.2;
+}
+
+/* direction:ltr on THIS CONTAINER ONLY, so DOM order fixes the physical
+   sides regardless of page RTL. The deck places the green character at
+   x=324 and the yellow at x=752 (slide 3's picture placements), i.e.
+   green LEFT, yellow RIGHT — which is the order the DOM below is written
+   in. This is the sanctioned exception in 720-design-guidelines →
+   typography.md → "RTL text rules". */
+.option-cards { display: flex; justify-content: center; gap: 24px; direction: ltr; }
+
+.option-card {
+  width: 296px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  outline: none;
+}
+.option-card-img {
+  position: relative;
+  width: 238px; height: 238px;
+  border: 3px solid rgba(201, 206, 216, 0.4);
+  border-radius: 16px;
+  padding: 4px;
+  transition: none;              /* instant state changes, per 720 CSS conventions */
+}
+.option-card-img img {
+  width: 100%; height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;           /* never crop a character */
+  border-radius: 16px;
+  display: block;
+}
+/* Figma ImageContainer state=hover — Subject/500 border */
+.option-card:hover .option-card-img,
+.option-card:focus-visible .option-card-img { border-color: var(--subject-500); }
+/* Figma ImageContainer state=selected — 2px Subject/500 + Subject/100 fill */
+.option-card.selected .option-card-img {
+  border: 2px solid var(--subject-500);
+  background: var(--subject-100);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — HookClosingText  (S1-S4 · slides 4-7)
+
+   The hook's narrative screens: a body-copy block, freely placed media,
+   and a companion-character speech bubble. Not in 720-templates — the
+   name comes from the deck's own `שם המסך בפיגמה: HookClosingText`, and
+   the Figma frame could not be read (MCP seat limit), so the geometry
+   below is the DECK's, which is authored on the same 1280×720 stage the
+   canvas uses. Every block is positioned from its slide's own x/y/w/h as
+   recorded in spec/screens/slide-00N.md.
+
+   Reusing .twc-bubble / .twc-character (TextWithCallout) for the bubble
+   and character rather than a second speech-bubble component — rule zero.
+   ═══════════════════════════════════════════════════════ */
+#s1, #s2, #s3, #s4 { background: #fff; }
+
+/* One positioned block per deck text box. `--x/--y/--w` are set inline
+   from the slide's own geometry so the markup reads as the deck does and
+   a pagination change is a number, not a new rule. */
+.hct-block {
+  position: absolute;
+  left: var(--x); top: var(--y); width: var(--w);
+  font-family: 'Assistant', sans-serif;
+  font-size: 24px; font-weight: 400; color: #222;
+  direction: rtl; text-align: right;
+  /* The deck's own leading: its 24px hook copy sits on a 38px line grid
+     (measured off the PDF — slide 7's lines land at y=73/150/188/265/303/380,
+     i.e. 38px apart with one blank line between thoughts). 1.45 put the
+     lines 34.8px apart and every blank line came out short. */
+  line-height: 1.58;
+  margin: 0;
+}
+/* Every deck paragraph is a <p> with NO margin, and an authored EMPTY
+   paragraph is a <p class="pgap">. That reproduces the deck exactly: slide
+   12 runs its first two lines tight and then leaves one blank line before
+   the bold sentence, while slide 8 leaves one between all three. A uniform
+   `p + p` margin gets both of those wrong, and the spec now records the
+   blank paragraphs as ⏎ so they can be checked. */
+.hct-block p { margin: 0; }
+.pgap { margin: 0; height: 1em; }
+/* Bold runs are per-RUN in the PPTX (`<a:rPr b="1"/>`). Kept as <strong>
+   so check_emphasis.py can diff the build against the deck. */
+.hct-block strong { font-weight: 700; }
+
+.hct-img { position: absolute; left: var(--x); top: var(--y); }
+/* width AND height both come from the deck, on purpose: slides 4-6 show
+   ONE photograph deliberately squashed to three different aspect ratios
+   to demonstrate distortion. object-fit:fill is what preserves the
+   distortion — `cover` or `contain` would quietly un-distort the very
+   thing the hook is about. */
+.hct-img img {
+  display: block;
+  width: var(--w); height: var(--h);
+  object-fit: fill;
+}
+
+/* The measuring rules on slide 6: a blue vertical bar beside the photo's
+   height and a horizontal one under its unknown width. Drawn in CSS —
+   two plain lines the spec fully describes, so no asset is missing. */
+.hct-rule { position: absolute; left: var(--x); top: var(--y); background: var(--subject-500); }
+.hct-rule--v { width: 3px; height: var(--h); }
+.hct-rule--h { height: 3px; width: var(--w); }
+.hct-rule-cap {
+  position: absolute; left: var(--x); top: var(--y);
+  width: 3px; height: 18px; background: var(--subject-500);
+}
+.hct-measure {
+  position: absolute; left: var(--x); top: var(--y);
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px; color: #222; direction: rtl; white-space: nowrap;
+}
+/* The unknown width marker — 28px, 700, red. The one red glyph in the
+   unit, and it is the question the whole hook is asking. */
+.hct-unknown {
+  position: absolute; left: var(--x); top: var(--y);
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px; font-weight: 700; color: #ff0000;
+}
+
+/* ── Companion bubble, freely placed ────────────────────────
+   .twc-character above is a fixed bottom-left dock, which is right for a
+   screen with one character in one place. The hook moves both the
+   character and its bubble every slide, so these take the deck's own
+   coordinates instead.
+
+   Bubble outline is var(--subject-500) on EVERY bubble. The deck is not
+   self-consistent here — slides 4/6/7 set an explicit #00B0F0 line while
+   slides 5/8/9 leave the Office theme default, which renders green and
+   orange in the PDF. percent-02 already recorded #00B0F0 as "a legacy
+   implementation value, not an intentional fixed blue", and a speech
+   bubble is one semantic role, so all of them follow the subject theme.
+   Recorded in CLAUDE.md → open questions for the producer. */
+/* A companion slot is a fixed BOX, and the image is contained inside it.
+   Sizing by width alone worked only while every character had the deck's
+   221x211 aspect: the real yellow asset is 403x1024, so `width:221px;
+   height:auto` made it 561px tall — 2.7x the slot — and it overflowed every
+   screen it appears on. `contain` fits whichever character the learner
+   picked, and `object-position: bottom` stands both of them on the same
+   baseline instead of centring one in mid-air. */
+.hct-character {
+  position: absolute; left: var(--x); top: var(--y);
+  width: var(--w); height: var(--h, auto);
+}
+/* A pose that belongs to ONE screen rather than to the companion system.
+   applyCharacter() skips it, so the learner's colour choice does not
+   repaint a pose that has no variant in the other colour. */
+.hct-character--fixed { position: absolute; left: var(--x); top: var(--y); }
+.hct-character img {
+  display: block; width: 100%; height: 100%;
+  object-fit: contain;
+  /* Which EDGE of the slot the character stands against. It matters because
+     the real assets are narrower than the deck's 221x211 slot once `contain`
+     has fitted them by height — the green one renders 155 wide — so a
+     centred character drifts ~33px away from whatever it is meant to be
+     beside. Every slot whose bubble is on its left anchors left, which is
+     also where the deck put the artwork's own left edge. */
+  object-position: var(--anchor, bottom center);
+}
+/* The one-screen pose (S4) has no second-colour variant and is never
+   swapped, so it keeps the simple width-driven sizing. */
+.hct-character--fixed { height: auto; }
+.hct-character--fixed img { height: auto; object-fit: fill; }
+
+.hct-bubble {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w);
+  /* --h is the deck's own box height, and it is what puts the TAIL in the
+     right place. Sized to its content instead, a one-line bubble is ~45px
+     where the deck's box is 121px, so its tail ends 76px short of the
+     character and the bubble reads as floating away from it. min-height,
+     not height, so longer copy can still grow. */
+  min-height: var(--h, auto);
+  align-content: center;          /* block-level centring; degrades to top */
+  box-sizing: border-box;
+  padding: 12px 18px;
+  background: #fff; border: 2px solid var(--subject-500); border-radius: 4px;
+  font-family: 'Assistant', sans-serif; font-size: 20px; color: #222;
+  text-align: center; direction: rtl; line-height: 1.3;
+  /* NOT display:flex. A flex container turns every child — including each
+     bare text node between two <span class="num">s — into a separate flex
+     ITEM, which drops the whitespace between them and lets the sentence
+     wrap between the pieces. "אם הגרמים גדלו פי 2 – גם הכוסות גדלות פי 2!"
+     came out as three stacked fragments in the wrong order. */
+  display: block;
+}
+/* Tail: two triangles, outer draws the border, inner punches the white
+   fill back over it — the same construction as .twc-bubble's, rotated per
+   direction. `left`/`right` name where the tail SITS on the bubble, which
+   is the side the character is on. */
+.hct-bubble::before, .hct-bubble::after {
+  content: ''; position: absolute;
+  width: 0; height: 0; border-style: solid;
+}
+.hct-bubble--tail-left::before {
+  left: -16px; top: 50%; transform: translateY(-50%);
+  border-width: 10px 16px 10px 0;
+  border-color: transparent var(--subject-500) transparent transparent;
+}
+.hct-bubble--tail-left::after {
+  left: -12px; top: 50%; transform: translateY(-50%);
+  border-width: 8px 13px 8px 0;
+  border-color: transparent #fff transparent transparent;
+}
+.hct-bubble--tail-right::before {
+  right: -16px; top: 50%; transform: translateY(-50%);
+  border-width: 10px 0 10px 16px;
+  border-color: transparent transparent transparent var(--subject-500);
+}
+.hct-bubble--tail-right::after {
+  right: -12px; top: 50%; transform: translateY(-50%);
+  border-width: 8px 0 8px 13px;
+  border-color: transparent transparent transparent #fff;
+}
+.hct-bubble--tail-down::before {
+  bottom: -16px; left: 32px;
+  border-width: 16px 10px 0 10px;
+  border-color: var(--subject-500) transparent transparent transparent;
+}
+.hct-bubble--tail-down::after {
+  bottom: -12px; left: 34px;
+  border-width: 13px 8px 0 8px;
+  border-color: #fff transparent transparent transparent;
+}
+/* A LONG, ANGLED tail — the producer's own.
+
+   A wedgeRectCallout stores its tail TIP as adj1/adj2, a percentage of the
+   box measured from its centre, and this deck's tips reach much further than
+   a short tail on the mid-edge. Slide 7 is adj1=-90882 adj2=71950 — 91% of
+   the width left of centre and 72% of the height below it, i.e. a tip 90px
+   left of the bubble and 27px BELOW it, which lands inside the squashed
+   character. A mid-height tail-left stops 25px ABOVE where that character's
+   artwork even begins, so it pointed at nothing and the bubble read as
+   detached however far left it was moved.
+
+   Drawn with clip-path rather than the border trick: a border triangle can
+   only point along an axis, and rotating one moves its base off the bubble
+   edge. Two stacked polygons — the outline colour, then the white fill
+   inset over it and overlapping the bubble's own border so the join is
+   seamless. */
+.hct-bubble--tail-downleft::before,
+.hct-bubble--tail-downleft::after {
+  top: 95px; bottom: auto; left: -90px;
+  width: 94px; height: 53px;
+  border: 0; transform: none;
+}
+.hct-bubble--tail-downleft::before {
+  background: var(--subject-500);
+  clip-path: polygon(100% 0, 100% 43%, 0 100%);
+}
+.hct-bubble--tail-downleft::after {
+  background: #fff;
+  clip-path: polygon(100% 8%, 100% 36%, 6% 92%);
+}
+
+/* Slide 5's bubble is the deck's one wedgeEllipseCallout — every other
+   bubble in the unit is a wedgeRectCallout. Kept as authored. */
+.hct-bubble--ellipse { border-radius: 50%; padding: 24px 30px; }
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — Carousel  (S5 · slides 8-19)
+
+   720-templates → references/Carousel.md: a step viewport holding one
+   step at a time, step indicators, and prev/next INSIDE the carousel,
+   distinct from the screen's own bottom-bar Back/Continue.
+
+   This unit's carousel is twelve steps and four of them are graded
+   questions, so "next" is the bottom bar's own Continue — the deck draws
+   no in-carousel arrows, only the dot strip. The dots are therefore a
+   read-only progress indicator, not a control.
+
+   ⚠ Step count: the deck pastes a NINE-dot strip on every one of the
+   twelve carousel slides, with the same dot filled each time. It is
+   template furniture the producer never re-rendered, not a step index —
+   see CLAUDE.md → open questions.
+   ═══════════════════════════════════════════════════════ */
+#s5 { background: #fff; }
+
+/* One step = one absolutely-positioned layer. Only the active one is in
+   flow; the rest are display:none so a hidden step's inputs cannot be
+   tabbed into. */
+/* inset:0 — the FULL screen, not `0 0 74px 0`. Each step carries its own
+   Continue/צדקתי? pill, and .btn-continue is positioned from the bottom of
+   its containing block: clipping the step above the bottom bar lifted every
+   one of those pills 74px out of the bar. */
+.car-step { position: absolute; inset: 0; display: none; }
+.car-step.active { display: block; }
+
+/* The title band. Every carousel step in this deck puts its title in the
+   same box (x=102 y=50 w=1109), so it is one rule, not twelve. */
+/* Deck box x=102 y=50 w=1109 on every carousel slide, RIGHT-aligned —
+   `algn` is absent in the source, which for an RTL box resolves to right,
+   not centre. Slide 10's short title ("אביבית אופה עוגה") is what settles
+   it: it hugs the right edge of the box rather than sitting mid-slide. */
+.car-title {
+  position: absolute; left: 102px; top: 44px; width: 1109px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 40px; font-weight: 700; color: #303030;
+  text-align: right; direction: rtl; line-height: 1.2;
+  margin: 0;
+}
+
+/* Body copy block — same positioned-from-the-deck contract as .hct-block. */
+.car-body {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w);
+  font-family: 'Assistant', sans-serif;
+  /* 24px is the scale's "long-form body copy" role (720-design-guidelines
+     → typography.md). 20px is the FEEDBACK-POPUP body role, which this is
+     not — the carousel's copy is the screen's main reading matter. */
+  font-size: 24px; font-weight: 400; color: #333;
+  /* The deck's 32px line grid, now expressed against a 24px face. */
+  direction: rtl; text-align: right; line-height: 1.33;
+  margin: 0;
+}
+.car-body p { margin: 0; }
+.car-body strong { font-weight: 700; }
+
+.car-figure { position: absolute; left: var(--x); top: var(--y); }
+/* `fill`, not `cover`: the deck carries no srcRect on any carousel picture,
+   so PowerPoint stretches each one to its box. Two of them have a box aspect
+   that differs from the source — slide 12 (634x247 box, 3738x1120 source)
+   and slide 19 — and `cover` cropped their sides off instead, which is what
+   the review saw as the picture being cut. */
+.car-figure img { display: block; width: var(--w); height: var(--h); object-fit: fill; border-radius: 8px; }
+
+/* The pull-out fact chip — "1 כוס קמח לבן = 140 גרם". Subject-tinted,
+   because it is the given ratio the whole worked example turns on. */
+.car-chip {
+  position: absolute; left: var(--x); top: var(--y);
+  box-sizing: border-box; padding: 14px 22px;
+  background: var(--subject-100); border: 2px solid var(--subject-500);
+  border-radius: 12px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 24px; font-weight: 700; color: var(--subject-900);
+  direction: rtl; text-align: center; white-space: nowrap;
+}
+
+/* Dot strip — read-only progress. RTL: step 1 is the RIGHTMOST dot. */
+.car-dots {
+  position: absolute; left: 0; right: 0; bottom: 80px;   /* deck y≈619 */
+  display: flex; justify-content: center; gap: 16px;
+  direction: rtl;
+}
+.car-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1.5px solid var(--subject-500); background: #fff;
+}
+.car-dot.done  { background: var(--subject-300); border-color: var(--subject-300); }
+.car-dot.here  { background: var(--subject-500); }
+
+/* ═══════════════════════════════════════════════════════
+   COMPONENT — proportion table + drag-to-fill  (slides 11, 16, 24-25)
+
+   The producer's note is "השלימו את טבלת הפרופורציה על ידי גרירה" —
+   drag. Dragging is the affordance, not the only one: every chip is also
+   a button and every slot a drop target, so the same question is
+   answerable by click and by keyboard. Grading is the question engine's
+   `pool` mechanic with `ordered: true`, because which CELL a value lands
+   in is the whole point of the exercise.
+   ═══════════════════════════════════════════════════════ */
+/* margin-inline-END:auto pins the table to the box's inline START, which
+   under RTL is the RIGHT edge — where the deck puts both of them. Using
+   margin-inline-start:auto (the intuitive-looking one) pushes it left. */
+.prop-table--start { margin-inline-end: auto; }
+.prop-table {
+  border-collapse: collapse;
+  font-family: 'Assistant', sans-serif;
+  font-size: 32px; color: #222; direction: rtl;
+  background: #fff;
+}
+.prop-table th, .prop-table td {
+  border: 1px solid #c9ced8;
+  padding: 4px 16px;
+  text-align: center;
+  min-width: 108px; height: 40px;   /* deck rows are ~41px tall */
+}
+/* Header emphasis is CSS, not a <b> in the cell — check_emphasis.py
+   ignores table headers for exactly this reason. */
+.prop-table th { font-weight: 700; }
+/* The row-label column is a header too, but left-aligned to the row. */
+.prop-table .prop-rowhead { font-weight: 400; text-align: right; }
+/* Numbers are LTR runs. Without this a cell holding "140" beside a
+   Hebrew label can reorder — the trap CLAUDE.md records for ratios. */
+.prop-table td.prop-num { direction: ltr; }
+
+.prop-slot {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 76px; height: 30px; padding: 0 10px;
+  border: 2px dashed var(--subject-500); border-radius: 6px;
+  background: #fff; color: #222; font-size: 20px;
+  cursor: pointer; direction: ltr;
+}
+.prop-slot.filled { border-style: solid; background: var(--subject-100); }
+.prop-slot.drop-over { background: var(--subject-200); border-style: solid; }
+.prop-slot.correct { border-color: #609e12; background: #eef7e3; }
+.prop-slot.wrong   { border-color: #b20010; background: #fdecec; }
+
+.prop-pool { display: flex; gap: 14px; justify-content: center; direction: ltr; }
+.prop-chip {
+  min-width: 76px; height: 36px; padding: 0 16px;
+  border: 1px solid #222; border-radius: 6px;
+  background: #fff; color: #222;
+  font-family: 'Assistant', sans-serif; font-size: 20px;
+  cursor: grab; direction: ltr;
+}
+.prop-chip:hover { border-color: var(--subject-500); }
+.prop-chip.used { opacity: .35; cursor: default; }
+.prop-chip:disabled { cursor: default; }
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — Guided Math Practice Screen  (S8 · slides 23-29)
+
+   Named in the notes of slides 23-29 as `Guided Math Practice Screen`.
+   Not in 720-templates and no Figma frame could be read (MCP seat limit),
+   so the geometry is the deck's own, taken from spec/screens/slide-0NN.md.
+
+   Two columns that never move across the seven steps: the exercise story
+   in a bordered box on the RIGHT with the proportion table floated into
+   it, and a subject-filled teaching panel on the LEFT whose content is
+   replaced each step.
+   ═══════════════════════════════════════════════════════ */
+#s8 { background: #fff; }
+
+/* Deck box x=223 w=868, algn=ctr — the one centred title in the part. */
+.gp-title {
+  position: absolute; left: 223px; top: 46px; width: 868px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 40px; font-weight: 700; color: #303030;
+  text-align: center; direction: rtl; margin: 0;
+}
+/* Deck box x=179 w=1061, right-aligned (no `algn` in the source). It is
+   20px/700 there; the 720 scale has no 20/700 body role and 22/700 is
+   "emphasised intro line", which is exactly what this is. */
+.gp-lead {
+  position: absolute; left: 179px; top: 168px; width: 1061px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 22px; font-weight: 700; color: #222;
+  text-align: right; direction: rtl; line-height: 1.35; margin: 0;
+}
+
+/* Deck box x=375 y=237 w=830 h=388, drawn with a thin outline. */
+.gp-story {
+  position: absolute; left: 375px; top: 237px; width: 830px; min-height: 388px;
+  box-sizing: border-box; padding: 18px 22px;
+  border: 1px solid #303030; border-radius: 4px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 20px; color: #222; direction: rtl; text-align: right;
+  line-height: 1.5;
+}
+.gp-story p { margin: 0; }
+.gp-story strong { font-weight: 700; }
+
+/* The table sits INSIDE the story box with the remaining text beside it —
+   float:left under RTL means the physical left, which is where the deck
+   puts it (table x=388, story text continuing to its right). */
+.gp-table-float { float: left; margin: 6px 0 10px 12px; }
+
+/* The teaching panel — deck box x=19 y=232 w=332, subject fill, white
+   text. Its content is REPLACED per step, not accumulated: the deck
+   writes only the current step into it on each of the seven slides. */
+.gp-panel {
+  position: absolute; left: 19px; top: 232px; width: 332px;
+  box-sizing: border-box; padding: 20px 22px;
+  background: var(--subject-500); border-radius: 12px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 20px; color: #fff; direction: rtl; text-align: right;
+  line-height: 1.45;
+}
+.gp-panel-body p { margin: 0; }
+.gp-panel strong { font-weight: 700; }
+/* Fractions inherit currentColor, so the rule between numerator and
+   denominator is white on the panel without a second rule. */
+.gp-panel .eq-frac-row { margin: 8px 0; }
+
+/* The candidate ratios (slides 25 and 27). White pills on the panel. */
+.gp-pick { display: flex; gap: 12px; justify-content: flex-start; margin-top: 16px; direction: ltr; }
+.gp-pick-opt {
+  min-width: 91px; padding: 8px 14px;
+  border: 1px solid #fff; border-radius: 999px;
+  background: #fff; color: #222; cursor: pointer;
+}
+.gp-pick-opt.correct { background: #eef7e3; border-color: #609e12; }
+.gp-pick-opt.wrong   { background: #fdecec; border-color: #b20010; }
+.gp-pick-opt:disabled { cursor: default; }
+
+/* The green "נכון" badge the deck drops under the right option once the
+   step resolves (deck: ellipse at x=47/78 y=556-561, w=81 h=37). */
+.gp-badge {
+  display: inline-block; margin-top: 10px;
+  padding: 6px 20px; border-radius: 999px;
+  background: #609e12; color: #fff;
+  font-family: 'Assistant', sans-serif; font-size: 18px; font-weight: 700;
+}
+
+/* ── Annotated equation, inside a feedback popup ────────────
+   Slide 13's explanation draws three leader lines onto each of its two
+   correct equations, naming what each part of the proportion is. The
+   popup is 426px wide, which is not enough for leader lines at a legible
+   size, so the labels sit under the equation and name their part. */
+.eq-annot { display: block; margin: 10px 0; }
+.eq-annot-list { display: block; margin-top: 8px; }
+.eq-annot-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 4px; direction: rtl;
+}
+.eq-annot-part {
+  flex: 0 0 auto; min-width: 56px;
+  display: inline-flex; justify-content: center;
+  direction: ltr; font-weight: 700;
+}
+.eq-annot-text { font-size: 18px; line-height: 1.25; }
+
+/* A slot the engine CORRECTED on a final wrong: it now holds the right
+   value, and the learner had a different one. Distinct from .correct (they
+   got it right) and from .wrong (their own wrong value, which is what a
+   non-final attempt would show) — three different things the learner needs
+   to be able to tell apart. */
+.prop-slot.corrected {
+  border-color: #b20010; background: #fdecec;
+  color: #b20010; font-weight: 700;
+}
+
+/* ── Patch box over a stock photograph ─────────────────────
+   The producer corrects a stock image's baked-in text with an OPAQUE filled
+   text box laid over it (slide 9: a 240 g sugar cup relabelled 200 g). The
+   fill is the point — as a transparent label the photo's own number shows
+   through beside the corrected one, and the screen states two different
+   weights for the same cup. `--fill` carries the deck's own colour. */
+.car-patch {
+  position: absolute; left: var(--x); top: var(--y);
+  width: var(--w); height: var(--h);
+  box-sizing: border-box;
+  /* Centred with line-height rather than flex — same reason as .hct-bubble:
+     flex would split "<span>200</span> גרם" into two items and drop the
+     space, printing "200גרם". */
+  line-height: var(--h);
+  text-align: center;
+  background: var(--fill);
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px; color: #fff; direction: rtl; white-space: nowrap;
+}
+/* The "· 2" expansion markers beside slide 15's equation. */
+.car-mult {
+  position: absolute; left: var(--x); top: var(--y);
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px; font-weight: 700; color: var(--subject-500);
+  direction: ltr;
+}
+
+/* ── The carousel's answer options ──────────────────────────
+   The shared .scq-opt pill, content-sized instead of the template's fixed
+   604px: slides 13 and 17 lay four and three of them out in a ROW, and the
+   deck draws each as a rounded pill with the same circle indicator on its
+   reading edge.
+
+   They were .gp-pick-opt before — the guided panel's white-on-blue chip —
+   which on the carousel's white background is a white border on white. The
+   pill was invisible and clicking one changed nothing the learner could see,
+   which is what the review reported as "no indication when I click". */
+.car-opt {
+  width: auto; min-width: 0;
+  padding: 8px 18px;
+  gap: 14px;
+}
+.car-opt .eq-frac-row { font-size: 22px; }
+
+/* ── Annotated equation with leader lines (carousel step 7, slide 14) ──
+   The deck draws these as PowerPoint line-callouts — a bordered box with a
+   line running from it to the part of the equation it names. Without the
+   lines the three labels read as unrelated sentences floating beside a
+   fraction, which is what the review reported. Boxes and lines take the
+   deck's own coordinates. */
+.eq-annot-eq {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w);
+  display: flex; justify-content: center;
+}
+.callout {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w);
+  box-sizing: border-box; padding: 10px 14px;
+  border: 1.5px solid #303030; border-radius: 10px; background: #fff;
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px; color: #222; line-height: 1.25;
+  direction: rtl; text-align: center;
+}
+/* One leader line: a 1.5px rule rotated about its right end, which is the
+   end that touches the callout box. */
+.callout-line {
+  position: absolute; left: var(--x); top: var(--y);
+  width: var(--w); height: 1.5px;
+  background: #303030;
+  transform: rotate(var(--rot)); transform-origin: right center;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — ValueInputQuestion  (slides 31, 32, 36, 37, 42 …)
+
+   PORTED from examples/methodica-math-percent-02/…-02/css/style.css, per
+   720-templates rule zero. That block's own comment records it as verified
+   against Figma nodes 1027:26058 (incorrect) / 1027:26063 (correct): both
+   states render a WHITE box with the outcome colour on the BORDER and on a
+   16px icon only — never a tinted fill.
+
+   The question engine marks the INPUT (`#sN-in-K`), not this wrapper, so the
+   border and icon are driven off it with :has() rather than by changing the
+   engine. The icon is a background image because CSS `content` cannot hold
+   an SVG element.
+   ═══════════════════════════════════════════════════════ */
+.viq-field {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  width: 96px; height: 52px;
+  box-sizing: border-box;
+  border: 1.5px solid rgba(174, 174, 174, 0.5); border-radius: 10px;
+  background: #fff;
+  /* Value-then-icon must hold regardless of the ambient direction of the row
+     that embeds the field — RTL flex would otherwise reverse the two. */
+  direction: ltr;
+  vertical-align: middle;
+}
+.viq-field:focus-within { border-color: var(--subject-500); }
+
+.viq-input {
+  flex: 0 0 auto; width: 4ch; min-width: 0; height: 100%;
+  border: none; background: transparent;
+  font-family: 'Assistant', sans-serif; font-weight: 700; font-size: 24px;
+  text-align: center; color: #303030;
+}
+.viq-input::-webkit-inner-spin-button,
+.viq-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.viq-input { -moz-appearance: textfield; }
+.viq-input:focus { outline: none; }
+/* Locked state stays WHITE — Figma binds both outcome fills to Natural/100. */
+.viq-input:disabled { color: #303030; opacity: 1; -webkit-text-fill-color: #303030; }
+
+.viq-field:has(.viq-input.correct) { border-color: #609e12; }
+.viq-field:has(.viq-input.wrong)   { border-color: #b20010; }
+/* The Type 1 bare 16px icon, inside the field's own border, 6px after the
+   value (720-templates → _question-template-defaults.md). */
+.viq-field:has(.viq-input.correct)::after,
+.viq-field:has(.viq-input.wrong)::after {
+  content: ''; flex: 0 0 16px; width: 16px; height: 16px;
+  background-repeat: no-repeat; background-position: center;
+}
+.viq-field:has(.viq-input.correct)::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 14 12'%3E%3Cpath d='M4.52 12C4.12 12 3.74 11.81 3.46 11.48L0.26 7.68C-0.09 7.27-0.09 6.60 0.26 6.20C0.60 5.79 1.16 5.79 1.51 6.20L4.52 9.77L12.49 0.31C12.84-0.10 13.40-0.10 13.74 0.31C14.09 0.72 14.09 1.38 13.74 1.79L5.58 11.48C5.30 11.81 4.92 12 4.52 12Z' fill='%23609E12'/%3E%3C/svg%3E");
+}
+.viq-field:has(.viq-input.wrong)::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 14 14'%3E%3Cpath d='M13.67 0.33C13.47 0.12 13.18 0 12.89 0C12.59 0 12.31 0.12 12.10 0.33L7 5.43L1.90 0.33C1.69 0.12 1.41 0 1.11 0C0.82 0 0.53 0.12 0.33 0.33C0.12 0.53 0 0.82 0 1.11C0 1.41 0.12 1.69 0.33 1.90L5.43 7L0.33 12.10C0.12 12.31 0 12.59 0 12.89C0 13.18 0.12 13.47 0.33 13.67C0.53 13.88 0.82 14 1.11 14C1.41 14 1.69 13.88 1.90 13.67L7 8.57L12.10 13.67C12.31 13.88 12.59 14 12.89 14C13.18 14 13.47 13.88 13.67 13.67C13.88 13.47 14 13.18 14 12.89C14 12.59 13.88 12.31 13.67 12.10L8.57 7L13.67 1.90C13.88 1.69 14 1.41 14 1.11C14 0.82 13.88 0.53 13.67 0.33Z' fill='%23B20010'/%3E%3C/svg%3E");
+}
+
+/* The question's own copy block — positioned from the deck like every other
+   block in this unit. */
+.viq-text {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w);
+  font-family: 'Assistant', sans-serif;
+  /* 24/400 at line-height 1.4 — the shipped .viq-context, which is this
+     same block under its reference name (percent-02-03/style.css:930, cited
+     there as Body / B-3). The build ran at 22/1.45, two pixels under the
+     design system on every screen; nothing chose that, it drifted. */
+  font-size: 24px; font-weight: 400; color: #222;
+  direction: rtl; text-align: right; line-height: 1.4;
+  margin: 0;
+}
+.viq-text p { margin: 0; }
+.viq-text strong { font-weight: 700; }
+/* The prompt line — Subject/500 and bold, as the deck renders it. It is the
+   question the learner answers, not part of the scenario. The shipped name
+   for it is .viq-qstem: 24/700/Subject-500 at a tighter 1.3. */
+.viq-ask { font-weight: 700; color: var(--subject-500); line-height: 1.3; }
+/* The answer row: the field with its unit label beside it. */
+.viq-answer {
+  position: absolute; left: var(--x); top: var(--y);
+  display: flex; align-items: center; gap: 12px;
+  direction: rtl;
+  font-family: 'Assistant', sans-serif; font-size: 22px; color: #222;
+}
+
+
+/* Options that take their container's width instead of the template's fixed
+   604px — used where the deck gives the answer block its own box. */
+.scq-answers--deck .scq-opt { width: 100%; }
+
+
+/* ═══════════════════════════════════════════════════════
+   BLOCK ב + the rest of block א  (S3-S9 · slides 43-49)
+   ═══════════════════════════════════════════════════════ */
+
+/* A blank paragraph that holds a whole LINE. .pgap is 1em (22px); the deck's
+   blank paragraphs are a full line of the 32px grid — slide 43 runs 139 → 202
+   across one line plus one blank, which is 2 × 31.5. Screens built against
+   that grid use --line so the paragraph after the gap lands on the
+   producer's own y instead of 9px high. */
+/* 34px, not an em multiple: the shipped .viq-context-gap is exactly one
+   line of 24px/1.4 copy, and an em-relative spacer silently rescales the
+   whole line grid the moment the type size changes. */
+.pgap--line { height: 34px; }
+
+/* Slide 48 is the one screen in this part where the producer used paragraph
+   SPACING instead of blank paragraphs: 47px between consecutive lines
+   against the part's 32px line grid. */
+.viq-text--spaced p + p { margin-top: 16px; }
+
+/* A standalone equation dropped at the deck's own coordinates, beside the
+   copy rather than inside it (slides 43 and 44 both do this). The .eq-* rules
+   are sized for a 426px popup; on the slide itself the producer sets the same
+   fraction ~4px larger, so the size is re-declared here rather than changed
+   globally. */
+.viq-eq {
+  position: absolute; left: var(--x); top: var(--y);
+  font-family: 'Assistant', sans-serif; color: #222; direction: ltr;
+}
+.viq-eq .eq-frac, .viq-eq .eq-eq { font-size: 24px; }
+
+/* An input sitting INSIDE a fraction. Slide 43 boxes the right fraction's
+   DENOMINATOR — not a value on its own row — so the field has to fit a
+   denominator's height, not the standalone 96×52 one. */
+.viq-field--inline { width: 76px; height: 36px; }
+.viq-field--inline .viq-input { font-size: 20px; width: 3ch; }
+
+/* Answer row pinned to a deck-measured BOX instead of shrink-wrapping: the
+   field takes the box's right edge and the label its left. That is how the
+   deck aligns a COLUMN of answer rows — slide 49's three ingredients share
+   one field edge while every label keeps its own left edge — and it is also
+   how a single row reproduces the deck's own gap between label and field. */
+/* The field keeps the deck's position — its right edge stays at
+   --x + --w — and the unit label sits right beside it. space-between
+   pinned the label to the OTHER end of the box instead, leaving 100px of
+   white space between a number and the word that gives it meaning. */
+.viq-answer--spread { width: var(--w); justify-content: flex-start; gap: 24px; }
+
+/* Slide 49's recipe table sits at its own deck coordinates (732, 223). */
+.recipe-table { position: absolute; left: var(--x); top: var(--y); width: var(--w); }
+/* The ingredient column is bold in the deck; the quantity column is not. */
+.recipe-table tbody td:first-child { font-weight: 700; }
+
+/* The multiplier slide 44 writes above a numerator ("·10"), in Subject/500,
+   the way the producer sets it in the feedback panel. */
+.eq-mul {
+  font-size: .55em; color: var(--subject-500); font-weight: 700;
+  vertical-align: super; margin-inline-end: 1px;
+}
+
+/* Compact table for inside a 426px feedback popup or hint card.
+   Ported from methodica-math-proportion-02-01, which needs it on slide 32. */
+.prop-table--pop { font-size: 18px; margin: 8px 0; width: 100%; }
+.prop-table--pop th, .prop-table--pop td {
+  min-width: 0; height: 34px; padding: 2px 8px;
+}
+
+/* An equation inside a hint card (slide 43's hint is a named proportion). */
+.scq-hint-eq { margin-top: 10px; text-align: center; direction: ltr; }
+
+/* ═══════════════════════════════════════════════════════
+   PART 04 — the class task  (slides 51-58)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── S0 · slide 51 ──
+   Lead / title / tail, then the companion. The deck's own y values are
+   125 / 153 / 241 / 297, so the centred column is nudged down and the two
+   default 40px gaps around the tail are tightened to the deck's. */
+#s0 { background: #fff; }
+#s0 .ts-content { padding-top: 55px; }
+#s0 .ts-character { width: 202px; height: 274px; }
+
+/* The line BELOW a transition title — the mirror of .ts-lead. Slide 51 sets
+   all three: a small lead, the 40/700 message, and a small closing line. */
+.ts-tail, .ts-sub {
+  font-family: 'Assistant', sans-serif;
+  font-size: 24px; font-weight: 400; color: #303030;
+  text-align: center; direction: rtl; line-height: 1.3;
+  max-width: 810px; margin: 0;
+}
+/* .ts-content's 40px gap is a section break; the deck leaves 25px here. */
+.ts-content .ts-tail + .ts-character { margin-top: -15px; }
+
+/* ── S1-S2 · slides 52-53 — the class-task board ──
+   One screen title, one blue sub-heading and a bulleted definition list,
+   all live text at the deck's own coordinates. */
+.ct-title {
+  position: absolute; left: 78px; top: 45px; width: 1173px;
+  margin: 0;
+  font-family: 'Assistant', sans-serif;
+  font-size: 40px; font-weight: 700; color: #303030;
+  text-align: center; direction: rtl; line-height: 1.2;
+}
+/* Same weight and colour as .viq-ask, but it heads a section rather than
+   asking the question — kept separate so a later change to one does not
+   silently move the other. */
+.ct-heading { font-weight: 700; color: var(--subject-500); }
+
+/* The brief at the top of the board: the deck gives its two bold lines a
+   45px pitch against the 32px line grid the rest of the board uses. */
+.viq-text--brief p + p { margin-top: 13px; }
+
+/* The definition list. The deck's marker is a small hollow Subject/500
+   circle sitting INSIDE the text block's right edge, so it is drawn in the
+   inline-end padding rather than by list-style (which would put a filled
+   disc outside the box and break the right alignment of the block). */
+.viq-bullets { list-style: none; margin: 0; padding: 0; }
+/* inline-START, not -end: under RTL the start edge is the RIGHT one, which
+   is where the deck's marker sits. Using -end put the circle on the far
+   left of the block, out beside the ruler. */
+/* The marker hangs OUTSIDE the text box. Padding the list item instead
+   indents its text by the marker's width, and the deck keeps every line —
+   list or not — on the same right edge. */
+.viq-bullets li { position: relative; }
+.viq-bullets li::before {
+  content: ''; position: absolute; inset-inline-start: -20px; top: .58em;
+  width: 8px; height: 8px;
+  border: 1.5px solid var(--subject-500); border-radius: 50%;
+}
+
+/* Slide 53's answer is a RATIO ("10 : 1"), so its field holds text and is
+   sized to the deck's own 139px box rather than the 96px numeric one. */
+.viq-field--wide { width: 139px; }
+.viq-input--text { width: 7ch; }
+
+
+/* The lead line ABOVE a transition screen's title. Slides 47 and 51 both
+   open with a small sentence and then set the real message at title size —
+   the reverse of the title/subtitle pair the other transition screens use.
+   24/400, the H-5 title's companion on the 720 type scale. */
+.ts-lead {
+  font-family: 'Assistant', sans-serif;
+  font-size: 24px; font-weight: 400; color: #303030;
+  text-align: center; direction: rtl; line-height: 1.3;
+  max-width: 810px; margin: 0;
+}
+/* .ts-content's own 40px gap between children is a paragraph break here, not
+   a section break: the lead belongs to the title it introduces. */
+.ts-content .ts-lead + .ts-title { margin-top: -40px; }
+
+/* ═══════════════════════════════════════════════════════
+   Class task — the closing screens (slides 56-58)
+   ═══════════════════════════════════════════════════════ */
+
+/* A proportion the learner completes IN PLACE: the denominators are input
+   fields rather than text. */
+.ct-proportion { position: absolute; left: var(--x); top: var(--y); direction: rtl; }
+.viq-field--slim .viq-input { width: 96px; height: 40px; font-size: 20px; }
+
+/* Slide 57's phone mock-up, with the companion showing THROUGH its screen —
+   the producer's note is "הדמות המלווה נראית כלואה בתוך המסך", so the
+   character sits behind the transparent screen, not on top of the frame. */
+.ct-phone, .ct-phone-inner {
+  position: absolute; left: var(--x); top: var(--y);
+  width: var(--w); height: var(--h); object-fit: contain;
+}
+.ct-phone { z-index: 2; }
+.ct-phone-inner { z-index: 1; }
+.ct-screen-label {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w);
+  z-index: 3; text-align: center; direction: rtl;
+  font-family: 'Assistant', sans-serif; font-size: 20px; color: #303030;
+}
+
+
+/* The screen's diagonal, dashed, in the producer's blue — slide 57. */
+/* 06.09 — pinned to the design canvas, not to the screen box. `inset:0` let
+   the viewBox letterbox inside a box whose height is the viewport / scale, so
+   every coordinate shifted by an amount that changed with the window. See the
+   long note on the same rule in part 01. */
+.deck-svg { position: absolute; left: 0; top: 0; width: 1280px; height: 710px;
+            pointer-events: none; overflow: visible; }
+/* Measured off the producer's own render of slide 57: #019DE5, ~4.5px, and a
+   long dash with a short gap (her dashes run 16 along the line, her gaps 4).
+   It was #1f6fd0 at 2.5 with a 9/7 dash — a different blue, half the weight
+   and a dotted rhythm. */
+.deck-svg .diag {
+  stroke: #019de5; stroke-width: 4.5; stroke-dasharray: 16 4;
+  stroke-linecap: butt; fill: none;
+}
+/* The class task's headings need air under the screen title. */
+.ct-heading { margin-top: 10px !important; }
+
+/* Slide 51 gives the character a bigger slot than the shared 221x211
+   (image104.png at 496,297, 288x274). It matters now that the pose carries props — a
+   calculator and a tape measure are unreadable at the default size. */
+#s0 .ts-character { width: 288px; height: 274px; }
+
+/* A --fixed slot that ALSO names a pose swaps colour, so it must be a fixed
+   BOX rather than width-driven. The two companions have very different
+   aspects (green 523x711, yellow 403x1024): with height:auto the yellow one
+   renders up to 2x taller than the green — slide 55's slot went 339x461 to
+   339x861 and ran 560px past the bottom bar. --h is the height the green
+   character already occupied, and `contain` + the slot's own --anchor keeps
+   both characters standing on the same edge. */
+.hct-character--fixed[data-pose] { height: var(--h); }
+.hct-character--fixed[data-pose] img { height: 100%; object-fit: contain; }
+
+/* ═══════════════════════════════════════════════════════
+   THE UNITS + EQUATION LAW
+   From methodica-math-percent-04 (client-approved 31.08.26); see the local
+   template library, "מוסכמות מאושרות". Two halves:
+
+   1. `%` sits to the RIGHT of its number; unit WORDS (ס"מ, ש"ח, מ"ר, גרם,
+      ליטר, דקות…) and the ₪ sign sit to the LEFT of theirs — in input rows
+      and in feedback equations alike. In THIS unit an equation is wrapped in
+      `.num` (direction:ltr + unicode-bidi:isolate), which is the local
+      spelling of percent-04's `dir="ltr"` run. A unit word that belongs
+      INSIDE such a run must be wrapped `.eq-unit`, or bidi parks it at the
+      far LEFT of the whole equation, several tokens from its own number.
+   2. An equation never breaks mid-expression. If the line is full the WHOLE
+      equation moves down. `.num` carries no nowrap of its own, so a long
+      derivation split at an `=` — 05's `𝜋 · 20² = 3.14 · 400 = 1256` broke
+      into two lines at panel width. Scoped to the prose bodies, as in
+      percent-04: a `.num` in a table cell or a dimension label keeps the
+      normal inline behaviour.
+   ═══════════════════════════════════════════════════════ */
+.eq-unit { unicode-bidi: isolate; direction: rtl; }
+.eq-keep { white-space: nowrap; display: inline-block; }
+.scq-popup-body .num, .scq-hint-body .num, .gp-panel-body .num { white-space: nowrap; display: inline-block; }
+
+/* 06.09 — S1's magnifier pose. The yellow file the producer sent is a TALL,
+   narrow figure (346x861); under the --fixed contract (width fixed, height
+   auto) it rendered 202x503 from y=378 and ran straight through the bottom
+   bar. Sized by HEIGHT instead — 378 + 258 = 636, exactly the bar's top edge
+   — with `contain`, so both colours stand the same height whatever their own
+   proportions are, and neither is distorted. */
+#s1 .hct-character[data-pose="magnifier"] { width: 220px; height: 258px; }
+#s1 .hct-character[data-pose="magnifier"] img {
+  width: 100%; height: 100%; object-fit: contain; object-position: bottom left;
+}
+
+/* 06.09, producer — an inline fraction inside feedback or hint prose needs air
+   on both sides. Set solid against its neighbours (dev 38's "ל-15 [30/2] ס\"מ",
+   dev 42's "= 20 [100/5] גרם לס\"מ") the numerator's rule reads as part of the
+   adjoining word. Prose only: a fraction that is the whole line, or one inside
+   an option pill or a table cell, keeps its own spacing. */
+.scq-popup-body .eq-frac-row,
+.scq-hint-body  .eq-frac-row,
+.gp-panel-body  .eq-frac-row { margin-inline: 8px; }
+
+/* 06.09 — S2's ratio answer: two boxes with a printed colon between them.
+   LTR because a ratio is an LTR run (the same law .num and .ratio follow), so
+   the first box in the markup is the first term on screen. */
+.viq-answer--ratio { direction: ltr; gap: 10px; }
+.viq-answer--ratio .viq-input { width: 92px; text-align: center; }
+.viq-ratio-colon { font-family: 'Assistant', sans-serif; font-size: 26px; font-weight: 700; color: #222; }
+
+
+/* GENERATED COPY -- DO NOT EDIT.
+   Source of truth: _motion-engine/motion.css (canonical engine copy).
+   Edit there, then re-run _motion-engine/sync-motion.ps1. */
+/* ═══════════════════════════════════════════════════════════
+   Animation System — motion.css
+   Canonical engine styles — copy verbatim into the target project
+   (see SKILL.md / README.md for wiring steps). If the project uses
+   a canonical-source + generated-copies layout, edit only the
+   canonical copy and regenerate — see references/DECISIONS.md.
+
+   Allowed animation vocabulary (by design):
+   fade-in · fade-out · float-in · float-out. Nothing else.
+   "float" = opacity + short translateY. No scale/zoom/bounce/
+   rotate/long-slide/pulse/shake/spring/decorative motion.
+   Entrance animations only; exit (-out) keyframes are reserved
+   vocabulary and are not auto-applied on screen transitions.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* Screen-reveal tokens */
+  --m-reveal-duration: 600ms;
+  --m-reveal-stagger: 180ms;
+  --m-distance: 16px;    /* float travel — shared by float-in/out keyframes */
+  --m-ease: ease;
+  /* Popup-motion tokens */
+  --m-popup-duration: 260ms;
+  --m-popup-exit-duration: 200ms;  /* outside-dismiss fade-out ONLY */
+}
+
+/* ─── Keyframes — the entire allowed vocabulary ───────────── */
+@keyframes m-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes m-float-in {
+  from { opacity: 0; transform: translateY(var(--m-distance)); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* Reserved — not applied automatically */
+@keyframes m-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes m-float-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(calc(var(--m-distance) * -1)); }
+}
+
+/* ─── Reveal groups ────────────────────────────────────────
+   Opt-in per screen: containers marked data-reveal="1..4".
+   ORDER RULE (RTL): group numbering must follow Hebrew reading
+   order — when groups sit side by side, the RIGHT side reveals
+   before the LEFT side, then top before bottom within a side.
+   Motion.reveal() adds .m-animate to the entering .screen on
+   its FIRST visit only, and removes it once the reveal settles
+   (so a later display:none→block toggle can never replay it).
+   fill-mode "both" keeps later groups hidden during their
+   stagger delay. Without JS (or on revisit) no class is added
+   and everything is simply visible — no dependency on JS.
+   Same group number on several containers = they reveal together.
+   Interaction is NOT blocked during entrance by default; any
+   pointer-events exception must be per-case and documented.
+
+   IMPORTANT — transform conflict: this rule drives the element's
+   `transform` property. If a container ALSO uses `transform` for
+   its own static positioning (e.g. `transform: translateX(-50%)`
+   to center it), that static transform will be fully overridden
+   for the whole reveal duration. Before marking a container for
+   float-in, convert any such static transform to a non-transform
+   technique (e.g. `left` + `margin`) first. See
+   references/DECISIONS.md for the full rule and a worked example. */
+.screen.m-animate [data-reveal] {
+  animation: m-float-in var(--m-reveal-duration) var(--m-ease) both;
+}
+.screen.m-animate [data-reveal="2"] { animation-delay: var(--m-reveal-stagger); }
+.screen.m-animate [data-reveal="3"] { animation-delay: calc(var(--m-reveal-stagger) * 2); }
+.screen.m-animate [data-reveal="4"] { animation-delay: calc(var(--m-reveal-stagger) * 3); }
+
+/* Hold state — the initial screen's reveal is paused until the
+   page has actually painted (window load); without this the
+   animation runs during the loading white-screen and is over
+   before the learner sees anything. fill-mode "both" keeps the
+   groups at their hidden from-state while paused, so no flash. */
+.screen.m-animate.m-hold [data-reveal] {
+  animation-play-state: paused;
+}
+
+/* Fade variant — for elements whose geometry must never move
+   (JS-measured images, canvases) or where float adds nothing. */
+.screen.m-animate [data-reveal][data-reveal-fade] {
+  animation-name: m-fade-in;
+}
+
+/* ─── Popup transition — separate from screen reveal ───────
+   Opt-in via .m-popup on the popup root (a standalone popup box, or
+   the overlay when the popup lives inside one — never both, so two
+   animations never compete). Deliberately NOT part of the screen
+   reveal system: popups follow a fresh user action, so they play on
+   EVERY open — no seen-set. Replay needs no JS: CSS animations
+   restart whenever the .hidden toggle flips display none→block.
+   One unit, no stagger, no inner-element animation, and no blocking:
+   the popup is interactive the moment it opens. Close stays instant
+   by default (no fade-out/float-out unless explicitly wired). */
+.m-popup:not(.hidden) {
+  animation: m-fade-in var(--m-popup-duration) var(--m-ease) both;
+}
+
+/* Popup EXIT (outside-dismiss only, if wired): applied by
+   Motion.dismissPopup() as an INLINE animation — deliberately not a
+   class, so the popup MutationObserver (class+content) never reacts
+   to it, and general close paths (navigation, plus a close button or
+   Escape on the components that still have one) stay instant.
+   Feedback popups have no close button — their only in-screen exit is
+   the retry-dismissal case this fade was written for. During the
+   fade-out the popup must not swallow the learner's next click. */
+
+/* ─── prefers-reduced-motion — everything instant ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  .screen.m-animate [data-reveal],
+  .m-popup:not(.hidden) {
+    animation: none !important;
+  }
+}

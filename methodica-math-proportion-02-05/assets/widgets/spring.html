@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הדמיית פרופורציה: קפיץ ומשקולות</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        p.subtitle { color: #7f8c8d; margin-top: 0; margin-bottom: 30px; }
+
+        .main-container {
+            display: flex;
+            gap: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* אזור הסימולציה (ימין) */
+        .sim-zone {
+            flex: 1;
+            position: relative;
+            height: 500px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #fff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHElEQVQYV2NkYGAwZmBgOMuAGAwpSgG8Yf4D7SgH9wAAAABJRU5ErkJggg=='); /* תבנית ריבועים קלה */
+            overflow: hidden;
+        }
+
+        /* תמיכה עליונה */
+        .support {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100px; height: 10px;
+            background-color: #34495e;
+            border-radius: 0 0 5px 5px;
+        }
+
+        /* הקפיץ (מיוצג ע"י SVG) */
+        #spring-svg {
+            position: absolute;
+            top: 10px; left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            /* הגובה משתנה דינמית ב-JS */
+        }
+
+        /* וו למשקולות */
+        .hook {
+            position: absolute;
+            width: 20px; height: 20px;
+            border: 3px solid #7f8c8d;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            /* המיקום הריכי (top) משתנה דינמית */
+            z-index: 2;
+        }
+
+        /* סל למשקולות */
+        .basket {
+            position: absolute;
+            top: 20px; /* מחובר לתחתית הוו */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 120px;
+            border: 3px solid #d35400;
+            border-top: none;
+            border-radius: 0 0 15px 15px;
+            background-color: rgba(230, 126, 34, 0.15);
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            padding-bottom: 5px;
+            z-index: 1;
+        }
+
+        /* אזור המשקולות בתוך הסל */
+        #weights-container {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* קו אורך מנוחה (רפרנס) - מיושר כעת בקו אחד עם 10 ס"מ (10px padding + 10cm * 12px/cm = 130px) */
+        .rest-line {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            top: 130px; 
+            border-top: 2px dashed rgba(149, 165, 166, 0.6);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .rest-label {
+            position: absolute;
+            top: 112px; /* 130px - 18px */
+            right: 35px;
+            color: #95a5a6;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* מד התארכות דינמי */
+        .elongation-indicator {
+            position: absolute;
+            left: calc(50% + 45px); /* ממוקם מימין לקפיץ */
+            width: 15px;
+            border-right: 2px solid #e74c3c;
+            border-top: 2px solid #e74c3c;
+            border-bottom: 2px solid #e74c3c;
+            border-left: none; /* מוודא שאין גבול שמאלי */
+            display: none;
+            align-items: center;
+            z-index: 1;
+        }
+        
+        .elongation-label {
+            position: absolute;
+            left: 20px; /* מיקום הטקסט מימין לסוגריים ההפוכים */
+            width: 60px;
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 14px;
+            direction: ltr; /* שומר על סדר התווים (מספר ואז יחידה) */
+        }
+
+        .weight {
+            width: 55px; height: 16px;
+            background-color: #e74c3c;
+            border: 1px solid #c0392b;
+            border-radius: 3px;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: -1px; /* הצמדה */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease-out;
+        }
+
+        /* סרגל מדידה */
+        .ruler {
+            position: absolute;
+            left: 10px; 
+            top: 10px; /* האפס של הסרגל מתחיל בגובה 10px ומיושר לקצה העליון של הקפיץ */
+            bottom: 10px;
+            width: 30px;
+            border-right: 2px solid #333;
+        }
+        .ruler-mark {
+            position: absolute;
+            right: 0; width: 10px; height: 1px;
+            background: #333;
+        }
+        .ruler-mark.major { width: 18px; height: 2px; }
+        .ruler-label {
+            position: absolute;
+            right: 22px;
+            font-size: 10px; color: #333;
+            transform: translateY(-50%);
+        }
+
+        /* אזור נתונים ובקרה (שמאל) */
+        .control-zone {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stats, .controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .stat-label { font-weight: bold; color: #2c3e50; }
+        .stat-value { color: #16a085; font-family: monospace; font-weight: bold;}
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .btn-add { background-color: #27ae60; color: white; }
+        .btn-add:hover { background-color: #219150; }
+        .btn-add:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+
+        .btn-remove { background-color: #e67e22; color: white; }
+        .btn-remove:hover { background-color: #d35400; }
+
+        .btn-reset { background-color: #95a5a6; color: white; margin-top: auto;}
+        .btn-reset:hover { background-color: #7f8c8d; }
+
+    </style>
+</head>
+<body>
+
+    <h1>הדמיית קפיץ ופרופורציה</h1>
+    <p class="subtitle">הוסיפו משקולות וראו כיצד הקפיץ מתארך ביחס ישר למסה.</p>
+
+    <div class="main-container">
+        
+        <div class="control-zone">
+            <div class="controls">
+                <button class="btn-add" id="add-weight" onclick="addWeight()">הוסיפו משקולת (+50 גרם)</button>
+                <button class="btn-remove" id="remove-weight" onclick="removeWeight()" disabled>הסירו משקולת (-50 גרם)</button>
+                <button class="btn-reset" onclick="resetSim()">איפוס הניסוי</button>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">מספר משקולות:</span>
+                    <span class="stat-value" id="weight-count">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">מסה כוללת (גרם):</span>
+                    <span class="stat-value" id="total-mass">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">התארכות (ס"מ):</span>
+                    <span class="stat-value" id="elongation">0.0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sim-zone" id="sim-zone">
+            <div class="support"></div>
+            
+            <div class="ruler" id="ruler"></div>
+
+            <!-- קו מנוחה -->
+            <div class="rest-line"></div>
+            <div class="rest-label">אורך התחלתי (ללא עומס)</div>
+
+            <!-- מד התארכות ויזואלי -->
+            <div class="elongation-indicator" id="elongation-indicator">
+                <span class="elongation-label" id="elongation-label"></span>
+            </div>
+
+            <svg id="spring-svg" viewBox="0 0 40 100">
+                <path id="spring-path" d="" stroke="#7f8c8d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+
+            <div class="hook" id="hook">
+                <div class="basket" id="basket">
+                    <div id="weights-container"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // קבועים פיזיקליים של ההדמיה
+        const REST_LENGTH_CM = 10;      // אורך הקפיץ במנוחה בס"מ
+        const MASS_PER_WEIGHT_G = 50;   // מסה של כל משקולת בגרמים
+        const K_FACTOR = 0.05;          // קבוע הקפיץ בהדמיה (ס"מ לכל גרם)
+                                       // התארכות = מסה * K_FACTOR (מסה בגרם, התארכות בס"מ)
+        
+        const CM_TO_PX = 12;           // מקדם המרה מ"ס"מ" ויזואלי לפיקסלים במסך (הוקטן מ-15 ל-12 כדי למנוע גלישה)
+        const MAX_WEIGHTS = 7;         // מותאם לגובה הסל (כדי שלא יגלשו החוצה)
+
+        // משתני מצב
+        let currentWeights = 0;
+
+        // אלמנטים מה-DOM
+        const springSvg = document.getElementById('spring-svg');
+        const hook = document.getElementById('hook');
+        const weightsContainer = document.getElementById('weights-container');
+        const weightCountEl = document.getElementById('weight-count');
+        const totalMassEl = document.getElementById('total-mass');
+        const elongationEl = document.getElementById('elongation');
+        const addBtn = document.getElementById('add-weight');
+        const removeBtn = document.getElementById('remove-weight');
+
+        // אתחול: יצירת הסרגל
+        createRuler();
+        updateVisuals();
+
+        // פונקציה ליצירת שנתות הסרגל
+        function createRuler() {
+            const ruler = document.getElementById('ruler');
+            const heightPx = 500 - 20; // גובה אזור הסימולציה פחות פדינג
+            const maxCm = Math.floor(heightPx / CM_TO_PX);
+
+            for (let cm = 0; cm <= maxCm; cm++) {
+                const yPos = cm * CM_TO_PX; 
+                
+                const mark = document.createElement('div');
+                mark.className = 'ruler-mark' + (cm % 5 === 0 ? ' major' : '');
+                mark.style.top = yPos + 'px';
+                ruler.appendChild(mark);
+
+                if (cm % 5 === 0) {
+                    const label = document.createElement('div');
+                    label.className = 'ruler-label';
+                    label.style.top = yPos + 'px';
+                    label.innerText = cm;
+                    ruler.appendChild(label);
+                }
+            }
+        }
+
+        // פונקציה המחשבת ומציירת את נתיב הקפיץ (SVG) דינמית
+        function getSpringPath(lengthPx) {
+            const topStr = 15;   // אורך הקטע הישר העליון
+            const botStr = 15;   // אורך הקטע הישר התחתון
+            const coils = 16;    // מספר הפיתולים (הזיגזגים)
+            const w = 15;        // רוחב כל פיתול הצידה
+            const cx = 20;       // נקודת האמצע (ציר ה-X)
+            
+            const dY = (lengthPx - topStr - botStr) / coils;
+            let path = `M ${cx} 0 L ${cx} ${topStr} `;
+            
+            for (let i = 0; i < coils; i++) {
+                const x = (i % 2 === 0) ? cx + w : cx - w;
+                const y = topStr + (i + 0.5) * dY;
+                path += `L ${x} ${y} `;
+            }
+            path += `L ${cx} ${lengthPx - botStr} L ${cx} ${lengthPx}`;
+            return path;
+        }
+
+        // פונקציה מרכזית לעדכון הוויזואליזציה והנתונים
+        function updateVisuals() {
+            // 1. חישובים פיזיקליים
+            const totalMass = currentWeights * MASS_PER_WEIGHT_G;
+            const elongation = totalMass * K_FACTOR; // פרופורציה ישרה!
+            const currentLength = REST_LENGTH_CM + elongation;
+
+            // 2. עדכון טקסט נתונים
+            weightCountEl.innerText = currentWeights;
+            totalMassEl.innerText = totalMass; // מוצג כמספר שלם בגרמים
+            elongationEl.innerText = elongation.toFixed(1);
+
+            // 3. עדכון ויזואלי (מיקומים וגבהים בפיקסלים)
+            const springTopPx = 10;
+            const currentLengthPx = currentLength * CM_TO_PX;
+            const hookTopPx = springTopPx + currentLengthPx;
+
+            // עדכון גובה הקפיץ - משתמש כעת בפונקציה הדינמית
+            springSvg.style.height = currentLengthPx + 'px';
+            springSvg.setAttribute('viewBox', `0 0 40 ${currentLengthPx}`);
+            document.getElementById('spring-path').setAttribute('d', getSpringPath(currentLengthPx));
+            
+            // עדכון מיקום הוו
+            hook.style.top = hookTopPx + 'px';
+
+            // עדכון מד ההתארכות האדום בצד הקפיץ
+            const indicator = document.getElementById('elongation-indicator');
+            const label = document.getElementById('elongation-label');
+            
+            if (elongation > 0) {
+                const restLengthPx = REST_LENGTH_CM * CM_TO_PX;
+                indicator.style.display = 'flex';
+                indicator.style.top = (springTopPx + restLengthPx) + 'px';
+                indicator.style.height = (elongation * CM_TO_PX) + 'px';
+                label.innerText = elongation.toFixed(1) + ' ס"מ';
+            } else {
+                indicator.style.display = 'none';
+            }
+
+            // 4. עדכון כפתורים
+            addBtn.disabled = currentWeights >= MAX_WEIGHTS;
+            removeBtn.disabled = currentWeights <= 0;
+        }
+
+        function addWeight() {
+            if (currentWeights < MAX_WEIGHTS) {
+                currentWeights++;
+                
+                // הוספת משקולת ויזואלית
+                const weightDiv = document.createElement('div');
+                weightDiv.className = 'weight';
+                weightDiv.id = `weight-${currentWeights}`;
+                weightDiv.innerText = `${MASS_PER_WEIGHT_G} ג'`;
+                
+                // אנימציית כניסה קלה
+                weightDiv.style.transform = 'translateY(-20px)';
+                weightsContainer.appendChild(weightDiv);
+                setTimeout(() => weightDiv.style.transform = 'translateY(0)', 10);
+
+                updateVisuals();
+            }
+        }
+
+        function removeWeight() {
+            if (currentWeights > 0) {
+                const weightDiv = document.getElementById(`weight-${currentWeights}`);
+                
+                // אנימציית יציאה
+                weightDiv.style.transform = 'translateY(20px)';
+                weightDiv.style.opacity = '0';
+                
+                setTimeout(() => {
+                    weightDiv.remove();
+                    currentWeights--;
+                    updateVisuals();
+                }, 200);
+            }
+        }
+
+        function resetSim() {
+            weightsContainer.innerHTML = '';
+            currentWeights = 0;
+            updateVisuals();
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-07/",
+  "title": "שאלת שיא ב",
+  "learningUnitId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02/",
+  "componentPurpose": "assessment",
+  "isAssessment": true,
+  "manufacture": "methodica",
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 5,
+  "masteryLevel": "advanced",
+  "order": 7,
+  "depthLevel": "core-curriculum-extended",
+  "cognitiveLevel": "higher-order-thinking",
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 20,
+  "createdAt": "2026-09-06T00:00:00.000Z",
+  "updatedAt": "2026-09-06T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-07/methodica-math-proportion-02-07-001/",
+      "title": "שאלת שיא ב",
+      "informationToBot": "מטרת הפריט: שאלת שיא ב. [טיוטה — לאישור מפתחת הלמידה]",
+      "contentType": "assessment",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    }
+  ]
+}

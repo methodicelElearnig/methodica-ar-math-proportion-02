@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <!-- vendored: the character was loaded from i.postimg.cc in the
+         producer's original; a lomda must render with no network. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>יישומוּן: חקירת יחס ופרופורציה - טווח מורחב</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f7f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            /* תיקון: הגדלת הרוחב הכללי כדי להכיל את הציר המורחב והכותרת */
+            max-width: 980px; 
+            width: 100%;
+            text-align: center;
+        }
+        
+        .applet-layout {
+            display: flex;
+            flex-direction: row; 
+            gap: 25px;
+            align-items: flex-start;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .sidebar {
+            flex: 0 0 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* תיקון: הגדלת רוחב שטח הצירים המרכזי כדי לתמוך ב-28 ס"מ */
+        .main-canvas {
+            flex: 0 0 600px;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #eef2f3;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .slider-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="range"] {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        .stats {
+            font-size: 16px;
+            margin: 5px 0;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-around;
+            background: #eef2f3;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        /* מיכל מערכת הצירים המורחב */
+        .canvas-container {
+            position: relative;
+            height: 530px;
+            width: 600px;
+            background-color: #f8f9fa;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* תיקון: "דחיפת" הגריד שמאלה (left: 55px) והרחבתו ימינה כדי לפנות מקום לכותרת */
+        .grid-area {
+            position: absolute;
+            left: 55px;   /* מקום מצומצם יותר לציר ה-Y */
+            bottom: 65px; 
+            right: 120px; /* מקום מורחב מימין לכותרת ציר ה-X */
+            top: 45px;
+            background-color: #ffffff;
+            border-left: 2px solid #333;   
+            border-bottom: 2px solid #333; 
+            
+            background-image:
+                linear-gradient(rgba(49, 215, 185, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(49, 215, 185, 0.15) 1px, transparent 1px),
+                linear-gradient(#bbb 1px, transparent 1px),
+                linear-gradient(90deg, #bbb 1px, transparent 1px);
+            background-size: 15px 15px, 15px 15px, 75px 75px, 75px 75px;
+            background-position: left bottom;
+        }
+
+        .character-wrapper {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            border: 2px dashed #ff4757; 
+            box-sizing: border-box;     
+            transition: width 0.05s, height 0.05s; 
+        }
+        .character-wrapper img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* מיקומי שנתות (Y נשאר דומה) */
+        #y-axis {
+            position: absolute;
+            left: 0;
+            bottom: 65px;
+            width: 55px;
+            top: 45px;
+        }
+        .tick-y {
+            position: absolute;
+            right: 0;
+            height: 1px;
+            width: 5px;
+            background: #333;
+        }
+        .tick-y.major {
+            width: 10px;
+            background: #000;
+        }
+        .tick-y span {
+            position: absolute;
+            right: 15px;
+            top: -7px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        /* תיקון: התאמת מיקום ציר ה-X ל"דחיפה" שמאלה ולרוחב החדש */
+        #x-axis {
+            position: absolute;
+            left: 55px;
+            bottom: 0;
+            height: 65px;
+            right: 120px;
+        }
+        .tick-x {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 5px;
+            background: #333;
+        }
+        .tick-x.major {
+            height: 10px;
+            background: #000;
+        }
+        .tick-x span {
+            position: absolute;
+            top: 8px;
+            left: -15px;
+            width: 30px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .axis-label-y {
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #2D6A4F;
+            white-space: nowrap; 
+        }
+        /* תיקון: מיקום הכותרת המורחב מימין לציר ה-X */
+        .axis-label-x {
+            position: absolute;
+            right: 10px;
+            bottom: 65px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #1A759F;
+            white-space: nowrap; 
+        }
+
+        .ratio-container {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px dashed #ccc;
+        }
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            align-items: center;
+            line-height: 1.1;
+            font-size: 22px;
+        }
+        .numerator {
+            border-bottom: 2px solid #333;
+            padding-bottom: 3px;
+            min-width: 35px;
+            text-align: center;
+            color: #2D6A4F;
+        }
+        .denominator {
+            padding-top: 3px;
+            min-width: 35px;
+            text-align: center;
+            color: #1A759F;
+        }
+        
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>יישומוּן: עיצוב דינוזאור למשחק</h2>
+    <p class="info-text">מצב מקורי: גובה 12 ס"מ, רוחב 9 ס"מ. טווח הצירים מורחב ל-28 ס"מ!</p>
+    
+    <div class="applet-layout">
+        
+        <div class="sidebar">
+            <div class="controls">
+                <div class="slider-group">
+                    <label>גובה (ס"מ):</label>
+                    <input type="range" id="heightSlider" min="1" max="28" value="12" step="1">
+                    <b id="heightLabel">12</b>
+                </div>
+                <div class="slider-group">
+                    <label>רוחב (ס"מ):</label>
+                    <input type="range" id="widthSlider" min="1" max="28" value="9" step="1">
+                    <b id="widthLabel">9</b>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div style="color: #2D6A4F;">גובה: <span id="heightVal">12</span> ס"מ</div>
+                <div style="color: #1A759F;">רוחב: <span id="widthVal">9</span> ס"מ</div>
+            </div>
+
+            <div class="ratio-container">
+                <span>היחס בין גובה הדמות לרוחב הדמות:</span>
+                <div class="fraction">
+                    <span class="numerator" id="numVal">12</span>
+                    <span class="denominator" id="denVal">9</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-canvas">
+            <div class="canvas-container">
+                <div class="axis-label-y">גובה (ס"מ) ↕</div>
+                <div class="axis-label-x">רוחב (ס"מ) ↔</div>
+
+                <div id="y-axis"></div>
+                <div id="x-axis"></div>
+
+                <div class="grid-area">
+                    <div id="character" class="character-wrapper">
+                        <img src="../img/dinosaur.png" alt="דינוזאור">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const hSlider = document.getElementById('heightSlider');
+    const wSlider = document.getElementById('widthSlider');
+    const hVal = document.getElementById('heightVal');
+    const wVal = document.getElementById('widthVal');
+    const hLabel = document.getElementById('heightLabel');
+    const wLabel = document.getElementById('widthLabel');
+    const char = document.getElementById('character');
+    
+    const numVal = document.getElementById('numVal');
+    const denVal = document.getElementById('denVal');
+
+    const pxPerCm = 15; 
+
+    function createAxes() {
+        const yAxis = document.getElementById('y-axis');
+        const xAxis = document.getElementById('x-axis');
+        
+        // ניקוי צירים למקרה של אתחול מחדש (לא חובה אבל מומלץ)
+        yAxis.innerHTML = '';
+        xAxis.innerHTML = '';
+
+        // יצירת שנתות לציר ה-Y (עד גובה מקסימלי 28 ס"מ)
+        for (let i = 0; i <= 28; i++) {
+            const tick = document.createElement('div');
+            tick.className = 'tick-y';
+            tick.style.bottom = (i * pxPerCm) + 'px';
+            if (i % 5 === 0) {
+                tick.classList.add('major');
+                tick.innerHTML = `<span>${i}</span>`;
+            }
+            yAxis.appendChild(tick);
+        }
+
+        // תיקון: הגדלת לולאת יצירת השנתות לציר ה-X עד 28 ס"מ
+        for (let i = 0; i <= 28; i++) {
+            const tick = document.createElement('div');
+            tick.className = 'tick-x';
+            tick.style.left = (i * pxPerCm) + 'px';
+            if (i % 5 === 0) {
+                tick.classList.add('major');
+                tick.innerHTML = `<span>${i}</span>`;
+            }
+            xAxis.appendChild(tick);
+        }
+    }
+
+    function update() {
+        const h = parseInt(hSlider.value);
+        const w = parseInt(wSlider.value);
+
+        hVal.textContent = h;
+        wVal.textContent = w;
+        hLabel.textContent = h;
+        wLabel.textContent = w;
+
+        numVal.textContent = h;
+        denVal.textContent = w;
+
+        char.style.height = (h * pxPerCm) + 'px';
+        char.style.width = (w * pxPerCm) + 'px';
+    }
+
+    hSlider.addEventListener('input', update);
+    wSlider.addEventListener('input', update);
+
+    createAxes();
+    update();
+</script>
+
+</body>
+</html>

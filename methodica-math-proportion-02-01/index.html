@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מציאת המספר X החסר</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<!-- data-subject-theme activates the matching token override block in
+     css/style.css. :root holds the Science defaults; this one attribute is
+     the entire theme switch (720-design-guidelines → colors-and-gradients.md). -->
+<body data-subject-theme="math">
+
+  <div id="app">
+
+    <!-- ═══════════════════════════════════════════════════════
+         GLOBAL CHROME — outside every .screen, so it survives
+         navigation and is never hidden by display:none.
+         ═══════════════════════════════════════════════════════ -->
+
+    <!-- Report / Issue button. Opens #report-modal (wired in main.js).
+         Glyph is live inline SVG on currentColor because the hover state
+         is subject-themed; a PNG would freeze one theme's colour.
+         (720-templates → _global-components.md → Report / Issue button) -->
+    <button class="flag-btn" type="button" aria-label="מצאתם בעיה?">
+      <span class="flag-btn-icon">
+        <span class="flag-btn-glyph" aria-hidden="true">
+          <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none"><path d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z" fill="currentColor"/></svg>
+          <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none"><path d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z" fill="currentColor"/></svg>
+        </span>
+      </span>
+      <span class="flag-btn-label">מצאתם בעיה?</span>
+    </button>
+
+    <!-- Feedback popups and hint overlays live HERE — outside all .screen
+         divs. A popup inside a display:none screen is invisible no matter
+         what its z-index says. goTo() hides everything whose id ends in
+         -popup or -hint-overlay on every navigation. -->
+    <div class="scq-popup m-popup hidden" id="s5-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s5-popup-title"></span></div>
+      <div class="scq-popup-body" id="s5-popup-body"></div>
+    </div>
+    <div class="scq-popup m-popup hidden" id="s8-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s8-popup-title"></span></div>
+      <div class="scq-popup-body" id="s8-popup-body"></div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 00 — TwoOptionSelection  ·  spec slide 3
+         Companion-character choice. The pick persists for the whole unit
+         through the namespaced localStorage key, and every later screen
+         maps it to that character's asset.
+
+         No feedback, no grading: selection only enables Continue, which
+         the deck labels "בחרתי". First screen of the unit, so no Back
+         (720-templates → TwoOptionSelection.md).
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen active" data-screen="0" id="s0">
+
+      <div class="select-content">
+        <div class="select-head" data-reveal="1">
+          <h1 class="select-title">איזו דמות תרצו שתלווה אתכם?</h1>
+        </div>
+
+        <!-- DOM order is physical left-to-right (the container is ltr).
+             Deck slide 3 places the green character at x=324 and the
+             yellow at x=752, so green is LEFT and yellow is RIGHT. -->
+        <div class="option-cards" data-reveal="2" role="radiogroup" aria-label="בחרו דמות">
+          <div class="option-card" role="radio" aria-checked="false" tabindex="0"
+               data-value="green" aria-label="הדמות הירוקה" onclick="selectCharacter(this)">
+            <div class="option-card-img">
+              <video class="option-card-video" src="assets/video/character-green-selection.mp4"
+                   autoplay loop muted playsinline preload="auto" aria-label="דמות מלווה ירוקה ופרוותית"></video>
+            </div>
+          </div>
+          <div class="option-card" role="radio" aria-checked="false" tabindex="0"
+               data-value="yellow" aria-label="הדמות הצהובה" onclick="selectCharacter(this)">
+            <div class="option-card-img">
+              <video class="option-card-video" src="assets/video/character-yellow-selection.mp4"
+                   autoplay loop muted playsinline preload="auto" aria-label="דמות מלווה צהובה עם סרט ראש סגול"></video>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- First screen of the unit: Back is present but hidden, so PartNav
+           can reveal it if this part is ever entered from another one. -->
+      <button class="scq-back hidden" id="s0-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s0-continue" type="button" onclick="advanceScreen()" disabled>
+        <span class="nav-label" data-label="בחרתי"><span>בחרתי</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 01 — HookClosingText  ·  spec slide 4
+         The hook opens on a photo that is visibly wrong: the same
+         portrait stretched to 797×295. object-fit:fill keeps it wrong —
+         that distortion IS the content.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="1" id="s1">
+
+      <p class="hct-block" data-reveal="1" style="--x:35px; --y:110px; --w:1210px;">
+        אתם מעלים תמונה לסטורי, אבל משהו נראה מוזר...
+      </p>
+
+      <div class="hct-img" data-reveal="2" style="--x:241px; --y:201px;">
+        <img src="assets/img/hook-photo-wide.jpg" style="--w:797px; --h:295px;"
+             alt="דיוקן של נערה, מתוח לרוחב כך שהפנים נראות רחבות ומעוותות">
+      </div>
+
+      <!-- Bubble sits ABOVE the character (deck: bubble y=290 h=121,
+           character y=440), so the tail points down. -->
+      <div class="hct-bubble hct-bubble--tail-down" data-reveal="3"
+           style="--x:46px; --y:215px; --w:221px; --h:121px;">מה השתבש בתמונה?</div>
+      <div class="hct-character" data-reveal="3" style="--x:35px; --y:365px; --w:300px; --h:286px; --anchor:bottom left;">
+        <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+      </div>
+
+      <button class="scq-back" id="s1-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s1-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 02 — HookClosingText  ·  spec slide 5
+         Three placements of the SAME photograph at three aspect ratios.
+         The deck places image5.jpeg twice (530×317 and 302×112) and
+         image6.jpeg once (75×536) — see spec/screens/slide-005.md
+         "מוצב יותר מפעם אחת".
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="2" id="s2">
+
+      <p class="hct-block" data-reveal="1" style="--x:408px; --y:82px; --w:796px;">
+        <!-- The break after "הרוחב" is where the DECK wraps this sentence
+             (spec/screens/slide-005.md → שבירות שורה בפועל). It is a wrap,
+             not an authored <a:br/>, and a browser wraps the same box width
+             two words later because it measures the font differently — so
+             it is written out to keep the producer's own pagination. -->
+        כדי שהתמונה לא תתעוות, צריך לשמור על יחס קבוע בין הרוחב<br>
+        לגובה שלה, המתאים לממדי המסך.
+      </p>
+
+      <div class="hct-img" data-reveal="2" style="--x:202px; --y:82px;">
+        <img src="assets/img/hook-photo-narrow.jpg" style="--w:75px; --h:536px;"
+             alt="אותו דיוקן, נמתח לגובה עד שהוא צר מאוד">
+      </div>
+      <div class="hct-img" data-reveal="2" style="--x:312px; --y:245px;">
+        <img src="assets/img/hook-photo-squashed.jpg" style="--w:302px; --h:112px;"
+             alt="אותו דיוקן, נדחס לרוחב עד שהוא נמוך מאוד">
+      </div>
+      <div class="hct-img" data-reveal="2" style="--x:640px; --y:245px;">
+        <img src="assets/img/hook-photo-squashed.jpg" style="--w:530px; --h:317px;"
+             alt="אותו דיוקן בהגדלה, עדיין מעוות">
+      </div>
+
+      <!-- The deck's one wedgeEllipseCallout, and the only bubble on the
+           hook with no character beside it — see CLAUDE.md → open
+           questions. The trailing glyph is a Wingdings sad face (F04C) in
+           the source; rendered as ☹, the Unicode character it stands for. -->
+      <div class="hct-bubble hct-bubble--ellipse hct-bubble--tail-right" data-reveal="3"
+           style="--x:294px; --y:421px; --w:273px; --h:148px;">איזו תמונה גרועה<br>שלי ☹</div>
+
+      <button class="scq-back" id="s2-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s2-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 03 — HookClosingText  ·  spec slide 6
+         The undistorted 9:16 portrait, its known 24 ס"מ height, and the
+         unknown width the unit is about. Five separate paragraphs in the
+         deck, kept as five lines — the producer broke them deliberately.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="3" id="s3">
+
+      <!-- One deck box (x=78 y=63 w=1124) holding five paragraphs with TWO
+           blank paragraphs between the third and fourth. The blanks are the
+           producer's spacing, reproduced as .pgap rather than as a margin
+           on every paragraph — the other lines are tight. -->
+      <div class="hct-block" data-reveal="1" style="--x:78px; --y:150px; --w:1124px;">
+        <p>לדוגמה,</p>
+        <p>כדי שהתמונה תתאים למסך הטלפון הנייד,</p>
+        <p>היחס בין הרוחב שלה לגובה שלה, צריך להיות <span class="num">9:16</span>.</p>
+        <p class="pgap"></p>
+        <p class="pgap"></p>
+        <p>אם גובה התמונה המקורית הוא <span class="num">24</span> ס"מ,</p>
+        <p>איך נמצא את רוחב התמונה שישמור על היחס המתאים?</p>
+      </div>
+
+      <div class="hct-img" data-reveal="2" style="--x:114px; --y:64px;">
+        <img src="assets/img/hook-photo-correct.jpg" style="--w:302px; --h:536px;"
+             alt="אותו דיוקן ביחס הנכון, 9 ל-16">
+      </div>
+
+      <!-- Height rule beside the photo, with a cap at each end. -->
+      <div class="hct-rule hct-rule--v" data-reveal="2" style="--x:440px; --y:64px; --h:536px;"></div>
+      <div class="hct-rule-cap" data-reveal="2" style="--x:432px; --y:64px; height:3px; width:19px;"></div>
+      <div class="hct-rule-cap" data-reveal="2" style="--x:432px; --y:597px; height:3px; width:19px;"></div>
+      <div class="hct-measure" data-reveal="2" style="--x:452px; --y:312px;">
+        <span class="num">24</span> ס"מ
+      </div>
+
+      <!-- Width rule under the photo. Two segments with the red "?" in the
+           gap between them — that is how the deck draws it (slide 6 puts
+           the glyph ON the line, not above it). -->
+      <div class="hct-rule hct-rule--h" data-reveal="2" style="--x:114px; --y:612px; --w:126px;"></div>
+      <div class="hct-unknown" data-reveal="2" style="--x:250px; --y:596px;">?</div>
+      <div class="hct-rule hct-rule--h" data-reveal="2" style="--x:290px; --y:612px; --w:126px;"></div>
+
+      <div class="hct-bubble hct-bubble--tail-right" data-reveal="4"
+           style="--x:800px; --y:443px; --w:221px; --h:121px;">אני תמיד עושה<br>"בערך" וזה לא יוצא<br>טוב</div>
+      <div class="hct-character" data-reveal="4" style="--x:1025px; --y:428px; --w:221px; --h:211px; --anchor:bottom left;">
+        <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+      </div>
+
+      <button class="scq-back" id="s3-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s3-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 04 — HookClosingText  ·  spec slide 7
+         The closing definition. Two deck text boxes overlap in the source
+         (y=63 h=266 and y=255 h=266) because both are auto-sized around
+         their copy; laid out here as two stacked blocks in the order the
+         PDF renders them.
+
+         Bold runs are the deck's own: פרופורציה (twice) and
+         הנתון הרביעי. check_emphasis.py holds them to the PPTX.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="4" id="s4">
+
+      <!-- ONE flow, not two positioned boxes. The deck holds this copy in two
+           auto-sized text boxes (y=63 and y=255) that OVERLAP in the source,
+           and positioning them separately opened a gap of three blank lines
+           between "…עבור זוג תמונות" and "כשידוע יחס מסוים". The deck's own
+           render puts every line on one 38px grid with exactly one blank
+           line between thoughts (PDF: y=73/150/188/265/303/380), which is
+           what a single flow with .pgap produces. -->
+      <div class="hct-block" data-reveal="1" style="--x:128px; --y:63px; --w:1049px;">
+        <p><strong>פרופורציה</strong> היא שוויון בין יחסים.</p>
+        <p class="pgap"></p>
+        <p><strong>פרופורציה</strong> משמשת אותנו להשוואה בין שני מצבים.</p>
+        <p>לדוגמה - השוואת היחס של הרוחב לאורך עבור זוג תמונות.</p>
+        <p class="pgap"></p>
+        <p>כשידוע יחס מסוים, וידוע גם ערך אחד מיחס אחר שאמור להיות שווה לו – אפשר למצוא<br>את <strong>הנתון הרביעי</strong> החסר, כך ששני היחסים יישארו שווים.</p>
+        <p class="pgap"></p>
+        <p>ביחידה זו נלמד כיצד לעשות זאת.</p>
+      </div>
+
+      <!-- A DIFFERENT asset from the companion elsewhere: slide 7 uses a
+           squashed pose (image9.png, 653×211) whose joke is the bubble
+           beside it — "איך יצאתי בתמונה?" on the screen that closes a hook
+           about distorted photographs. The yellow twin arrived 03.09.2026,
+           so the slot names the POSE: --fixed still owns the sizing, and
+           data-pose is what lets applyCharacter() follow the choice.
+           Placed at x=-116 w=651, i.e. deliberately running off the left
+           edge, exactly as the deck has it. --h is declared because the two
+           renders are not the same shape — green is 3.09 wide-to-tall and
+           yellow 1.68 — and a width-only slot would make the yellow one
+           nearly twice as tall as the green. -->
+      <div class="hct-character hct-character--fixed" data-pose="squashed" data-reveal="3"
+           style="--x:-116px; --y:440px; --w:651px; --h:210px;">
+        <img src="assets/img/character-squashed-green.png" alt="" aria-hidden="true">
+      </div>
+      <!-- 18px left of the deck's x=383: the squashed pose's visible right
+           edge falls short of its 651px picture box, so at the deck's own
+           coordinate the tail stops just clear of the character instead of
+           touching it. Producer review, 01.09.2026. -->
+      <div class="hct-bubble hct-bubble--tail-downleft" data-reveal="3"
+           style="--x:383px; --y:383px; --w:221px; --h:121px;">איך יצאתי בתמונה?</div>
+
+      <button class="scq-back" id="s4-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s4-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 05 — Carousel  ·  spec slides 8-19
+         The הקנייה sequence: twelve steps that teach the proportion
+         table and then solve it twice, once for flour and once for
+         sugar. All twelve slides declare `שם המסך בפיגמה: Carousel`.
+
+         Four of the steps are graded questions (slides 11, 13, 16, 17).
+         They register with the question engine under their own keys —
+         51..54 — because the engine keys its DOM contract off one number
+         per question and this screen holds four. The keys are only id
+         prefixes, so `s51-submit`, `s51-popup` and the rest never
+         collide with screen 5's own `s5-*` ids.
+
+         Next/prev are the bottom bar's own buttons, not in-carousel
+         arrows: the deck draws none, and a question step's pill must be
+         "צדקתי?" — the same button. advanceScreen()/goBack() in main.js
+         step within the carousel until it runs out.
+
+         ⚠ The deck pastes a static NINE-dot strip on all twelve slides
+         with the same dot filled. It is unrendered template furniture,
+         not a step count — the strip below is generated from the real
+         twelve. See CLAUDE.md → open questions.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="5" id="s5">
+
+      <!-- ── step 1 · slide 8 ─────────────────────────────── -->
+      <div class="car-step active" data-step="1">
+        <h1 class="car-title">איך מוודאים שפרופורציה נשמרת?</h1>
+        <div class="car-figure" style="--x:0px; --y:132px;">
+          <img src="assets/img/kitchen-intro.jpg" style="--w:577px; --h:434px;"
+               alt="אביבית במטבח, לצידה כוסות מדידה ומצרכי אפייה">
+        </div>
+        <div class="hct-bubble hct-bubble--tail-left" style="--x:379px; --y:132px; --w:198px; --h:86px;">כמה גרמים יש בכוס אחת?</div>
+        <div class="car-body" style="--x:655px; --y:158px; --w:565px;">
+          <p>ניקח דוגמה מהמטבח של אביבית:</p>
+          <p class="pgap"></p>
+          <p>במתכוני אפייה, כמויות המרכיבים יכולות להופיע בגרמים<br>(יחידת משקל) או בכוסות מדידה (המודדות את נפח<br>המרכיבים).</p>
+          <p class="pgap"></p>
+          <p>כיצד נוכל לעבוד עם כוסות מדידה, כאשר מתכון רשום<br>בגרמים?</p>
+        </div>
+        <button class="btn-continue" type="button" onclick="advanceScreen()">
+          <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 2 · slide 9 ─────────────────────────────── -->
+      <div class="car-step" data-step="2">
+        <h1 class="car-title">איך מוודאים שפרופורציה נשמרת?</h1>
+        <div class="car-figure" style="--x:5px; --y:148px;">
+          <img src="assets/img/kitchen-cups.jpg" style="--w:551px; --h:414px;"
+               alt="אביבית מחזיקה שתי כוסות מדידה, אחת עם קמח ואחת עם סוכר">
+        </div>
+        <div class="hct-bubble hct-bubble--tail-left" style="--x:358px; --y:148px; --w:198px; --h:86px;">דיוק הוא המפתח לעוגה מוצלחת!</div>
+        <div class="car-body" style="--x:600px; --y:96px; --w:611px;">
+          <p>כמות הגרמים שמכילה כוס מדידה שונה בין מרכיבים שונים.</p>
+          <p>לדוגמה, <strong>כוס קמח</strong> שוקלת <strong>פחות מכוס סוכר</strong>.</p>
+          <p class="pgap"></p>
+          <p>ניתן להיעזר בפרופורציה (שוויון בין יחסים) בכדי להעביר כמויות<br>מגרמים לכוסות מדידה באופן מדויק.</p>
+        </div>
+        <!-- The two scales. The right one (flour, 140 גרם) reads correctly
+             in the stock photo; the left one is a photo of a 240g sugar cup
+             that the producer PATCHES with two opaque filled text boxes —
+             "200 גרם" over the display (#7E837F) and "כוס סוכר לבן" over
+             the caption bar (#A6A6A6). Reproduced as patches, not as plain
+             labels: without the fill the photo's own "240 גרם" shows
+             through and the screen states two different weights for the
+             same cup. -->
+        <div class="car-figure" style="--x:960px; --y:304px;">
+          <img src="assets/img/scale-a.png" style="--w:252px; --h:276px;" alt="משקל מטבח ועליו כוס קמח לבן, מראה 140 גרם">
+        </div>
+        <div class="car-figure" style="--x:617px; --y:304px;">
+          <img src="assets/img/scale-b.png" style="--w:252px; --h:276px;" alt="משקל מטבח ועליו כוס סוכר לבן, מראה 200 גרם">
+        </div>
+        <div class="car-patch" style="--x:681px; --y:473px; --w:127px; --h:24px; --fill:#7E837F; font-weight:700;"><span class="num">200</span> גרם</div>
+        <div class="car-patch" style="--x:648px; --y:542px; --w:193px; --h:23px; --fill:#A6A6A6;">כוס סוכר לבן</div>
+        <button class="btn-continue" type="button" onclick="advanceScreen()">
+          <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 3 · slide 10 ────────────────────────────── -->
+      <div class="car-step" data-step="3">
+        <h1 class="car-title">אביבית אופה עוגה</h1>
+        <div class="car-figure" style="--x:0px; --y:159px;">
+          <img src="assets/img/kitchen-flour.jpg" style="--w:529px; --h:398px;"
+               alt="אביבית שופכת קמח לכוס מדידה">
+        </div>
+        <div class="car-body" style="--x:641px; --y:150px; --w:569px;">
+          <p>אביבית רוצה לאפות את עוגה לכבוד יום ההולדת של אמא<br>שלה.</p>
+          <p class="pgap"></p>
+          <p>כמויות המרכיבים במתכון מצוינות בגרמים, אבל המשקל<br>הדיגיטלי שלה התקלקל ויש לה רק כוסות מדידה.</p>
+          <p class="pgap"></p>
+          <p>במתכון כתוב שצריך <span class="num">280</span> גרם קמח.</p>
+          <p>אביבית חיפשה באינטרנט ומצאה:</p>
+        </div>
+        <div class="car-chip" style="--x:687px; --y:456px;"><span class="num">1</span> כוס קמח לבן = <span class="num">140</span> גרם</div>
+        <button class="btn-continue" type="button" onclick="advanceScreen()">
+          <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 4 · slide 11 — drag-to-fill (question 51) ── -->
+      <div class="car-step" data-step="4">
+        <h1 class="car-title">איך נמיר גרמים לכוסות מדידה?</h1>
+        <div class="car-figure" style="--x:7px; --y:154px;">
+          <img src="assets/img/kitchen-flour-pour.jpg" style="--w:555px; --h:418px;"
+               alt="אביבית מודדת קמח לשתי כוסות מדידה">
+        </div>
+        <div class="car-body" style="--x:660px; --y:158px; --w:551px;">
+          <p>היחס עבור קמח הוא: <strong><span class="num">1</span> כוס קמח לבן = <span class="num">140</span> גרם</strong></p>
+          <p class="pgap"></p>
+          <p>לפי המתכון, צריך <span class="num">280</span> גרם קמח.</p>
+          <p>נסמן: x - כמות כוסות הקמח הדרושות לאביבית.</p>
+          <p class="pgap"></p>
+          <p>השלימו את טבלת הפרופורציה על ידי גרירה:</p>
+        </div>
+
+        <div style="position:absolute; left:660px; top:400px; width:551px;">
+          <table class="prop-table prop-table--start">
+            <thead>
+              <tr><th></th><th>יחס ידוע</th><th>המתכון של אביבית</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="prop-rowhead">מספר כוסות</td>
+                <td class="prop-num">1</td>
+                <td><span class="prop-slot" id="s51-slot-cups" tabindex="0"
+                          onclick="Q.slotClear(51,'cups')"
+                          ondragover="dropAllow(event,this)" ondragleave="dropLeave(this)"
+                          ondrop="dropChip(event,51,'cups',this)"></span></td>
+              </tr>
+              <tr>
+                <td class="prop-rowhead">כמות בגרמים</td>
+                <td><span class="prop-slot" id="s51-slot-gramsKnown" tabindex="0"
+                          onclick="Q.slotClear(51,'gramsKnown')"
+                          ondragover="dropAllow(event,this)" ondragleave="dropLeave(this)"
+                          ondrop="dropChip(event,51,'gramsKnown',this)"></span></td>
+                <td><span class="prop-slot" id="s51-slot-gramsRecipe" tabindex="0"
+                          onclick="Q.slotClear(51,'gramsRecipe')"
+                          ondragover="dropAllow(event,this)" ondragleave="dropLeave(this)"
+                          ondrop="dropChip(event,51,'gramsRecipe',this)"></span></td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Chip order is the deck's own left-to-right: X, 140, 280. -->
+          <div class="prop-pool" style="margin-top:18px;">
+            <button class="prop-chip" id="s51-pool-X"   type="button" draggable="true" ondragstart="dragChip(event,'X')"   onclick="Q.poolPick(51,'X')">X</button>
+            <button class="prop-chip" id="s51-pool-140" type="button" draggable="true" ondragstart="dragChip(event,'140')" onclick="Q.poolPick(51,'140')">140</button>
+            <button class="prop-chip" id="s51-pool-280" type="button" draggable="true" ondragstart="dragChip(event,'280')" onclick="Q.poolPick(51,'280')">280</button>
+          </div>
+        </div>
+
+        <button class="btn-continue" id="s51-submit" type="button" onclick="Q.submit(51)" disabled>
+          <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 5 · slide 12 ────────────────────────────── -->
+      <div class="car-step" data-step="5">
+        <h1 class="car-title">איך נמיר גרמים לכוסות מדידה?</h1>
+        <div class="car-figure" style="--x:53px; --y:325px;">
+          <img src="assets/img/kitchen-order.jpg" style="--w:634px; --h:247px;"
+               alt="שולחן העבודה של אביבית עם המצרכים מסודרים">
+        </div>
+        <!-- The third sentence is bold across THREE runs in the deck
+             ("בכתיבת" / " פרופורציה, יש חשיבות…" / "."), i.e. the whole
+             sentence including its full stop. One <strong>, not three. -->
+        <div class="car-body" style="--x:459px; --y:158px; --w:751px;">
+          <p>כדי לשמור על דיוק , ניעזר בפרופורציה –</p>
+          <p>שוויון יחסים בין מספר כוסות המדידה לכמות בגרמים.</p>
+          <p class="pgap"></p>
+          <p><strong>בכתיבת פרופורציה, יש חשיבות גדולה לסדר המילים והמספרים.</strong></p>
+        </div>
+        <button class="btn-continue" type="button" onclick="advanceScreen()">
+          <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 6 · slide 13 — multi-choice (question 52) ── -->
+      <div class="car-step" data-step="6">
+        <h1 class="car-title">איך נמיר גרמים לכוסות מדידה?</h1>
+        <div class="car-body" style="--x:170px; --y:158px; --w:989px;">
+          <p>בהנתן טבלת הפרופורציה המלאה:</p>
+        </div>
+
+        <div style="position:absolute; left:0; right:0; top:206px; display:flex; justify-content:center;">
+          <table class="prop-table">
+            <thead>
+              <tr><th></th><th>יחס ידוע</th><th>המתכון של אביבית</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="prop-rowhead">מספר כוסות</td><td class="prop-num">1</td><td class="prop-num">x</td></tr>
+              <tr><td class="prop-rowhead">כמות גרמים</td><td class="prop-num">140</td><td class="prop-num">280</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="car-body" style="--x:170px; --y:378px; --w:989px;">
+          <p><strong>קבעו - מה משוואת הפרופורציה המתאימה? בחרו בכל התשובות המתאימות.</strong></p>
+        </div>
+
+        <!-- Four options, in the deck's own right-to-left screen order
+             (x = 945, 697, 450, 167). Two are correct — the deck marks
+             both with a green dot and its feedback says so explicitly:
+             "ולכן יש שתי תשובות נכונות". -->
+        <div style="position:absolute; left:0; right:0; top:440px; display:flex; justify-content:center; gap:18px; direction:rtl;">
+          <button class="scq-opt car-opt" id="s52-opt-a" type="button" onclick="Q.select(52,'a')">
+            <span class="scq-radio"></span>
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">x</span><span class="eq-den">140</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">280</span></span></span>
+          </button>
+          <button class="scq-opt car-opt" id="s52-opt-b" type="button" onclick="Q.select(52,'b')">
+            <span class="scq-radio"></span>
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">140</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">x</span><span class="eq-den">280</span></span></span>
+          </button>
+          <button class="scq-opt car-opt" id="s52-opt-c" type="button" onclick="Q.select(52,'c')">
+            <span class="scq-radio"></span>
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">140</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">280</span><span class="eq-den">x</span></span></span>
+          </button>
+          <button class="scq-opt car-opt" id="s52-opt-d" type="button" onclick="Q.select(52,'d')">
+            <span class="scq-radio"></span>
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">280</span><span class="eq-den">X</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">140</span><span class="eq-den">1</span></span></span>
+          </button>
+        </div>
+
+        <button class="btn-continue" id="s52-submit" type="button" onclick="Q.submit(52)" disabled>
+          <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 7 · slide 14 ────────────────────────────── -->
+      <div class="car-step" data-step="7">
+        <!-- Slide 14 moves both boxes: its title sits at x=238 w=910 (the
+             other steps use the deck's own 102/1109) and its copy block at
+             x=189 w=971. Positioned per step rather than by the shared
+             default, which put both 20-73px right of the producer's. -->
+        <h1 class="car-title" style="left:229px; top:66px; width:910px;">איך נמיר גרמים לכוסות מדידה?</h1>
+        <div class="car-body" style="--x:169px; --y:160px; --w:971px;">
+          <p><strong>נדגיש שוב:</strong></p>
+          <p class="pgap"></p>
+          <p>אם נבחר לכתוב את היחס בין כוסות (<span class="num">1</span>) לגרמים (<span class="num">140</span>), יש לכתוב כל יחס נוסף בפרופורציה כך<br>שהכמות בכוסות תהיה במונה והכמות בגרמים במכנה.</p>
+        </div>
+
+        <!-- The companion and its bubble. The deck's slot is 340x323 at
+             (-8, 344) but its own artwork fills only part of it; sized here
+             to the art the producer actually shows — 215 wide, standing on
+             the bottom bar — so it does not tower over the diagram. -->
+        <div class="hct-character hct-character--fixed" style="--x:30px; --y:400px; width:215px; --anchor:bottom left;">
+          <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+        </div>
+        <div class="hct-bubble hct-bubble--tail-down" style="--x:28px; --y:253px; --w:215px; --h:114px; --tail-x:96px;">זה ממש חשוב, טוב שחזרתם על זה!</div>
+
+        <!-- The annotated equation, taken from the DECK rather than redrawn.
+             06.09: the traced lines were wrong twice. Slide 14's real geometry,
+             read from the pptx:
+               equation   media/image26.png   (538.7, 397.2)  226.0 x  94.7
+               callout 15 (830.8, 334.2) 215.2 x  83.1
+               callout 16 (827.3, 477.3) 220.6 x  90.2
+               callout 17 (300.2, 375.5) 250.2 x 113.7
+               arrow  8   (740.7, 418.6) -> (830.8, 385.4)   [flipV]
+               arrow  5   (746.5, 476.9) -> (826.8, 512.8)
+             Two things the earlier passes had wrong: the equation was typeset
+             at 566..738 instead of the deck's 538.7..764.7, so every endpoint
+             missed it; and a THIRD line was drawn to the left callout, which
+             the deck does not have — it carries only two connectors. Both
+             start ON the right-hand fraction, which is what "from the x and
+             the 280" means. -->
+        <div class="car-figure" style="--x:538.7px; --y:397.2px;">
+          <img src="assets/img/eq-140-280.png" style="--w:226px; --h:94.7px;"
+               alt="הפרופורציה: 1 חלקי 140 שווה x חלקי 280">
+        </div>
+
+        <!-- No leader lines here (producer 06.09: "don't do the lines at all").
+             The deck draws two connectors from the right-hand fraction to the
+             two callouts; the callouts sit close enough to read without them.
+             If they are ever wanted back, the deck's geometry is slide 14's
+             arrow 8 (740.7,418.6)->(830.8,385.4) and arrow 5
+             (746.5,476.9)->(826.8,512.8). -->
+
+        <div class="callout" style="--x:830.8px; --y:334.2px; --w:215.2px; --h:83.1px;">מספר כוסות הקמח<br>שאביבית רוצה לחשב</div>
+        <div class="callout" style="--x:827.3px; --y:477.3px; --w:220.6px; --h:90.2px;">כמות הגרמים של<br>קמח במתכון</div>
+        <div class="callout" style="--x:300.2px; --y:375.5px; --w:250.2px; --h:113.7px;">יחס ההמרה בין כוסות<br>לגרמים עבור קמח לבן</div>
+
+        <button class="btn-continue" type="button" onclick="advanceScreen()">
+          <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 8 · slide 15 ────────────────────────────── -->
+      <div class="car-step" data-step="8">
+        <h1 class="car-title">כמה כוסות קמח לבן צריך במתכון?</h1>
+        <div class="car-figure" style="--x:4px; --y:160px;">
+          <img src="assets/img/kitchen-success.jpg" style="--w:547px; --h:411px;"
+               alt="אביבית מחזיקה שתי כוסות קמח, עליהן פתק 'הצלחתי! 280 גרם'">
+        </div>
+        <div class="hct-bubble hct-bubble--tail-left" style="--x:379px; --y:132px; --w:227px; --h:97px;">אם הגרמים גדלו פי <span class="num">2</span> – גם הכוסות גדלות פי <span class="num">2</span>!</div>
+
+        <!-- Four separately-placed lines, on the deck's own y grid (172,
+             242, 438, 501) with its right edge at 1243 — the block used to
+             sit 32px left of the producer's and on a tighter rhythm. -->
+        <div class="car-body" style="--x:633px; --y:172px; --w:610px;">
+          <p>נשים לב ש: <span class="num">140 · <strong>2</strong> = 280</span></p>
+        </div>
+        <div class="car-body" style="--x:623px; --y:242px; --w:620px;">
+          <p>כדי שיתקיים שוויון, השבר
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">x</span><span class="eq-den">280</span></span></span>
+            צריך להיות הרחבה פי <span class="num">2</span> של השבר
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">140</span></span></span>
+          </p>
+        </div>
+
+        <!-- The ×2 expansion, taken from the DECK rather than redrawn.
+             06.09: two passes at drawing the arcs came out wrong at this size
+             — the deck's arrows are its own icon (media/image28.svg, Office's
+             curved "Back RTL") placed twice, rotated 31.28° and mirrored, with
+             media/image29.png as the equation and image31/32.png as the two
+             "· 2" labels. All five are composed at the deck's own geometry
+             (group 43 maps its children by sx=1.218 sy=1.114; the lower arrow
+             sits in group 40 nested inside it) and rendered once at 4x into
+             eq-mult-2.png. Union box 226.7 x 135.1 design px — which is why
+             it is sized in those exact numbers here.
+             Rebuild: tools note in CLAUDE.md → "the ×2 graphic". -->
+        <div class="car-figure" style="--x:726px; --y:300px;">
+          <img src="assets/img/eq-mult-2.png" style="--w:226.7px; --h:135.1px;"
+               alt="הפרופורציה 1 חלקי 140 שווה x חלקי 280, עם חצים המראים הכפלה פי 2 במונה ובמכנה">
+        </div>
+
+        <div class="car-body" style="--x:633px; --y:438px; --w:610px;">
+          <p>ולכן: <span class="num">x = 1 · <strong>2</strong> = 2</span></p>
+        </div>
+        <div class="car-body" style="--x:633px; --y:501px; --w:610px;">
+          <p><strong>כלומר, אביבית צריכה <span class="num">2</span> כוסות קמח.</strong></p>
+        </div>
+        <button class="btn-continue" type="button" onclick="advanceScreen()">
+          <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 9 · slide 16 — drag-to-fill (question 53) ── -->
+      <div class="car-step" data-step="9">
+        <h1 class="car-title">כמה כוסות סוכר אביבית צריכה?</h1>
+        <div class="car-figure" style="--x:0px; --y:146px;">
+          <img src="assets/img/kitchen-sugar.jpg" style="--w:558px; --h:424px;"
+               alt="אביבית שופכת סוכר לכוס מדידה">
+        </div>
+        <div class="car-body" style="--x:600px; --y:150px; --w:610px;">
+          <p>במתכון כתוב שצריך <span class="num">300</span> גרם סוכר.<br>
+             אביבית חיפשה שוב באינטרנט ומצאה:</p>
+        </div>
+        <div class="car-chip" style="--x:932px; --y:226px;"><span class="num">1</span> כוס סוכר = <span class="num">200</span> גרם</div>
+        <div class="car-body" style="--x:600px; --y:318px; --w:610px;">
+          <p>נסמן: y - כמות כוסות הסוכר הדרושות לאביבית.<br>
+             השלימו את טבלת הפרופורציה ע"י גרירת המספרים למקום הנכון:</p>
+        </div>
+
+        <div style="position:absolute; left:600px; top:410px; width:610px;">
+          <table class="prop-table prop-table--start">
+            <thead>
+              <tr><th></th><th>יחס ידוע</th><th>המתכון של אביבית</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="prop-rowhead">מספר כוסות סוכר</td>
+                <td><span class="prop-slot" id="s53-slot-cupsKnown" tabindex="0"
+                          onclick="Q.slotClear(53,'cupsKnown')"
+                          ondragover="dropAllow(event,this)" ondragleave="dropLeave(this)"
+                          ondrop="dropChip(event,53,'cupsKnown',this)"></span></td>
+                <td class="prop-num">y</td>
+              </tr>
+              <tr>
+                <td class="prop-rowhead">כמות סוכר בגרמים</td>
+                <td><span class="prop-slot" id="s53-slot-gramsKnown" tabindex="0"
+                          onclick="Q.slotClear(53,'gramsKnown')"
+                          ondragover="dropAllow(event,this)" ondragleave="dropLeave(this)"
+                          ondrop="dropChip(event,53,'gramsKnown',this)"></span></td>
+                <td><span class="prop-slot" id="s53-slot-gramsRecipe" tabindex="0"
+                          onclick="Q.slotClear(53,'gramsRecipe')"
+                          ondragover="dropAllow(event,this)" ondragleave="dropLeave(this)"
+                          ondrop="dropChip(event,53,'gramsRecipe',this)"></span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="prop-pool" style="margin-top:16px;">
+            <button class="prop-chip" id="s53-pool-1"   type="button" draggable="true" ondragstart="dragChip(event,'1')"   onclick="Q.poolPick(53,'1')">1</button>
+            <button class="prop-chip" id="s53-pool-200" type="button" draggable="true" ondragstart="dragChip(event,'200')" onclick="Q.poolPick(53,'200')">200</button>
+            <button class="prop-chip" id="s53-pool-300" type="button" draggable="true" ondragstart="dragChip(event,'300')" onclick="Q.poolPick(53,'300')">300</button>
+          </div>
+        </div>
+
+        <button class="btn-continue" id="s53-submit" type="button" onclick="Q.submit(53)" disabled>
+          <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 10 · slide 17 — single choice (question 54) ── -->
+      <div class="car-step" data-step="10">
+        <h1 class="car-title">כמה כוסות סוכר אביבית צריכה?</h1>
+
+        <!-- Slide 17's table header reads "יחס ההמרה" where slide 16's
+             reads "יחס ידוע" for the same column. Transcribed as written
+             in each; flagged in CLAUDE.md → open questions. -->
+        <!-- Right-aligned, as slide 18 sets the same table: centred, it left
+             a band of white down the right margin. Deck box x=373 w=596. -->
+        <div style="position:absolute; left:373px; top:150px; width:596px;">
+          <table class="prop-table">
+            <thead>
+              <tr><th></th><th>יחס ההמרה</th><th>המתכון של אביבית</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="prop-rowhead">מספר כוסות סוכר</td><td class="prop-num">1</td><td class="prop-num">y</td></tr>
+              <tr><td class="prop-rowhead">כמות סוכר בגרמים</td><td class="prop-num">200</td><td class="prop-num">300</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="car-body" style="--x:369px; --y:320px; --w:826px;">
+          <p>היעזרו בטבלת הפרופורציה ובחרו במשוואת הפרופורציה המתאימה:</p>
+        </div>
+
+        <div class="hct-character" style="--x:26px; --y:376px; --w:306px; --h:291px; --anchor:bottom left;">
+          <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+        </div>
+
+        <!-- Deck order right-to-left: x = 962 (correct), 731, 449. -->
+        <div style="position:absolute; left:380px; right:60px; top:388px; display:flex; justify-content:center; gap:18px; direction:rtl;">
+          <button class="scq-opt car-opt" id="s54-opt-a" type="button" onclick="Q.select(54,'a')">
+            <span class="scq-radio"></span>
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">200</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">y</span><span class="eq-den">300</span></span></span>
+          </button>
+          <button class="scq-opt car-opt" id="s54-opt-b" type="button" onclick="Q.select(54,'b')">
+            <span class="scq-radio"></span>
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">y</span><span class="eq-den">200</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">300</span></span></span>
+          </button>
+          <button class="scq-opt car-opt" id="s54-opt-c" type="button" onclick="Q.select(54,'c')">
+            <span class="scq-radio"></span>
+            <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">200</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">300</span><span class="eq-den">y</span></span></span>
+          </button>
+        </div>
+
+        <button class="btn-continue" id="s54-submit" type="button" onclick="Q.submit(54)" disabled>
+          <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 11 · slide 18 ───────────────────────────── -->
+      <div class="car-step" data-step="11">
+        <h1 class="car-title">כמה כוסות סוכר אביבית צריכה?</h1>
+        <!-- The producer's build order for this step, in the note: "טבלה
+             מופיעה עם השקף. ואז המשפט ולאחריו מיד משוואת הפרופורציה." —
+             so the table reveals with the step, then the sentence, then the
+             annotated equation. 
+             NOT WIRED YET: Motion.reveal() takes a whole .screen and runs
+             once per screen id, so it cannot stage one carousel step. The
+             pieces are in place and in order; the staging is an open item in
+             CLAUDE.md. -->
+
+        <!-- The FILLED proportion table. It carries the two ratios the
+             equation below is read off, and it was missing entirely: the
+             step opened on a sentence pointing at numbers that were not on
+             the screen. Deck geometry: x=373 y=149 w=596. -->
+        <table class="prop-table car-table" style="--x:373px; --y:149px; --w:596px;">
+          <thead>
+            <tr><th></th><th>יחס ההמרה</th><th>המתכון של אביבית</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="prop-rowhead">מספר כוסות סוכר</td>
+              <td class="prop-num"><span class="num">1</span></td>
+              <td class="prop-num">y</td>
+            </tr>
+            <tr>
+              <td class="prop-rowhead">כמות סוכר בגרמים</td>
+              <td class="prop-num"><span class="num">200</span></td>
+              <td class="prop-num"><span class="num">300</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="car-body" style="--x:275px; --y:296px; --w:903px;">
+          <p>אם y מייצג את כמות כוסות הסוכר שמתאימה ל-<span class="num">300</span> גרם, נכתוב את משוואת הפרופורציה כך:</p>
+        </div>
+
+        <!-- Same annotated-equation construction as step 7, on slide 18's own
+             coordinates: equation 533..705 x 405..500, callout boxes from the
+             deck's shapes, leader-line endpoints traced off its render. The
+             three labels used to be borderless text with no lines at all. -->
+        <div style="position:absolute; left:533px; top:405px; width:172px; text-align:center; --eq-size:32px;">
+          <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">200</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">y</span><span class="eq-den">300</span></span></span>
+        </div>
+        <!-- No leader lines here either (producer 06.09). The deck's own
+             endpoints, if they are ever wanted back: (708,431)->(814,390),
+             (501,459)->(540,454) and (708,470)->(806,515). -->
+        <div class="callout" style="--x:814px; --y:349px; --w:215px; --h:83px;">כמות כוסות הסוכר<br>שאביבית רוצה לחשב</div>
+        <div class="callout" style="--x:251px; --y:391px; --w:250px; --h:136px;">יחס ההמרה בין כוסות<br>לגרמים עבור סוכר</div>
+        <div class="callout" style="--x:808px; --y:485px; --w:221px; --h:90px;">כמות הגרמים של<br>סוכר במתכון</div>
+        <button class="btn-continue" type="button" onclick="advanceScreen()">
+          <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+        </button>
+      </div>
+
+      <!-- ── step 12 · slide 19 ───────────────────────────── -->
+      <div class="car-step" data-step="12">
+        <h1 class="car-title" style="left:535px; width:676px;">כמה כוסות סוכר אביבית צריכה?</h1>
+        <div class="car-figure" style="--x:0px; --y:238px;">
+          <img src="assets/img/kitchen-final.jpg" style="--w:568px; --h:245px;"
+               alt="העוגה המוכנה על השיש במטבח">
+        </div>
+        <!-- Tail DOWN, not left. The bubble sits ABOVE the photograph and
+             the deck runs its tail straight down onto it; a left-pointing
+             tail aimed at empty canvas and broke the link between what is
+             said and who is saying it. --tail-x puts the tail over the
+             photo's subject rather than at the bubble's corner. -->
+        <div class="hct-bubble hct-bubble--tail-down" style="--x:217px; --y:96px; --w:221px; --h:121px; --tail-x:60px;">זו משוואה שקל לי לפתור!</div>
+
+        <div class="car-body" style="--x:640px; --y:166px; --w:570px;">
+          <p>כדי למצוא את y (כמות כוסות הסוכר),</p>
+          <p>הפעם נפתור את המשוואה על ידי הכפלה במכנה המשותף:</p>
+        </div>
+
+        <!-- The deck's own layout for the solution: the proportion with its
+             "/ · 600" and the blue "המכנה המשותף" label on ONE line at
+             y=237, then three worked steps on a 63px rhythm, then the
+             conclusion set large across the bottom. The block used to be a
+             tight right-aligned stack with the label orphaned below it. -->
+        <div style="position:absolute; left:778px; top:237px; display:flex; align-items:center; gap:26px; direction:ltr; --eq-size:26px;">
+          <span class="eq-frac-row"><span class="eq-frac"><span class="eq-num">1</span><span class="eq-den">200</span></span><span class="eq-eq">=</span><span class="eq-frac"><span class="eq-num">y</span><span class="eq-den">300</span></span></span>
+          <!-- Blue, like the label it belongs to: "/ · 600" and "המכנה
+               המשותף" are one annotation in the deck, not an operator in
+               the equation. It sits on the label's SECOND line (deck y
+               257..302, against "המכנה" at 242..273). -->
+          <span class="num car-annot" style="font-size:22px;">/ · 600</span>
+        </div>
+        <div class="car-body" style="--x:1007px; --y:238px; --w:112px; font-size:18px; color:var(--subject-500); text-align:center; line-height:1.55;">המכנה<br>המשותף</div>
+
+        <div class="car-eqline" style="--x:768px; --y:326px; --w:180px;"><span class="num">2 · y = 1 · 3</span></div>
+        <!-- ONE isolated run, not two. Two `.num` spans with only a "/"
+             between them have no Hebrew to anchor their order, so the RTL
+             paragraph put the first one rightmost and the line read
+             ":2 / 2y = 3". The whole expression is a single LTR run. -->
+        <div class="car-eqline" style="--x:768px; --y:389px; --w:180px;"><span class="num">2y = 3&nbsp; /: 2</span></div>
+        <div class="car-eqline" style="--x:768px; --y:452px; --w:180px;"><span class="num">y = 1.5</span></div>
+
+        <div class="car-body car-body--lead" style="--x:517px; --y:522px; --w:693px;">
+          <p><strong>כלומר, אביבית צריכה להכנת העוגה <span class="num">1.5</span> כוסות סוכר.</strong></p>
+        </div>
+        <button class="btn-continue" type="button" onclick="advanceScreen()">
+          <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+        </button>
+      </div>
+
+      <!-- Step indicator. Generated by carRender() — read-only. -->
+      <div class="car-dots" id="s5-dots" aria-hidden="true"></div>
+
+      <!-- One Back button for the whole carousel: goBack() steps back
+           inside it before leaving the screen. -->
+      <button class="scq-back" id="s5-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 06 — Video  ·  spec slides 20-21
+
+         Slides 20-21 are a two-page whiteboard video SCRIPT (scenes,
+         narration, animation notes). The clip itself has never been
+         delivered — 2-2.pptx embeds 159 PNGs, 8 JPEGs, 3 SVGs and no
+         video or audio at all — so 06.09 the producer asked for the
+         screen to stand with a PLACEHOLDER in the player's place.
+
+         Slide 20's note constrains the layout: "מסך בפיגמה: Video / אבל
+         שימו לב שאין את הבחירה מתחת כמו שקיים בפיגמה" — the Figma Video
+         frame WITHOUT the path-choice control under the player. So: the
+         frame, and nothing under it but המשך.
+
+         FLAG-PRODUCER — two things still owed for this screen: the clip,
+         and the on-screen heading. The deck's only line here is the
+         script's own header, which is production metadata and not learner
+         text, so no title is invented in its place.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="6" id="s6">
+      <div class="video-stage">
+        <div class="video-frame video-frame--placeholder" role="img"
+             aria-label="מקום לסרטון: סרטון White Board — טבלת פרופורציה. הקובץ טרם נמסר.">
+          <svg class="video-play" viewBox="0 0 96 96" aria-hidden="true">
+            <circle cx="48" cy="48" r="46" fill="none" stroke="currentColor" stroke-width="4"/>
+            <path d="M38 30 L70 48 L38 66 Z" fill="currentColor"/>
+          </svg>
+          <p class="video-placeholder-note">סרטון White Board — טבלת פרופורציה</p>
+          <p class="video-placeholder-sub">הקובץ טרם נמסר</p>
+        </div>
+      </div>
+
+      <button class="scq-back" id="s6-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s6-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 07 — TransitionScreen  ·  spec slide 22
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="7" id="s7">
+      <div class="ts-content">
+        <!-- The deck sets both lines at 40px. Rendered as the template's
+             title + subtitle pair (40/700 and 28/400) — 720-design-
+             guidelines → typography.md, "a subtitle under a main title
+             renders at weight 400". Recorded in CLAUDE.md. -->
+        <h1 class="ts-title" data-reveal="1">עוד מעט נתחיל לתרגל,</h1>
+        <p class="ts-sub" data-reveal="1">רגע לפני, בואו נפתור תרגיל אחד יחד</p>
+        <!-- 06.09: the producer's own clip for this screen, one per colour.
+             data-clip names the SET; applyCharacter() picks the file for the
+             learner's choice, exactly as it does for a still. -->
+        <div class="ts-character ts-character--duo" data-reveal="2" data-clip="duo">
+          <video src="assets/video/character-green-duo.mp4"
+                 autoplay loop muted playsinline preload="auto" aria-hidden="true"></video>
+        </div>
+      </div>
+
+      <button class="scq-back" id="s7-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s7-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 08 — Guided Math Practice Screen  ·  slides 23-29
+
+         Seven steps on ONE screen. The layout is the deck's own and does
+         not change between them:
+           RIGHT  a bordered box (x=375 y=237 w=830) holding the exercise
+                  story, with the proportion table floated into it
+                  (deck table x=388 y=368 w=355);
+           LEFT   a subject-filled panel (x=19 y=232 w=332) whose content
+                  is REPLACED each step — it is the teacher talking, not a
+                  transcript, and the deck writes only the current step in
+                  it on every one of the seven slides.
+
+         Two of the steps are graded picks (slides 25 and 27). Neither has
+         a feedback popup, an attempts model or a retry anywhere in the
+         deck: a green "נכון" badge simply appears under the right option.
+         They are therefore NOT routed through the question engine — doing
+         so would attach a contract the producer did not ask for.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="8" id="s8">
+      <h1 class="gp-title">בואו נפתור תרגיל ראשון יחד</h1>
+      <p class="gp-lead">התבוננו בתרגיל הבא. אל תפתרו אותו, רק הסתכלו על הנתונים וחישבו האם יש לכם כיוון לפתרון.</p>
+      <div class="gp-story">
+        <!-- The table lives in ONE element and is moved between this slot
+             and the blue card by s8Render(): the deck keeps it in the card
+             on slide 24 and in this box on 25-29. -->
+        <div id="s8-story-slot"></div>
+        <p>חברת צעצועי הרכבה החליטה לבנות דגם ענק של מכונית יוקרה.</p>
+        <p>כדי שהדגם המוגדל ייראה כמו הדגם המקורי, עליה לשמור על פרופורציה בין<br>הממדים של שני הדגמים.</p>
+        <p class="pgap"></p>
+        <p>גובה הדגם המקורי הוא <span class="num">4</span> ס"מ, אורכו <span class="num">16</span> ס"מ.</p>
+        <p>החברה מעוניינת שאורך הדגם המוגדל לתצוגה<br>יהיה <span class="num">80</span> ס"מ.</p>
+        <p class="pgap"></p>
+        <p class="pgap"></p>
+        <p class="gp-close"><strong>מה צריך להיות גובה הדגם המוגדל כדי תישמר הפרופורציה?</strong></p>
+      </div>
+      <div id="s8-table-wrap" class="hidden">
+        <table class="prop-table">
+        <thead>
+          <tr><th></th><th>דגם מקורי</th><th>דגם מוגדל</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="prop-rowhead">גובה</td>
+              <td class="prop-num" id="s8-cell-oh"></td>
+              <td class="prop-num" id="s8-cell-h"></td></tr>
+          <tr><td class="prop-rowhead">אורך</td>
+              <td class="prop-num" id="s8-cell-ol"></td>
+              <td class="prop-num" id="s8-cell-l"></td></tr>
+        </tbody>
+        </table>
+      </div>
+      <div class="gp-figure hidden" id="s8-figure">
+        <img class="gp-car" src="assets/img/lego-car.png"
+             alt="דגם הרכבה של מכונית ספורט אדומה">
+        <svg class="deck-svg" viewBox="0 0 1280 710" aria-hidden="true" focusable="false">
+          <line class="dim" x1="369" y1="403" x2="369" y2="453"/>
+          <line class="dim" x1="369" y1="493" x2="369" y2="539"/>
+          <line class="dim" x1="384" y1="541" x2="480" y2="541"/>
+          <line class="dim" x1="584" y1="541" x2="680" y2="541"/>
+        </svg>
+        <span class="gp-dim" style="--x:296px; --y:455px;"><span class="num">4</span> ס"מ</span>
+        <span class="gp-dim" style="--x:480px; --y:527px;"><span class="num">16</span> ס"מ</span>
+      </div>
+      <div class="hct-character" id="s8-character" style="--x:26px; --y:456px; --w:221px; --h:211px; --anchor:bottom left;">
+        <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+      </div>
+      <div class="hct-bubble hct-bubble--tail-down" id="s8-bubble"
+           style="--x:59px; --y:288px; --w:180px; --h:121px;">מיד נסביר את הפתרון, שלב אחר שלב</div>
+      <div class="gp-panel hidden" id="s8-panel">
+        <!-- 06.09: the bulb from the client-approved guided callout
+             (methodica-math-percent-04, js/main.js -> GC_BULB), copied
+             verbatim rather than redrawn. -->
+        <svg class="gc-bulb" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="currentColor"/></svg>
+        <div class="gp-panel-body" id="s8-panel-body"></div>
+        <div id="s8-card-slot"></div>
+        <div class="gp-pick hidden" id="s8-pick"></div>
+        <div class="gp-badge hidden" id="s8-badge">נכון</div>
+      </div>
+      <button class="scq-back" id="s8-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s8-submit" type="button" onclick="s8Next()">
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 09 — TransitionScreen  ·  spec slide 30
+         Closes part 01 and announces the two warm-up questions, which
+         are S10 and S11 (slides 31-32) — not built in this pass.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="9" id="s9">
+      <div class="ts-content">
+        <h1 class="ts-title" data-reveal="1">מה נשאר לנו בראש?</h1>
+        <p class="ts-sub" data-reveal="1">שתי שאלות קלילות לחימום לפני שנתקדם</p>
+        <!-- 06.09: this screen's own pair of clips (yellow reads, green spins).
+             Same data-clip contract as S7. -->
+        <div class="ts-character" data-reveal="2" data-clip="solo">
+          <video src="assets/video/character-green-spinning.mp4"
+                 autoplay loop muted playsinline preload="auto" aria-hidden="true"></video>
+        </div>
+      </div>
+
+      <button class="scq-back" id="s9-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <!-- The deck labels this one "קחו אותי לשאלות", not "המשך". -->
+      <button class="btn-continue" id="s9-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="קחו אותי לשאלות"><span>קחו אותי לשאלות</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 10 — ValueInputQuestion  ·  spec slide 31
+         The unit's FIRST hint. Its note also puts this screen on the
+         question strip: "מקטע זה מלווה בסרגל שאלה, שאלה 1 מתוך 2".
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="10" id="s10">
+      <div class="progress-question" id="s10-strip"></div>
+
+      <div class="viq-text" style="--x:355px; --y:121px; --w:860px;">
+        <p><strong>שאלה 1</strong></p>
+        <p>היחס בין <span class="num">10</span> ל-x שווה ליחס בין <span class="num">6</span> ל-<span class="num">15</span>.</p>
+        <p class="pgap"></p>
+        <p class="viq-ask">מצאו את x.</p>
+      </div>
+
+      <!-- FIELD first: under direction:rtl the first flex child is the
+           physical RIGHTMOST one, so listing the label first rendered
+           "[box] x =" with the box on the wrong side of its own equals sign.
+           The deck sets "𝑥 =" at 895..930 and the box at 945..1017. -->
+      <div class="viq-answer" style="--x:879px; --y:246px;">
+        <span class="viq-field">
+          <input class="viq-input" id="s10-in-x" type="number" step="any"
+                 inputmode="decimal" aria-label="הערך של x">
+        </span>
+        <span class="num">x =</span>
+      </div>
+
+      <button class="scq-hint" id="s10-hint" type="button" onclick="Q.openHint(10)">
+        <span class="nav-label" data-label="אפשר רמז?"><span>אפשר רמז?</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true"><path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/><path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/><path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/><path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/><path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/><path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/><path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/><path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/></svg>
+      </button>
+      <button class="scq-back" id="s10-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s10-submit" type="button" onclick="Q.submit(10)" disabled>
+        <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 11 — ValueInputQuestion  ·  spec slide 32
+         "שאלה 2 מתוך 2" on the same strip.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="11" id="s11">
+      <div class="progress-question" id="s11-strip"></div>
+
+      <div class="viq-text" style="--x:355px; --y:121px; --w:860px;">
+        <p><strong>שאלה 2</strong></p>
+        <p>במזנון הקולנוע מוכרים פופקורן בתפזורת במחיר קבוע לפי משקל.</p>
+        <p>על השלט כתוב "המחיר לפי משקל: <span class="num">11</span> ₪ ל-<span class="num">100</span> גרם פופקורן".</p>
+        <p class="pgap"></p>
+        <p>שירה ורז מילאו שקית פופקורן במשקל <span class="num">300</span> גרם.</p>
+        <p class="pgap"></p>
+        <p class="viq-ask">כמה עליהם לשלם?</p>
+      </div>
+
+      <div class="viq-answer" style="--x:774px; --y:317px;">
+        <span class="viq-field">
+          <input class="viq-input" id="s11-in-x" type="number" step="any"
+                 inputmode="decimal" aria-label="הסכום לתשלום בשקלים">
+        </span>
+        <span>ש"ח</span>
+      </div>
+
+      <button class="scq-hint" id="s11-hint" type="button" onclick="Q.openHint(11)">
+        <span class="nav-label" data-label="אפשר רמז?"><span>אפשר רמז?</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true"><path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/><path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/><path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/><path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/><path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/><path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/><path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/><path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/></svg>
+      </button>
+      <button class="scq-back" id="s11-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s11-submit" type="button" onclick="Q.submit(11)" disabled>
+        <span class="nav-label" data-label="צדקתי?"><span>צדקתי?</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Feedback popups for the carousel's four questions.
+         Outside every .screen for the reason given at the top: a popup
+         inside a display:none element cannot be shown.
+         ═══════════════════════════════════════════════════════ -->
+    <div class="scq-popup m-popup hidden" id="s51-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s51-popup-title"></span></div>
+      <div class="scq-popup-body" id="s51-popup-body"></div>
+    </div>
+    <div class="scq-popup m-popup hidden" id="s52-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s52-popup-title"></span></div>
+      <div class="scq-popup-body" id="s52-popup-body"></div>
+    </div>
+    <div class="scq-popup m-popup hidden" id="s53-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s53-popup-title"></span></div>
+      <div class="scq-popup-body" id="s53-popup-body"></div>
+    </div>
+    <div class="scq-popup m-popup hidden" id="s54-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s54-popup-title"></span></div>
+      <div class="scq-popup-body" id="s54-popup-body"></div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Feedback popups and HINT overlays for S10 / S11.
+         Outside every .screen, like the rest — a popup inside a
+         display:none screen cannot be shown.
+
+         The hint card is the deck's own: a title, its body, and a
+         "חזרה לשאלה" button that closes it.
+         ═══════════════════════════════════════════════════════ -->
+    <div class="scq-popup m-popup hidden" id="s10-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s10-popup-title"></span></div>
+      <div class="scq-popup-body" id="s10-popup-body"></div>
+    </div>
+    <div class="scq-hint-overlay hidden" id="s10-hint-overlay" onclick="Q.closeHintOnBackdrop(10, event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s10-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s10-hint-title"><svg class="scq-hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg> שימו לב!</h2>
+          <div class="scq-hint-body">
+            <p>מהי משוואת הפרופורציה (שוויון היחסים) המתאימה לנתונים?</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="Q.closeHint(10)">
+          <span class="nav-label" data-label="חזרה לשאלה"><span>חזרה לשאלה</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scq-popup m-popup hidden" id="s11-popup" onpointerdown="popupPointerDown(event, this.id)">
+      <div class="scq-popup-header"><span class="scq-popup-title" id="s11-popup-title"></span></div>
+      <div class="scq-popup-body" id="s11-popup-body"></div>
+    </div>
+    <div class="scq-hint-overlay hidden" id="s11-hint-overlay" onclick="Q.closeHintOnBackdrop(11, event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s11-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s11-hint-title"><svg class="scq-hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg> חשבו:</h2>
+          <div class="scq-hint-body">
+            <p>מה היחס בין משקלי הפופקורן?</p>
+            <p>מה עליכם לעשות למחיר כדי לשמור על אותו היחס?</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="Q.closeHint(11)">
+          <span class="nav-label" data-label="חזרה לשאלה"><span>חזרה לשאלה</span></span>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         REPORT MODAL — "מצאתם בעיה?"
+         Vendored from methodica-math-proportion-01-01, which vendored it
+         from methodica-math-central-tendency-03-01 (originally
+         examples/methodica-math-ratio-01 → template-library/ReportModal,
+         approved 09.08). Same behavior in every 720 project.
+
+         The .flag-btn at the top ships with the scaffold but has nothing
+         to open — this is the other half of it.
+
+         Lives INSIDE #app on purpose: .report-modal-overlay is
+         position:absolute/inset:0, so it must sit in the scaled canvas or
+         it would cover the letterboxing instead of the lomda.
+         ═══════════════════════════════════════════════════════ -->
+    <div id="report-modal" class="report-modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+      <div class="report-modal-box">
+        <button class="report-close-btn" onclick="tryCloseReportModal()" aria-label="סגור">&#10005;</button>
+        <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
+        <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך? ספרו לנו מה קרה כדי שנטפל.</p>
+        <div class="report-field">
+          <label class="report-label" for="report-type">מה סוג הבעיה <span class="required-star">*</span></label>
+          <select class="report-select" id="report-type">
+            <option value="" disabled selected>בחרו סוג בעיה</option>
+            <option value="technical">תקלה טכנית או שמשהו לא עובד</option>
+            <option value="unclear">משהו לא ברור לי</option>
+            <option value="other">אחר</option>
+          </select>
+        </div>
+        <div class="report-field">
+          <label class="report-label" for="report-text">מה קרה? <span class="required-star">*</span></label>
+          <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="תארו את הבעיה..."></textarea>
+          <span class="report-char-count" id="report-char-count">0 / 250</span>
+        </div>
+        <p class="report-error" id="report-error" hidden>נא לבחור סוג בעיה ולתאר מה קרה.</p>
+        <div class="report-actions">
+          <button class="report-submit-btn" onclick="submitReport()">שליחה</button>
+          <button class="report-cancel-btn" onclick="tryCloseReportModal()">ביטול</button>
+        </div>
+        <div class="report-thanks" id="report-thanks" hidden>
+          <p>תודה! הדיווח נשלח. נטפל בהקדם.</p>
+          <button class="report-submit-btn" onclick="forceCloseReportModal()">סגירה</button>
+        </div>
+      </div>
+    </div>
+    <div id="report-confirm-modal" class="report-modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+      <div class="report-modal-box report-confirm-box">
+        <h2 class="report-modal-title" id="confirm-modal-title">בטוח לסגור את החלון?</h2>
+        <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+        <div class="report-actions">
+          <button class="report-cancel-btn" onclick="forceCloseReportModal()">סגור חלון</button>
+          <button class="report-submit-btn" onclick="backToReportForm()">אני רוצה לדווח</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /#app -->
+
+  <script src="../unit-js/motion.js?v=1"></script>
+  <!-- Cross-part navigation. Loads before main.js, which calls PartNav.init(). -->
+  <script src="../unit-js/partnav.js?v=1"></script>
+  <!-- Shared question contract (attempts, marking, popups, resume).
+       Loads before main.js, which registers each question with Q.define(). -->
+  <script src="../unit-js/question.js?v=1"></script>
+  <script src="script.js?v=1"></script>
+</body>
+</html>

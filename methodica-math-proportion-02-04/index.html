@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מציאת המספר X החסר — חלק 04</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<!-- data-subject-theme activates the matching token override block in
+     css/style.css. :root holds the Science defaults; this one attribute is
+     the entire theme switch (720-design-guidelines → colors-and-gradients.md). -->
+<body data-subject-theme="math">
+
+  <div id="app">
+
+    <!-- ═══════════════════════════════════════════════════════
+         GLOBAL CHROME — outside every .screen, so it survives
+         navigation and is never hidden by display:none.
+         ═══════════════════════════════════════════════════════ -->
+
+    <!-- Report / Issue button. Opens #report-modal (wired in main.js).
+         Glyph is live inline SVG on currentColor because the hover state
+         is subject-themed; a PNG would freeze one theme's colour.
+         (720-templates → _global-components.md → Report / Issue button) -->
+    <button class="flag-btn" type="button" aria-label="מצאתם בעיה?">
+      <span class="flag-btn-icon">
+        <span class="flag-btn-glyph" aria-hidden="true">
+          <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none"><path d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z" fill="currentColor"/></svg>
+          <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none"><path d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z" fill="currentColor"/></svg>
+        </span>
+      </span>
+      <span class="flag-btn-label">מצאתם בעיה?</span>
+    </button>
+
+    <!-- Feedback popups and hint overlays live HERE — outside all .screen
+         divs. A popup inside a display:none screen is invisible no matter
+         what its z-index says. goTo() hides everything whose id ends in
+         -popup or -hint-overlay on every navigation. -->
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 00 — TransitionScreen  ·  spec slide 51
+         Hands the learner from the practice run into the class task.
+         Same lead/title shape as part 03's S7: the small line comes first
+         and the bold message is the title.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen active" data-screen="0" id="s0">
+      <div class="ts-content">
+        <p class="ts-lead" data-reveal="1">השלמת בהצלחה את התרגול – כל הכבוד!</p>
+        <h1 class="ts-title" data-reveal="1">זמן טוב ללמוד גם בצורה אחרת,</h1>
+        <p class="ts-tail" data-reveal="1">כי למידה מתרחשת בכל מיני צורות.</p>
+        <!-- The deck's own note on this slide asks for a calculator, pen and
+             paper in the character's hands ("להוסיף לדמות מחשבון, עט, דף
+             נייר..."). Delivered 03.09.2026 in BOTH colours, so the slot names
+             the pose and applyCharacter() swaps it with the learner's choice
+             rather than being pinned with --fixed. -->
+        <div class="ts-character" data-pose="calculator" data-reveal="2"
+             style="--bubble-x:-318px; --bubble-y:10%;">
+          <img src="assets/img/character-calculator-green.png" alt="" aria-hidden="true">
+          <p class="twc-bubble twc-bubble--tail-right">הוציאו סרגל, עיפרון ודף משבצות –<br>עכשיו נמדוד, נשווה ונמיר!</p>
+        </div>
+      </div>
+      <button class="scq-back" id="s0-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s0-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 01 — ValueInputQuestion (free input)  ·  spec slide 52
+         NOT a graded question. The slide note reads "אבל שימו לב שאין משוב.
+         המשך פעיל ברגע שמקלידים ערך", so there is no "צדקתי?" pill and no
+         feedback popup — המשך unlocks as soon as the field holds a value.
+         Wired by FREE_INPUT_SCREENS in main.js.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="1" id="s1">
+      <h1 class="ct-title">משימת כיתה</h1>
+
+      <!-- The brief. Two bold lines on the deck's own 45px paragraph pitch. -->
+      <div class="viq-text viq-text--brief" style="--x:216px; --y:168px; --w:963px;">
+        <p><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong></p>
+        <p><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      </div>
+
+      <!-- The lesson block, on the plain 32px line grid. -->
+      <div class="viq-text" style="--x:216px; --y:256px; --w:963px;">
+        <p class="ct-heading">נכיר את הסרגל</p>
+        <p>התבוננו בסרגל שלכם.</p>
+        <p>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.</p>
+        <ul class="viq-bullets">
+          <li>כל שנתה גדולה מייצגת <strong><span class="num">1</span> סנטימטר</strong>.</li>
+          <li>כל שנתה קטנה מייצגת <strong><span class="num">1</span> מילימטר</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="viq-text" style="--x:216px; --y:445px; --w:963px;">
+        <p>ספרו כמה שנתות קטנות יש בין <span class="num">0</span> ל-<span class="num">1</span> ס"מ.</p>
+      </div>
+      <div class="viq-text" style="--x:216px; --y:508px; --w:963px;">
+        <p>כמה מילימטרים יש בסנטימטר אחד?</p>
+      </div>
+
+      <div class="hct-img" style="--x:226px; --y:305px; --w:543px; --h:169px;">
+        <img src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטר ומילימטר">
+      </div>
+
+      <!-- WIDTH, not height: .hct-character--fixed leaves height auto, so a
+           height-only box has no width to resolve `width:100%` against and
+           the image falls back to its intrinsic 523px. The deck draws the
+           companion 274 tall, which is 202 wide at this asset's aspect. -->
+      <div class="hct-character hct-character--fixed" data-pose="magnifier" style="--x:25px; --y:378px; width:202px; --h:275px;">
+        <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+      </div>
+      <p class="hct-bubble hct-bubble--tail-down" style="--x:25px; --y:257px; --w:178px; --h:121px;">רגע, יש פה מלא קווים קטנים...<br>בואו נספור!</p>
+
+      <div class="viq-answer viq-answer--spread" style="--x:945px; --y:551px; --w:198px;">
+        <span class="viq-field">
+          <input class="viq-input" id="s1-in-mm" type="number" step="any"
+                 inputmode="decimal" aria-label="מספר המילימטרים בסנטימטר אחד">
+        </span>
+        <span>מ"מ.</span>
+      </div>
+
+      <button class="scq-back" id="s1-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s1-continue" type="button" onclick="advanceScreen()" disabled>
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 02 — ValueInputQuestion (free input)  ·  spec slide 53
+         The same board as S1 with the counting question replaced by the
+         ratio one, and without the companion — the deck drops the character
+         and the bubble here. Free input again, answer written as a ratio, so
+         the field is TEXT and not a number.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="2" id="s2">
+      <h1 class="ct-title">משימת כיתה</h1>
+
+      <div class="viq-text viq-text--brief" style="--x:216px; --y:166px; --w:963px;">
+        <p><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong></p>
+        <p><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      </div>
+
+      <div class="viq-text" style="--x:216px; --y:254px; --w:963px;">
+        <p class="ct-heading">נכיר את הסרגל</p>
+        <p>התבוננו בסרגל שלכם.</p>
+        <p>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.</p>
+        <ul class="viq-bullets">
+          <li>כל שנתה גדולה מייצגת <strong><span class="num">1</span> סנטימטר</strong>.</li>
+          <li>כל שנתה קטנה מייצגת <strong><span class="num">1</span> מילימטר</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="viq-text" style="--x:216px; --y:443px; --w:963px;">
+        <p>מהו היחס בין מספר הסנטימטרים למספר המילימטרים שמייצגים את אותו האורך?</p>
+      </div>
+
+      <div class="hct-img" style="--x:226px; --y:305px; --w:543px; --h:169px;">
+        <img src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטר ומילימטר">
+      </div>
+
+      <!-- 06.09, producer: TWO boxes with the colon already printed between
+           them, so a learner who types "1" and "10" without the ":" is not
+           held back by punctuation. direction:ltr on the row, per the ratio
+           law — a ratio is an LTR run, so DOM order is reading order and
+           סנטימטרים (the left term) is the first box. -->
+      <div class="viq-answer viq-answer--ratio" style="--x:1020px; --y:500px;">
+        <span class="viq-field">
+          <input class="viq-input viq-input--text" id="s2-in-cm" type="text"
+                 inputmode="numeric" aria-label="מספר הסנטימטרים ביחס">
+        </span>
+        <span class="viq-ratio-colon">:</span>
+        <span class="viq-field">
+          <input class="viq-input viq-input--text" id="s2-in-mm" type="text"
+                 inputmode="numeric" aria-label="מספר המילימטרים ביחס">
+        </span>
+      </div>
+
+      <button class="scq-back" id="s2-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s2-continue" type="button" onclick="advanceScreen()" disabled>
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         REPORT MODAL — "מצאתם בעיה?"
+         Vendored from methodica-math-proportion-01-01, which vendored it
+         from methodica-math-central-tendency-03-01 (originally
+         examples/methodica-math-ratio-01 → template-library/ReportModal,
+         approved 09.08). Same behavior in every 720 project.
+
+         The .flag-btn at the top ships with the scaffold but has nothing
+         to open — this is the other half of it.
+
+         Lives INSIDE #app on purpose: .report-modal-overlay is
+         position:absolute/inset:0, so it must sit in the scaled canvas or
+         it would cover the letterboxing instead of the lomda.
+         ═══════════════════════════════════════════════════════ -->
+    <div id="report-modal" class="report-modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+      <div class="report-modal-box">
+        <button class="report-close-btn" onclick="tryCloseReportModal()" aria-label="סגור">&#10005;</button>
+        <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
+        <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך? ספרו לנו מה קרה כדי שנטפל.</p>
+        <div class="report-field">
+          <label class="report-label" for="report-type">מה סוג הבעיה <span class="required-star">*</span></label>
+          <select class="report-select" id="report-type">
+            <option value="" disabled selected>בחרו סוג בעיה</option>
+            <option value="technical">תקלה טכנית או שמשהו לא עובד</option>
+            <option value="unclear">משהו לא ברור לי</option>
+            <option value="other">אחר</option>
+          </select>
+        </div>
+        <div class="report-field">
+          <label class="report-label" for="report-text">מה קרה? <span class="required-star">*</span></label>
+          <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="תארו את הבעיה..."></textarea>
+          <span class="report-char-count" id="report-char-count">0 / 250</span>
+        </div>
+        <p class="report-error" id="report-error" hidden>נא לבחור סוג בעיה ולתאר מה קרה.</p>
+        <div class="report-actions">
+          <button class="report-submit-btn" onclick="submitReport()">שליחה</button>
+          <button class="report-cancel-btn" onclick="tryCloseReportModal()">ביטול</button>
+        </div>
+        <div class="report-thanks" id="report-thanks" hidden>
+          <p>תודה! הדיווח נשלח. נטפל בהקדם.</p>
+          <button class="report-submit-btn" onclick="forceCloseReportModal()">סגירה</button>
+        </div>
+      </div>
+    </div>
+    <div id="report-confirm-modal" class="report-modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+      <div class="report-modal-box report-confirm-box">
+        <h2 class="report-modal-title" id="confirm-modal-title">בטוח לסגור את החלון?</h2>
+        <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+        <div class="report-actions">
+          <button class="report-cancel-btn" onclick="forceCloseReportModal()">סגור חלון</button>
+          <button class="report-submit-btn" onclick="backToReportForm()">אני רוצה לדווח</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 03 — משימת כיתה  ·  spec slide 54
+         "אין משוב. המשך פעיל ברגע שמקלידים ערך" — free input.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="3" id="s3">
+      <h1 class="ct-title">משימת כיתה</h1>
+
+      <div class="viq-text viq-text--brief" style="--x:216px; --y:166px; --w:963px;">
+        <p><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong></p>
+        <p><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      </div>
+
+      <div class="viq-text" style="--x:216px; --y:254px; --w:963px;">
+        <p class="ct-heading">נכיר את הסרגל</p>
+        <p>התבוננו בסרגל שלכם.</p>
+        <p>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.</p>
+        <ul class="viq-bullets">
+          <li>כל שנתה גדולה מייצגת <strong><span class="num">1</span> סנטימטר</strong>.</li>
+          <li>כל שנתה קטנה מייצגת <strong><span class="num">1</span> מילימטר</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="hct-img" style="--x:226px; --y:305px; --w:543px; --h:169px;">
+        <img src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטר ומילימטר">
+      </div>
+
+      <div class="viq-text" style="--x:216px; --y:443px; --w:963px;">
+        <p>אם אורך של חפץ מסוים הוא <span class="num">450</span> מ"מ, מה יהיה אורכו בסנטימטרים?</p>
+      </div>
+
+      <!-- Deck: the field at 1020,506 and "ס"מ." beside it at 914,524. -->
+      <div class="viq-answer viq-answer--spread" style="--x:900px; --y:500px; --w:259px;">
+        <span class="viq-field">
+          <input class="viq-input" id="s3-in-cm" type="number" step="any"
+                 inputmode="decimal" aria-label="האורך בסנטימטרים">
+        </span>
+        <span>ס"מ.</span>
+      </div>
+
+      <button class="scq-back" id="s3-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s3-continue" type="button" onclick="advanceScreen()" disabled>
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 04 — משימת כיתה  ·  spec slide 55
+         "אין משוב. המשך פעיל ברגע שמקלידים ערך" — free input.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="4" id="s4">
+      <h1 class="ct-title">משימת כיתה</h1>
+
+      <div class="viq-text viq-text--brief" style="--x:228px; --y:166px; --w:963px;">
+        <p><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong></p>
+        <p><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      </div>
+
+      <div class="viq-text" style="--x:228px; --y:254px; --w:959px;">
+        <p class="ct-heading">התבוננו בסרגל בחלק של האינצ'ים</p>
+        <p>יתכן שהוא מופיע בצידו השני של הסרגל או כקו מקביל לקו הסנטימטרים (ראו תמונה).</p>
+      </div>
+
+      <div class="hct-img" style="--x:236px; --y:330px; --w:543px; --h:169px;">
+        <img src="assets/img/ruler.png" alt="סרגל עם סנטימטרים ואינצ'ים">
+      </div>
+      <div class="hct-character hct-character--fixed" data-pose="standing" style="--x:-34px; --y:335px; width:339px; --h:461px; --anchor:bottom left;">
+        <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+      </div>
+
+      <div class="viq-text" style="--x:228px; --y:452px; --w:959px;">
+        <p>שרטטו במחברתכם קטע באורך <span class="num">5</span> אינצ'ים.</p>
+        <p>מדדו את אורך הקטע בסנטימטרים –</p>
+        <p>דייקו ככל הניתן.</p>
+      </div>
+
+      <!-- The field sits INSIDE the sentence — "5 אינצ׳ים שווים ל- ___
+           סנטימטרים." — not on a line of its own after it. -->
+      <div class="viq-answer" style="--x:828px; --y:556px;">
+        <span><span class="num">5</span> אינצ'ים שווים ל-</span>
+        <span class="viq-field">
+          <input class="viq-input" id="s4-in-cm" type="number" step="any"
+                 inputmode="decimal" aria-label="האורך בסנטימטרים">
+        </span>
+        <span>סנטימטרים.</span>
+      </div>
+
+      <button class="scq-back" id="s4-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s4-continue" type="button" onclick="advanceScreen()" disabled>
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 05 — משימת כיתה  ·  spec slide 56
+         "אין משוב. המשך פעיל ברגע שמקלידים ערך" — free input.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="5" id="s5">
+      <h1 class="ct-title">משימת כיתה</h1>
+
+      <div class="viq-text viq-text--brief" style="--x:207px; --y:166px; --w:963px;">
+        <p><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong></p>
+        <p><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      </div>
+
+      <div class="viq-text" style="--x:207px; --y:258px; --w:981px;">
+        <p class="ct-heading">התבוננו בסרגל בחלק של האינצ'ים</p>
+        <p>יתכן שהוא מופיע בצידו השני של הסרגל או כקו מקביל לקו הסנטימטרים (ראו תמונה).</p>
+        <p>השלימו את הפרופורציה הבאה:</p>
+      </div>
+
+      <div class="hct-img" style="--x:193px; --y:426px; --w:543px; --h:169px;">
+        <img src="assets/img/ruler.png" alt="סרגל עם סנטימטרים ואינצ'ים">
+      </div>
+
+      <!-- The two DENOMINATORS are the blanks: 5 אינץ' over 12.7 ס"מ equals
+           1 אינץ' over 2.54 ס"מ. Deck: equation box 680,458; the two answer
+           chips at 769,504 and 887,505. -->
+      <div class="ct-proportion" style="--x:790px; --y:452px; --eq-size:26px;">
+        <span class="eq-frac-row">
+          <span class="eq-frac">
+            <span class="eq-num"><span class="num">5</span> אינץ'</span>
+            <span class="eq-den"><span class="viq-field viq-field--slim">
+              <input class="viq-input" id="s5-in-a" type="text" inputmode="decimal"
+                     aria-label="כמה סנטימטרים בחמישה אינצ'ים"></span></span>
+          </span>
+          <span class="eq-eq">=</span>
+          <span class="eq-frac">
+            <span class="eq-num"><span class="num">1</span> אינץ'</span>
+            <span class="eq-den"><span class="viq-field viq-field--slim">
+              <input class="viq-input" id="s5-in-b" type="text" inputmode="decimal"
+                     aria-label="כמה סנטימטרים באינץ' אחד"></span></span>
+          </span>
+        </span>
+      </div>
+
+      <button class="scq-back" id="s5-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s5-continue" type="button" onclick="advanceScreen()" disabled>
+        <span class="nav-label" data-label="המשך"><span>המשך</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 06 — משימת כיתה  ·  spec slide 57
+         HookClosingText. No input — the deck gives it "אפשר להמשיך" outright.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="6" id="s6">
+      <h1 class="ct-title">משימת כיתה</h1>
+
+      <div class="viq-text viq-text--brief" style="--x:207px; --y:166px; --w:963px;">
+        <p><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong></p>
+        <p><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      </div>
+
+      <div class="viq-text" style="--x:207px; --y:250px; --w:981px;">
+        <p class="ct-heading">איפה נפגוש אינצ׳ים בחיי היומיום?</p>
+        <p>אחד השימושים הנפוצים באינצ׳ים הוא במדידת גודל של מסכים,</p>
+        <p>למשל - מסכי טלפון, מחשב וטלוויזיה.</p>
+        <p class="pgap"></p>
+        <p>גודל המסך נקבע לפי אורך האלכסון שלו,</p>
+        <p>ונמדד באינצ׳ים.</p>
+      </div>
+
+      <!-- The companion appears INSIDE the phone screen — the producer's own
+           note: "הדמות המלווה נראית כלואה בתוך המסך". -->
+      <img class="ct-phone" src="assets/img/phone-mockup.png"
+           style="--x:-238px; --y:125px; --w:748px; --h:515px;"
+           alt="יד מחזיקה טלפון עם מסך שקוף">
+      <!-- The dashed blue diagonal the deck draws across the phone screen:
+           it is what "גודל המסך נקבע לפי אורך האלכסון שלו" points at. -->
+      <svg class="deck-svg" viewBox="0 0 1280 710" aria-hidden="true" focusable="false" style="z-index:3">
+        <defs>
+          <marker id="s6-diag-head" viewBox="0 0 10 10" refX="10" refY="5"
+                  markerWidth="4" markerHeight="4" markerUnits="strokeWidth"
+                  orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#019de5"/>
+          </marker>
+        </defs>
+        <!-- A double-headed ARROW, not a bare line: it is what
+             "גודל המסך נקבע לפי אורך האלכסון שלו" points at, and without the
+             heads it does not read as a measurement.
+             The endpoints are the producer's own (78,474) and (190,203),
+             measured off her render of slide 57 — NOT the glass's bounding-box
+             corners. The screen's corners are rounded, so a true corner-to-
+             corner line (76,470)-(198,205) crossed the rounded corner and came
+             out on the black bezel, which is what the review saw as the line
+             not being on the phone. Her own tips (78,474)-(190,203) sit within
+             3px of the frame, and an ARROWHEAD is 18px wide at its base, so
+             its corners still landed on the bezel; both ends are pulled 12px
+             further in along the diagonal. Measured glass: x 71..200,
+             y 200..474, narrowing at the rounded corners. -->
+        <line class="diag" x1="83" y1="463" x2="185" y2="214"
+              marker-start="url(#s6-diag-head)" marker-end="url(#s6-diag-head)"/>
+      </svg>
+      <img class="ct-phone-inner" src="assets/img/screen-diagonal.png"
+           style="--x:51px; --y:327px; --w:202px; --h:178px;" alt="" aria-hidden="true">
+      <span class="ct-screen-label" style="--x:28px; --y:296px; --w:212px;"><strong>מסך <span class="num">6.1</span> אינץ'</strong></span>
+
+      <button class="scq-back" id="s6-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s6-continue" type="button" onclick="advanceScreen()">
+        <span class="nav-label" data-label="אפשר להמשיך"><span>אפשר להמשיך</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 07 — משימת כיתה  ·  spec slide 58
+         "אין משוב. המשך פעיל ברגע שמקלידים ערך" — free input.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="7" id="s7">
+      <h1 class="ct-title">משימת כיתה</h1>
+
+      <div class="viq-text viq-text--brief" style="--x:207px; --y:166px; --w:963px;">
+        <p><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong></p>
+        <p><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      </div>
+
+      <div class="viq-text" style="--x:207px; --y:236px; --w:981px;">
+        <p class="ct-heading">בחרו מכשיר עם מסך שנמצא בסביבה שלכם:</p>
+        <p>טלפון, טאבלט, מחשב נייד, מסך טלוויזיה.</p>
+        <p>מדדו בעזרת סרגל את <strong>אורך האלכסון של המסך</strong> בסנטימטרים.</p>
+        <p class="pgap"></p>
+        <p><strong>השלימו:</strong></p>
+      </div>
+
+      <!-- The field sits INSIDE the sentence, as the deck sets it:
+           "אורך האלכסון שמדדנו: [ ] ס"מ." — label, box, unit, one row.
+           Written as two separate blocks the box landed on top of the words
+           it belongs between. Deck: box 810..945 on line one, 915..1056 on
+           line two. -->
+      <div class="viq-answer" style="--x:786px; --y:410px;">
+        <span>אורך האלכסון שמדדנו:</span>
+        <span class="viq-field">
+          <input class="viq-input" id="s7-in-cm" type="number" step="any"
+                 inputmode="decimal" aria-label="אורך האלכסון בסנטימטרים">
+        </span>
+        <span>ס"מ.</span>
+      </div>
+
+      <div class="viq-text" style="--x:207px; --y:478px; --w:981px;">
+        <p>המירו את האורך לאינצ׳ים בעזרת יחס ההמרה:</p>
+        <p><strong><span class="num">1</span> אינץ׳ = <span class="num">2.54</span> ס"מ</strong></p>
+      </div>
+
+      <div class="viq-answer" style="--x:841px; --y:556px;">
+        <span>גודל המסך:</span>
+        <span class="viq-field">
+          <input class="viq-input" id="s7-in-inch" type="number" step="any"
+                 inputmode="decimal" aria-label="גודל המסך באינצ'ים">
+        </span>
+        <span>אינץ׳.</span>
+      </div>
+
+      <!-- The companion stands under its own bubble, bottom-left, as on
+           every other screen in this part. -->
+      <div class="hct-character hct-character--fixed" data-pose="standing" style="--x:70px; --y:400px; width:170px; --h:231px; --anchor:bottom left;">
+        <img src="assets/img/character-green.png" alt="" aria-hidden="true">
+      </div>
+      <!-- Tail down-LEFT onto the companion standing below it. -->
+      <div class="hct-bubble hct-bubble--tail-down" style="--x:196px; --y:300px; --w:197px; --h:110px; --tail-x:24px;">יופי של עבודה!</div>
+
+      <button class="scq-back" id="s7-back" type="button" onclick="goBack()">
+        <span class="nav-label" data-label="חזרה"><span>חזרה</span></span>
+      </button>
+      <button class="btn-continue" id="s7-continue" type="button" onclick="advanceScreen()" disabled>
+        <span class="nav-label" data-label="סיימנו!"><span>סיימנו!</span></span>
+      </button>
+    </section>
+
+  </div><!-- /#app -->
+
+  <script src="../unit-js/motion.js?v=1"></script>
+  <!-- Cross-part navigation. Loads before main.js, which calls PartNav.init(). -->
+  <script src="../unit-js/partnav.js?v=1"></script>
+  <!-- Shared question contract (attempts, marking, popups, resume).
+       Loads before main.js, which registers each question with Q.define(). -->
+  <script src="../unit-js/question.js?v=1"></script>
+  <script src="script.js?v=1"></script>
+</body>
+</html>
