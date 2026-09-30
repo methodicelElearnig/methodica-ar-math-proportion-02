@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>יישומון חקר: קצב הריצה של דניאל</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #0f172a;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .story-box {
+            background-color: #f1f5f9;
+            border-right: 4px solid #3b82f6;
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 35px;
+            font-size: 1.15em;
+            line-height: 1.6;
+            color: #334155;
+        }
+        .app-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+        .table-section {
+            grid-column: 1; /* ימין */
+        }
+        .visual-section {
+            grid-column: 2; /* שמאל */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .app-layout { grid-template-columns: 1fr; gap: 30px; }
+            .visual-section { grid-column: auto; order: 1; }
+            .table-section { grid-column: auto; order: 2; }
+        }
+        
+        canvas {
+            background: #ffffff;
+            border-radius: 12px;
+            max-width: 100%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid #f1f5f9;
+        }
+        .controls {
+            margin-top: 25px;
+            width: 100%;
+            text-align: center;
+        }
+        .instruction-tip {
+            font-size: 1em;
+            color: #64748b;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        .btn-add {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.05em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+        .btn-add:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .data-table th, .data-table td {
+            padding: 14px;
+            text-align: center;
+            font-size: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:nth-child(even) { background-color: #f8fafc; }
+        .base-row {
+            background-color: #eff6ff !important;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+        .added-row {
+            background-color: #f0fdf4;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>אימון הריצה של דניאל</h1>
+    
+    <div class="story-box">
+        דניאל מתאמן בריצה בקצב קבוע. הוא רץ מרחק של 2 קילומטרים בכל 12 דקות.<br>
+        <strong>מה עושים?</strong> גררו את הנקודה האדומה ישירות על גבי הגרף כדי לחקור את זמני הריצה והמרחקים המתאימים להם.
+    </div>
+
+    <div class="app-layout">
+        <div class="table-section">
+            <h3 style="margin-top: 0; margin-bottom: 20px; color: #0f172a; font-size: 22px;">טבלת מעקב (פרופורציה)</h3>
+            <table class="data-table" id="pointsTable">
+                <thead>
+                    <tr>
+                        <th>זמן (דקות) - ציר X</th>
+                        <th>מרחק (קילומטרים) - ציר Y</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr class="base-row">
+                        <td>12</td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="visual-section">
+            <div class="instruction-tip">גררו את הנקודה האדומה 🔴 לאורך הישר:</div>
+            <canvas id="graphCanvas" width="420" height="420"></canvas>
+            
+            <div class="controls">
+                <button class="btn-add" id="addPointBtn">הוסף נקודה זו לטבלה ➕</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas.getContext('2d');
+    const addPointBtn = document.getElementById('addPointBtn');
+    const pointsTable = document.getElementById('pointsTable').getElementsByTagName('tbody')[0];
+
+    const SLOPE = 1 / 6; 
+    let currentX = 12; 
+    let isDragging = false;
+
+    // הגדרות שוליים
+    const paddingLeft = 55;
+    const paddingRight = 30;
+    const paddingTop = 30;
+    const paddingBottom = 55;
+    
+    const graphWidth = canvas.width - paddingLeft - paddingRight;
+    const graphHeight = canvas.height - paddingTop - paddingBottom;
+    
+    const maxX = 36; 
+    const maxY = 6;  
+
+    function convertCoords(x, y) {
+        let pixelX = paddingLeft + (x / maxX) * graphWidth;
+        let pixelY = (canvas.height - paddingBottom) - (y / maxY) * graphHeight;
+        return { x: pixelX, y: pixelY };
+    }
+
+    function drawGraph() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // ציור רשת (Grid) עדינה ונקייה
+        ctx.lineWidth = 1;
+        ctx.font = '13px Arial';
+        ctx.fillStyle = '#64748b';
+
+        // קווי אורך (X)
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        for (let x = 0; x <= maxX; x += 6) {
+            let pos = convertCoords(x, 0);
+            ctx.beginPath();
+            ctx.strokeStyle = '#f1f5f9'; // אפור בהיר מאוד לרשת
+            ctx.moveTo(pos.x, paddingTop);
+            ctx.lineTo(pos.x, canvas.height - paddingBottom);
+            ctx.stroke();
+            ctx.fillText(x, pos.x, canvas.height - paddingBottom + 12);
+        }
+
+        // קווי רוחב (Y)
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        for (let y = 0; y <= maxY; y += 1) {
+            let pos = convertCoords(0, y);
+            ctx.beginPath();
+            ctx.strokeStyle = '#f1f5f9';
+            ctx.moveTo(paddingLeft, pos.y);
+            ctx.lineTo(canvas.width - paddingRight, pos.y);
+            ctx.stroke();
+            ctx.fillText(y, paddingLeft - 12, pos.y);
+        }
+
+        // ציור צירים ראשיים (שחור-אפור אלגנטי)
+        ctx.beginPath();
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2;
+        ctx.moveTo(paddingLeft, paddingTop);
+        ctx.lineTo(paddingLeft, canvas.height - paddingBottom);
+        ctx.lineTo(canvas.width - paddingRight, canvas.height - paddingBottom);
+        ctx.stroke();
+
+        // כותרות הצירים
+        ctx.font = 'bold 14px Tahoma, sans-serif';
+        ctx.fillStyle = '#334155';
+        ctx.textAlign = 'center';
+        ctx.fillText("זמן ריצה (דקות)", paddingLeft + graphWidth / 2, canvas.height - 15);
+        
+        ctx.save();
+        ctx.translate(15, paddingTop + graphHeight / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText("מרחק ריצה (ק\"מ)", 0, 0);
+        ctx.restore();
+
+        // קו הפרופורציה המרכזי - עכשיו רציף, כחול ובולט
+        ctx.beginPath();
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2.5;
+        let startPos = convertCoords(0, 0);
+        let endPos = convertCoords(36, 36 * SLOPE);
+        ctx.moveTo(startPos.x, startPos.y);
+        ctx.lineTo(endPos.x, endPos.y);
+        ctx.stroke();
+
+        // נקודת הנתון המקורית (12, 2)
+        let originalPos = convertCoords(12, 2);
+        ctx.beginPath();
+        ctx.arc(originalPos.x, originalPos.y, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1e40af'; // כחול כהה
+        ctx.fill();
+        
+        ctx.font = '500 13px Arial';
+        ctx.fillStyle = '#1e40af';
+        ctx.textAlign = 'left';
+        ctx.save();
+        ctx.direction = "ltr";
+        ctx.fillText(" נתון (12, 2)", originalPos.x + 8, originalPos.y - 8);
+        ctx.restore();
+
+        // נקודת החקר הדינמית (האדומה)
+        let currentY = currentX * SLOPE;
+        let currentPos = convertCoords(currentX, currentY);
+        
+        // קווי עזר מקווקווים עדינים לנקודה
+        ctx.beginPath();
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.moveTo(currentPos.x, currentPos.y);
+        ctx.lineTo(currentPos.x, canvas.height - paddingBottom);
+        ctx.moveTo(currentPos.x, currentPos.y);
+        ctx.lineTo(paddingLeft, currentPos.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // "הילה" סביב הנקודה לאפקט מודרני של מגע/גרירה
+        ctx.beginPath();
+        ctx.arc(currentPos.x, currentPos.y, 16, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+        ctx.fill();
+
+        // הנקודה המרכזית
+        ctx.beginPath();
+        ctx.arc(currentPos.x, currentPos.y, 8, 0, 2 * Math.PI);
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+
+        // תצוגת השיעורים (LTR) - זמן קודם ואז מרחק
+        let displayY = parseFloat(currentY.toFixed(1));
+        
+        // רקע לבן קטן מאחורי הטקסט כדי שיהיה קריא מעל קווי הרשת
+        ctx.save();
+        ctx.direction = "ltr";
+        ctx.font = 'bold 16px Arial';
+        let text = `(${currentX}, ${displayY})`;
+        let textWidth = ctx.measureText(text).width;
+        
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.fillRect(currentPos.x - textWidth/2 - 4, currentPos.y - 32, textWidth + 8, 20);
+
+        ctx.fillStyle = '#ef4444';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, currentPos.x, currentPos.y - 17);
+        ctx.restore();
+    }
+
+    // פונקציות גרירה
+    function handleMove(clientX) {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = clientX - rect.left;
+        
+        let rawX = ((mouseX - paddingLeft) / graphWidth) * maxX;
+        if (rawX < 0) rawX = 0;
+        if (rawX > maxX) rawX = maxX;
+        
+        let rawY = rawX * SLOPE;
+        let snappedY = Math.round(rawY * 2) / 2; // קפיצות 0.5 ק"מ
+        
+        if (snappedY < 0) snappedY = 0;
+        if (snappedY > maxY) snappedY = maxY;
+        
+        currentX = snappedY / SLOPE;
+        
+        drawGraph();
+    }
+
+    // אירועי מגע ועכבר
+    canvas.addEventListener('mousedown', function(e) { isDragging = true; handleMove(e.clientX); });
+    window.addEventListener('mousemove', function(e) { if (isDragging) handleMove(e.clientX); });
+    window.addEventListener('mouseup', function() { isDragging = false; });
+
+    canvas.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        handleMove(e.touches[0].clientX);
+        e.preventDefault();
+    }, { passive: false });
+    window.addEventListener('touchmove', function(e) {
+        if (isDragging) {
+            handleMove(e.touches[0].clientX);
+            e.preventDefault();
+        }
+    }, { passive: false });
+    window.addEventListener('touchend', function() { isDragging = false; });
+
+    // הוספה לטבלה
+    addPointBtn.addEventListener('click', function() {
+        let displayY = parseFloat((currentX * SLOPE).toFixed(1));
+
+        if (currentX === 0 || currentX === 12) return;
+
+        let existingRows = pointsTable.getElementsByTagName('tr');
+        for (let i = 0; i < existingRows.length; i++) {
+            if (existingRows[i].cells[0].innerText == currentX) return;
+        }
+
+        let newRow = pointsTable.insertRow();
+        newRow.className = "added-row";
+        
+        let cellX = newRow.insertCell(0);
+        let cellY = newRow.insertCell(1);
+        
+        cellX.innerText = currentX;
+        cellY.innerText = displayY;
+    });
+
+    // ציור ראשוני
+    drawGraph();
+</script>
+
+</body>
+</html>
