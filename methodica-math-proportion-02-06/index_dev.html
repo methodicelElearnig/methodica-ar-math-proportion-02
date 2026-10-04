@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>DEV — פרופורציה (יעד 2.2) — מציאת המספר X החסר</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a2e; font-family: monospace; }
+
+    #dev-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 44px;
+      background: #f9ca24; color: #1a1a2e;
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 12px; z-index: 9999; font-size: 13px; font-weight: 700;
+      direction: ltr;
+      transition: background 0.2s ease;
+    }
+    /* review status of the CURRENT screen colors the whole bar:
+       green = approved, striped strong-yellow = needs fixing */
+    #dev-bar.st-ok  { background: #2ecc71; }
+    #dev-bar.st-fix {
+      background: repeating-linear-gradient(45deg, #f9ca24 0 18px, #f39c12 18px 36px);
+    }
+    .st-btn {
+      height: 28px; width: 34px; border: none; border-radius: 4px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+    }
+    #st-ok    { background: #1e8f4e; color: #fff; }
+    #st-fix   { background: #b06f00; color: #fff; }
+    #st-clear { background: #1a1a2e; color: #f9ca24; }
+    #st-badge {
+      min-width: 74px; text-align: center;
+      padding: 3px 10px; border-radius: 1000px;
+      background: rgba(26, 26, 46, 0.85); color: #fff; font-size: 12px;
+    }
+    #dev-bar span { background: #1a1a2e; color: #f9ca24; padding: 2px 8px; border-radius: 4px; }
+    #dev-bar button {
+      height: 28px; padding: 0 12px; border: none; border-radius: 4px;
+      background: #1a1a2e; color: #f9ca24; font-weight: 700; cursor: pointer; font-size: 13px;
+    }
+    #dev-bar button:hover { background: #333; }
+    #dev-bar input[type=number] {
+      width: 54px; height: 28px; border: none; border-radius: 4px;
+      text-align: center; font-size: 14px; font-weight: 700;
+    }
+    #dev-bar select {
+      height: 28px; max-width: 260px; border: none; border-radius: 4px;
+      background: #1a1a2e; color: #f9ca24; font-weight: 700; font-size: 13px;
+      padding: 0 8px; cursor: pointer; direction: rtl;
+    }
+    #dev-label { margin-left: 6px; }
+
+    #lomda-frame {
+      position: fixed; top: 44px; left: 0; right: 0; bottom: 0;
+      border: none; width: 100%; height: calc(100% - 44px);
+    }
+  </style>
+</head>
+<body>
+
+<div id="dev-bar">
+  <span>DEV</span>
+  <button onclick="nav(+1)" title="קדימה (RTL: שמאל = קדימה)">◀</button>
+  <span id="dev-label">S 0 / ?</span>
+  <button onclick="nav(-1)" title="אחורה (RTL: ימין = אחורה)">▶</button>
+  <input type="number" id="jump-input" min="0" value="0" onkeydown="if(event.key==='Enter')jumpTo()">
+  <button onclick="jumpTo()">Go</button>
+  <select id="screen-select" onchange="send(this.value)"></select>
+  <span id="st-badge">—</span>
+  <button class="st-btn" id="st-ok"    onclick="setStatus('ok')"    title="מאושר — עברתי ואישרתי">✓</button>
+  <button class="st-btn" id="st-fix"   onclick="setStatus('fix')"   title="דורש תיקון">!</button>
+  <button class="st-btn" id="st-clear" onclick="setStatus(null)"    title="איפוס סטטוס">↺</button>
+  <span style="margin-right:auto; font-size:11px; font-weight:400;">Ctrl+← קדימה &nbsp;|&nbsp; Ctrl+→ אחורה</span>
+</div>
+
+<iframe id="lomda-frame" src="index.html"></iframe>
+
+<script>
+  const UNIT_ID = 'methodica-math-proportion-02';
+  let cur = 0;
+  let total = 1;
+
+  const frame  = document.getElementById('lomda-frame');
+  const label  = document.getElementById('dev-label');
+  const input  = document.getElementById('jump-input');
+  const select = document.getElementById('screen-select');
+
+  /* Named screens — extend as screens are added */
+  const SCREEN_NAMES = [
+    /* ── רכיב 01 · הוק והקנייה (שקפים 3-32) ── */
+    'בחירת דמות (שקף 3)',
+    'הוק: תמונה מעוותת (שקף 4)',
+    'הוק: יחס רוחב-גובה (שקף 5)',
+    'הוק: 9:16 ו-24 ס"מ (שקף 6)',
+    'הוק: מהי פרופורציה (שקף 7)',
+    'קרוסלה: מהמטבח של אביבית (שקפים 8-19)',
+    'סרטון: טבלת פרופורציה (שקף 20)',
+    'מעבר: עוד מעט נתחיל לתרגל (שקף 22)',
+    'מונחה: תרגיל ראשון יחד (שקפים 23-29)',
+    'מעבר: 2 שאלות (שקף 30)',
+    'תרגול 1 מתוך 2 (שקף 31)',
+    'תרגול 2 מתוך 2 (שקף 32)',
+    /* ── רכיב 02 · תרגול סטנדרטי (שקפים 34-38) ── */
+    'מעבר: רכיב 02 נפתח (שקף 34)',
+    'שאלה 1/4 · יישומון הדינוזאור (שקף 35)',
+    'שאלה 2/4 · חטיף הבריאות (שקף 36)',
+    'שאלה 3/4 · שער הכדורגל (שקף 37)',
+    'שאלה 4/4 · מטען הטלפון (שקף 38)',
+    /* ── רכיב 03 · תרגול בסיסי וסטנדרטי ב (שקפים 40-49) ── */
+    'מעבר: 4 שאלות פשוטות יותר (שקף 40)',
+    'שאלה 1/6 א · בחירת הפרופורציה (שקף 41)',
+    'שאלה 1/6 ב · מציאת x (שקף 42)',
+    'שאלה 2/6 א · השלמת הפרופורציה (שקף 43)',
+    'שאלה 2/6 ב · כמה משימות (שקף 44)',
+    'שאלה 3/6 · ריצוף במיינקרפט (שקף 45)',
+    'שאלה 4/6 · הפלייליסט (שקף 46)',
+    'מעבר: 2 תרגילים מתקדמים (שקף 47)',
+    'שאלה 5/6 · החולצות (שקף 48)',
+    'שאלה 6/6 · רוטב הסלט (שקף 49)',
+    /* ── רכיב 04 · משימת כיתה (שקפים 51-58) ── */
+    'מעבר: ללמוד בצורה אחרת (שקף 51)',
+    'משימת כיתה: שנתות הסרגל (שקף 52)',
+    'משימת כיתה: יחס ס"מ למ"מ (שקף 53)',
+    'משימת כיתה: 450 מ"מ (שקף 54)',
+    'משימת כיתה: 5 אינצ\'ים (שקף 55)',
+    'משימת כיתה: הפרופורציה (שקף 56)',
+    'משימת כיתה: אינצ׳ים במסכים (שקף 57)',
+    'משימת כיתה: מדידת המסך (שקף 58)',
+    /* ── רכיב 05 · תרגול מתקדם (שקפים 60-69) ── */
+    'מעבר: רכיב 05 נפתח (שקף 60)',
+    'שאלה 1/4 · קוד חדר הבריחה (שקף 61)',
+    'שאלה 2/4 א · יחס שטחי הפיצות (שקף 62)',
+    'שאלה 2/4 ב · מי צודק (שקף 63)',
+    'שאלה 2/4 ג · הפיצה המשפחתית (שקף 64)',
+    'שאלה 3/4 א · יישומון הקפיץ (שקף 65)',
+    'שאלה 3/4 ב · היחס הקבוע (שקף 66)',
+    'שאלה 4/4 · יישומון הפאזל (שקף 67)',
+    'מעבר: הידעת? (שקף 68)',
+    'מטר או רגל? שיטות מדידה (שקף 69)',
+    /* ── רכיב 06 · שאלת שיא א (שקפים 71-76) ── */
+    'מעבר: שאלת השיא (שקף 71)',
+    'שיא א · סעיף א · רגל ויארד (שקף 72)',
+    'שיא א · סעיף ב · אונקיות חלב (שקף 73)',
+    'שיא א · סעיף ג · מיכל המים (שקף 74)',
+    'שיא א · סעיף ד · מידת החולצה (שקף 75)',
+    'שיא א · סעיף ה · התקציב (שקף 76)',
+    /* ── רכיב 07 · שאלת שיא ב (שקפים 78-86) ── */
+    'מעבר: שאלת השיא ב (שקף 78)',
+    'תערוכת הצילום — פתיחה (שקף 79)',
+    'שיא ב · סעיף א · מידות הקיר (שקף 80)',
+    'שיא ב · סעיף ב · יישומון הפוסטרים (שקף 81)',
+    'שיא ב · סעיף ג · גובה הפוסטר (שקף 82)',
+    'שיא ב · סעיף ד · 8 פוסטרים (שקף 83)',
+    'שיא ב · סעיף ה · הצעות הדפוס (שקף 84)',
+    'שיא ב · סעיף ו · מחיר ההדפסה (שקף 85)',
+    'סיום היחידה (שקף 86)',
+  ];
+
+  /* Screens that pack several deck slides into ONE screen get step sub-entries,
+     so a reviewer can reach the slide and not just the screen (Elad, 01.09.26).
+     Values become "<screen>.<step>". */
+  const SUB_STEPS = {
+    5: 12,   // carousel, deck slides 8-19
+    8: 7,    // guided practice, deck slides 23-29
+  };
+  SCREEN_NAMES.forEach((name, i) => {
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = i + ' — ' + name;
+    select.appendChild(opt);
+    for (let k = 1; k <= (SUB_STEPS[i] || 0); k++) {
+      const sub = document.createElement('option');
+      sub.value = i + '.' + k;
+      sub.textContent = '      ' + i + '.' + k + ' — שלב ' + k + ' מתוך ' + SUB_STEPS[i];
+      select.appendChild(sub);
+    }
+  });
+
+  window.addEventListener('message', e => {
+    if (e.data?.type === 'DEV_READY') {
+      total = e.data.total;
+      updateLabel();
+    }
+    if (e.data?.type === 'DEV_SCREEN') {
+      cur = e.data.screen;
+      /* a multi-slide screen reports which slide it is on, so the arrows carry
+         on from there instead of snapping back to the screen's first slide */
+      curVal = e.data.step ? cur + '.' + e.data.step : String(cur);
+      input.value = cur;
+      if ([...select.options].some(o => o.value === curVal)) select.value = curVal;
+      updateLabel();
+    }
+  });
+
+  /* The arrows walk the SELECT's own sequence, so a multi-slide screen is
+     stepped through slide by slide: 8 → 8.1 → 8.2 … → 8.7 → 9 (Elad, 27.09).
+     `curVal` is the option value ("8" or "8.3"); `cur` stays the screen
+     number, which the review status and the label key off. */
+  let curVal = '0';
+
+  function send(v) {
+    /* v is "<screen>" or "<screen>.<step>" — the step half is what lets a
+       reviewer land INSIDE a multi-slide screen. */
+    let [scr, step] = String(v).split('.');
+    const n = parseInt(scr, 10);
+    if (isNaN(n)) return;
+    /* a bare screen row for a multi-slide screen is the SAME view as its first
+       sub-entry, so land straight on .1 rather than showing it twice on the
+       way through (Elad, 27.09) */
+    if (step === undefined && SUB_STEPS[n]) step = '1';
+    cur = n;
+    curVal = step === undefined ? String(n) : n + '.' + step;
+    const msg = { type: 'DEV_GOTO', screen: n };
+    if (step !== undefined) msg.step = parseInt(step, 10);
+    frame.contentWindow.postMessage(msg, '*');
+    if ([...select.options].some(o => o.value === curVal)) select.value = curVal;
+    input.value = cur;
+    updateLabel();
+  }
+
+  function nav(delta) {
+    const vals = [...select.options].map(o => o.value);
+    let i = vals.indexOf(curVal);
+    /* if the current screen has no exact entry, fall back to its screen row */
+    if (i < 0) i = vals.indexOf(String(cur));
+    if (i < 0) i = 0;
+    send(vals[Math.max(0, Math.min(vals.length - 1, i + delta))]);
+  }
+
+  function jumpTo() {
+    const n = parseInt(input.value, 10);
+    if (!isNaN(n) && n >= 0 && n < total) send(n);
+  }
+
+  function updateLabel() {
+    label.textContent = 'S ' + curVal + ' / ' + (total - 1);
+    renderStatus();
+  }
+
+  /* ── review status (producer workflow): green = approved, yellow =
+     needs fixing. Persisted per unit in localStorage. ── */
+  const REVIEW_KEY = 'dev_review_' + UNIT_ID;
+  function loadReview() {
+    try { return JSON.parse(localStorage.getItem(REVIEW_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveReview(r) {
+    try { localStorage.setItem(REVIEW_KEY, JSON.stringify(r)); } catch (e) {}
+  }
+  function setStatus(st) {
+    const r = loadReview();
+    if (st) r[cur] = st; else delete r[cur];
+    saveReview(r);
+    renderStatus();
+  }
+  function renderStatus() {
+    const r = loadReview();
+    const bar = document.getElementById('dev-bar');
+    bar.classList.toggle('st-ok',  r[cur] === 'ok');
+    bar.classList.toggle('st-fix', r[cur] === 'fix');
+    const badge = document.getElementById('st-badge');
+    badge.textContent = r[cur] === 'ok' ? 'מאושר ✓' : r[cur] === 'fix' ? 'לתיקון !' : '—';
+    [...select.options].forEach(o => {
+      const n = Number(o.value);
+      const base = o.dataset.base || o.textContent;
+      o.dataset.base = base;
+      o.textContent = (r[n] === 'ok' ? '✓ ' : r[n] === 'fix' ? '⚠ ' : '') + base;
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.key === 'ArrowLeft')  nav(+1);
+    if (e.ctrlKey && e.key === 'ArrowRight') nav(-1);
+  });
+  renderStatus();
+</script>
+</body>
+</html>

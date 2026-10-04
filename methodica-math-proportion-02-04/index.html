@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-store">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>פרופורציה — מציאת המספר X החסר (יעד 2.2)</title>
+<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261004">
+  <link rel="stylesheet" href="../unit-css/styles.css?v=20261004">
+</head>
+<body data-subject-theme="math">
+<div id="stage">
+<div id="app">
+  <!-- ═══════════════════════════════════════════════════════════
+       S0 — deck slide 3 · TwoOptionSelection (approved template)
+       template-library/templates/TwoOptionSelection, used as-is.
+       Only the content differs: this unit's two monsters, and the
+       deck's title. The cards hold VIDEO (producer 17.09) — the
+       variant the delivered ratio-01-01 ships, same geometry.
+       Deck sides: white at x=321 (left), orange at x=655 (right).
+       First screen: no Back button. Selection enables בחרתי.
+       ═══════════════════════════════════════════════════════════ -->
+  
+
+<!-- ═══════════════════════════════════════════════════════════
+       S0 — deck slide 3 · TwoOptionSelection (library template, content swapped)
+       The deck asks "איזו דמות תרצו שתלווה אתכם?" and carries NO subtitle.
+       Right card = the yellow monster, left = the green one.
+       First screen: no Back button. Selection enables בחרתי.
+       ═══════════════════════════════════════════════════════════ -->
+  <!-- ═══ component 04 — משימת כיתה (deck 51-58) ═══ -->
+
+  <section class="screen active" data-screen="27" id="s27">
+    <div class="transition-content ts-content">
+      <p class="ts-lead">השלמת בהצלחה את התרגול – כל הכבוד!</p>
+      <h1 class="ts-title">זמן טוב ללמוד גם בצורה אחרת,</h1>
+      <p class="ts-tail">כי למידה מתרחשת בכל מיני צורות.</p>
+      <div class="transition-character ts-character char-slot" id="s27-char"></div>
+    </div>
+    <div class="speech-bubble side-bubble--right s27-bubble" data-reveal="2">הוציאו סרגל, עיפרון ודף משבצות –<br>עכשיו נמדוד, נשווה ונמיר!</div>
+    <button class="btn-continue" onclick="advanceScreen()">המשך</button>
+    <button class="btn-back" onclick="goTo(26)">חזרה</button>
+  </section>
+
+<section class="screen ct-screen" data-screen="28" id="s28">
+    <div class="ct-wrap">
+      <h1 class="ct-title">משימת כיתה</h1>
+      <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      <p class="ct-sub"><strong>נכיר את הסרגל</strong><br>התבוננו בסרגל שלכם.<br>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.<br>כל שנתה גדולה מייצגת <strong>1 סנטימטר</strong>.<br>כל שנתה קטנה מייצגת <strong>1 מילימטר</strong>.</p>
+      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
+      <p class="ct-ask">ספרו כמה שנתות קטנות יש בין 0 ל-1 ס"מ.<br>כמה מילימטרים יש בסנטימטר אחד?</p>
+      <div class="viq-rows task-rows"><div class="viq-row task-row">
+        <input id="s28-in-0" class="viq-input-box task-input" type="text" aria-label="מספר המילימטרים בסנטימטר" oninput="taskOnInput('s28')">
+        <span class="viq-row-label">מ"מ.</span></div></div>
+    </div>
+    <div class="character-widget s28-char-wrap" data-reveal="2" data-reveal-fade>
+      <div class="speech-bubble">רגע, יש פה מלא קווים קטנים...<br>בואו נספור!</div>
+      <img id="s28-char" alt="דמות מלווה מתבוננת בזכוכית מגדלת">
+    </div>
+    <button class="btn-continue" id="s28-check" disabled onclick="taskCheck('s28')">המשך</button>
+    <button class="btn-back" onclick="goTo(27)">חזרה</button>
+  </section>
+
+<section class="screen ct-screen" data-screen="29" id="s29">
+    <div class="ct-wrap">
+      <h1 class="ct-title">משימת כיתה</h1>
+      <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      <p class="ct-sub"><strong>נכיר את הסרגל</strong><br>התבוננו בסרגל שלכם.<br>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.<br>כל שנתה גדולה מייצגת <strong>1 סנטימטר</strong>.<br>כל שנתה קטנה מייצגת <strong>1 מילימטר</strong>.</p>
+      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
+      <p class="ct-ask">מהו היחס בין מספר הסנטימטרים למספר המילימטרים שמייצגים את אותו האורך?</p>
+      <div class="viq-rows task-rows"><div class="viq-row task-row ct-ratio-row">
+        <input id="s29-in-0" class="viq-input-box task-input" type="text" aria-label="מספר הסנטימטרים" oninput="taskOnInput('s29')">
+        <span class="viq-row-label">:</span>
+        <input id="s29-in-1" class="viq-input-box task-input" type="text" aria-label="מספר המילימטרים" oninput="taskOnInput('s29')">
+      </div></div>
+    </div>
+    <button class="btn-continue" id="s29-check" disabled onclick="taskCheck('s29')">המשך</button>
+    <button class="btn-back" onclick="goTo(28)">חזרה</button>
+  </section>
+
+<section class="screen ct-screen" data-screen="30" id="s30">
+    <div class="ct-wrap">
+      <h1 class="ct-title">משימת כיתה</h1>
+      <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      <p class="ct-sub"><strong>נכיר את הסרגל</strong><br>התבוננו בסרגל שלכם.<br>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.<br>כל שנתה גדולה מייצגת <strong>1 סנטימטר</strong>.<br>כל שנתה קטנה מייצגת <strong>1 מילימטר</strong>.</p>
+      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
+      <p class="ct-ask">אם אורך של חפץ מסוים הוא 450 מ"מ, מה יהיה אורכו בסנטימטרים?</p>
+      <div class="viq-rows task-rows"><div class="viq-row task-row">
+        <input id="s30-in-0" class="viq-input-box task-input" type="text" aria-label="האורך בסנטימטרים" oninput="taskOnInput('s30')">
+        <span class="viq-row-label">ס"מ.</span></div></div>
+    </div>
+    <button class="btn-continue" id="s30-check" disabled onclick="taskCheck('s30')">המשך</button>
+    <button class="btn-back" onclick="goTo(29)">חזרה</button>
+  </section>
+
+<section class="screen ct-screen" data-screen="31" id="s31">
+    <div class="ct-wrap">
+      <h1 class="ct-title">משימת כיתה</h1>
+      <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      <p class="ct-sub"><strong>התבוננו בסרגל בחלק של האינצ'ים</strong><br>יתכן שהוא מופיע בצידו השני של הסרגל או כקו מקביל לקו הסנטימטרים (ראו תמונה).</p>
+      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם קו סנטימטרים וקו אינצ'ים">
+      <p class="ct-ask">שרטטו במחברתכם קטע באורך 5 אינצ'ים.<br>מדדו את אורך הקטע בסנטימטרים –<br>דייקו ככל הניתן.</p>
+      <div class="viq-rows task-rows"><div class="viq-row task-row">
+        <span class="viq-row-label">5 אינצ'ים שווים ל-</span>
+        <input id="s31-in-0" class="viq-input-box task-input" type="text" aria-label="האורך בסנטימטרים" oninput="taskOnInput('s31')">
+        <span class="viq-row-label">סנטימטרים.</span></div></div>
+    </div>
+    <div class="character-widget s31-char-wrap" data-reveal="2" data-reveal-fade>
+      <img id="s31-char" alt="דמות מלווה">
+    </div>
+    <button class="btn-continue" id="s31-check" disabled onclick="taskCheck('s31')">המשך</button>
+    <button class="btn-back" onclick="goTo(30)">חזרה</button>
+  </section>
+
+<section class="screen ct-screen" data-screen="32" id="s32">
+    <div class="ct-wrap">
+      <h1 class="ct-title">משימת כיתה</h1>
+      <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      <p class="ct-sub"><strong>התבוננו בסרגל בחלק של האינצ'ים</strong><br>יתכן שהוא מופיע בצידו השני של הסרגל או כקו מקביל לקו הסנטימטרים (ראו תמונה).</p>
+      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
+      <p class="ct-ask">השלימו את הפרופורציה הבאה:</p>
+      <div class="ct-prop" dir="ltr">
+        <span class="fraction vi-frac"><span class="frac-top"><span dir="rtl">5 אינצ'ים</span></span>
+          <span class="frac-bottom"><input id="s32-in-0" class="viq-input-box task-input" type="text" aria-label="הערך בסנטימטרים עבור 5 אינצ'ים" oninput="taskOnInput('s32')"> ס"מ</span></span>
+        <span class="vi-eq">=</span>
+        <span class="fraction vi-frac"><span class="frac-top"><span dir="rtl">1 אינץ'</span></span>
+          <span class="frac-bottom"><input id="s32-in-1" class="viq-input-box task-input" type="text" aria-label="הערך בסנטימטרים עבור אינץ' אחד" oninput="taskOnInput('s32')"> ס"מ</span></span>
+      </div>
+    </div>
+    <button class="btn-continue" id="s32-check" disabled onclick="taskCheck('s32')">המשך</button>
+    <button class="btn-back" onclick="goTo(31)">חזרה</button>
+  </section>
+
+<!-- deck 57: the phone sits on the LEFT and bleeds off the edge (image110 at
+       x -317..680), the companion is inside its screen (image115), the label
+       "מסך 6.1 אינץ'" is OVERLAID on the screen, and a dashed diagonal marks
+       the אלכסון. The copy runs down the right. -->
+  <section class="screen ct-screen" data-screen="33" id="s33">
+    <div class="ct-wrap ct-wrap--split">
+      <h1 class="ct-title">משימת כיתה</h1>
+      <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      <p class="ct-sub"><strong class="ct-head">איפה נפגוש אינצ׳ים בחיי היומיום?</strong><br>אחד השימושים הנפוצים באינצ׳ים הוא במדידת גודל של מסכים,<br>למשל - מסכי טלפון, מחשב וטלוויזיה.</p>
+      <p class="ct-sub">גודל המסך נקבע לפי אורך האלכסון שלו,<br>ונמדד באינצ׳ים.</p>
+    </div>
+    <figure class="ct-phonefig">
+      <span class="ct-phone">
+        <img class="ct-screenpic" src="assets/img/ct-screen.png" alt="יד מחזיקה טלפון">
+        <img class="ct-screen-char" src="assets/img/ct-screen2.png" alt="הדמות המלווה נראית כלואה בתוך המסך">
+        <svg class="ct-diag" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <defs><marker id="ct-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#29A3E0"/></marker></defs>
+          <line x1="8" y1="96" x2="92" y2="4" stroke="#29A3E0" stroke-width="2.5"
+                stroke-dasharray="7 5" marker-end="url(#ct-arrow)"/>
+        </svg>
+        <span class="ct-diag-label">מסך 6.1 אינץ'</span>
+      </span>
+    </figure>
+    <button class="btn-continue" onclick="advanceScreen()">אפשר להמשיך</button>
+    <button class="btn-back" onclick="goTo(32)">חזרה</button>
+  </section>
+
+<section class="screen ct-screen" data-screen="34" id="s34">
+    <div class="ct-wrap">
+      <h1 class="ct-title">משימת כיתה</h1>
+      <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
+      <p class="ct-sub"><strong>בחרו מכשיר עם מסך שנמצא בסביבה שלכם:</strong> טלפון, טאבלט, מחשב<br>מדדו בעזרת סרגל את <strong>אורך האלכסון של המסך</strong> בסנטימטרים.<br><strong>השלימו:</strong></p>
+      <div class="viq-rows task-rows">
+        <div class="viq-row task-row"><span class="viq-row-label">אורך האלכסון שמדדנו:</span>
+          <input id="s34-in-0" class="viq-input-box task-input" type="text" aria-label="אורך האלכסון בסנטימטרים" oninput="taskOnInput('s34')">
+          <span class="viq-row-label">ס"מ.</span></div>
+      </div>
+      <p class="ct-ask">המירו את האורך לאינצ׳ים בעזרת יחס ההמרה:<br><strong>1 אינץ׳ = 2.54 ס"מ</strong></p>
+      <div class="viq-rows task-rows">
+        <div class="viq-row task-row"><span class="viq-row-label">גודל המסך:</span>
+          <input id="s34-in-1" class="viq-input-box task-input" type="text" aria-label="גודל המסך באינצ'ים" oninput="taskOnInput('s34')">
+          <span class="viq-row-label">אינץ׳.</span></div>
+      </div>
+      <!-- deck 58: "הדמות והבועה מופיעה רק אחרי ההקלדה" — held until both boxes are filled -->
+      <div class="character-widget s34-char-wrap is-hidden" id="s34-cheer">
+        <div class="speech-bubble">יופי של עבודה!</div>
+        <img id="s34-char" alt="דמות מלווה">
+      </div>
+    </div>
+    <button class="btn-continue" id="s34-check" disabled onclick="taskCheck('s34')">אפשר להמשיך</button>
+    <button class="btn-back" onclick="goTo(33)">חזרה</button>
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Report/issue flag — the APPROVED chrome, copied verbatim from
+       shared/720-core/chrome/chrome-snippets.html. Do not restyle, do not
+       rebuild. The old PNG pair is gone: its hover export was a stale
+       SCIENCE-mode render (#019DE5), which is what made hover look wrong in
+       a maths unit. The glyph is live SVG driven by currentColor. -->
+  <button class="flag-btn" id="flag-btn" type="button" aria-label="מצאתם בעיה?">
+        <span class="flag-btn-icon">
+          <span class="flag-btn-glyph" aria-hidden="true">
+            <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none">
+              <path
+                d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z"
+                fill="currentColor" />
+            </svg>
+            <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none">
+              <path
+                d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z"
+                fill="currentColor" />
+            </svg>
+          </span>
+        </span>
+        <span class="flag-btn-label">מצאתם בעיה?</span>
+      </button>
+
+  <!-- Screen 0 — slide 3: hook question (SingleChoiceQuestionImage; green indication only) -->
+
+  <!-- Screen 1 — slide 4: reveal + density formula (TextWithCallout) -->
+
+  <!-- Screen 3 — slides 6-9: הקנייה — one continuous scroll:
+       intro+applet → task (source colors) → shade question (צדקת popup)
+       → bowls experiment → proportion explanation. Continue gated on answer. -->
+
+  <!-- Screens 2, 4-13, 15, 24, 33, 37-40, 44, 48-49, 51, 53, 55, 57 are
+       generated by js/unit.js; question screens by js/quiz-engine.js -->
+
+  <!-- Quiz hint overlay — shared, outside all .screen divs -->
+  <div id="quiz-hint-overlay" class="hidden m-popup" role="dialog" aria-modal="true" aria-label="רמז">
+    <div class="hint-popup">
+      <!-- 07.09: the bulb the hint card was missing. Plain-bulb variant
+           (viewBox 0 0 20.997 27.9988), the one the approved build uses in
+           the card title — deliberately NOT the button's rayed bulb. The
+           text lives in its own span so quizOpenHint() can rewrite it
+           without deleting the icon. -->
+      <h3 class="hint-title"><svg class="hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg><span class="hint-title-text"></span></h3>
+      <p class="hint-body"></p>
+      <button class="hint-close-btn" onclick="quizCloseHint()">חזרה לשאלה</button>
+    </div>
+  </div>
+
+  <!-- Problem-report modal (approved-units pattern; posts to the shared Google Form) -->
+  <div id="report-modal" class="report-modal-overlay m-popup" hidden role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" onclick="tryCloseReportModal()" aria-label="סגור">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
+      <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך? ספרו לנו מה קרה כדי שנטפל.</p>
+      <div class="report-field">
+        <label class="report-label" for="report-type">מה סוג הבעיה <span class="required-star">*</span></label>
+        <select class="report-select" id="report-type">
+          <option value="" disabled selected>בחרו סוג בעיה</option>
+          <option value="technical">תקלה טכנית או שמשהו לא עובד</option>
+          <option value="unclear">משהו לא ברור לי</option>
+          <option value="other">אחר</option>
+        </select>
+      </div>
+      <div class="report-field">
+        <label class="report-label" for="report-text">מה קרה? <span class="required-star">*</span></label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="תארו את הבעיה..."></textarea>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+      <p class="report-error" id="report-error" hidden>נא לבחור סוג בעיה ולתאר מה קרה.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" onclick="submitReport()">שליחה</button>
+        <button class="report-cancel-btn" onclick="tryCloseReportModal()">ביטול</button>
+      </div>
+      <div class="report-thanks" id="report-thanks" hidden>
+        <p>תודה! הדיווח נשלח. נטפל בהקדם.</p>
+        <button class="report-submit-btn" onclick="forceCloseReportModal()">סגירה</button>
+      </div>
+    </div>
+  </div>
+  <div id="report-confirm-modal" class="report-modal-overlay m-popup" hidden role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="confirm-modal-title">בטוח לסגור את החלון?</h2>
+      <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" onclick="forceCloseReportModal()">סגור חלון</button>
+        <button class="report-submit-btn" onclick="backToReportForm()">אני רוצה לדווח</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+  
+  <script src="script.js?v=20261004"></script>
+  <script src="../unit-js/motion.js?v=20261004"></script>
+  <script src="../unit-js/quiz-engine.js?v=20261004"></script>
+  <script src="../unit-js/applet-dino.js?v=20261004"></script>
+  <script src="../unit-js/classtask.js?v=20261004"></script>
+  <script src="../unit-js/questions.js?v=20261004"></script>
+  <script src="../unit-js/carousel.js?v=20261004"></script>
+  <script src="../unit-js/guided.js?v=20261004"></script>
+  <script src="../unit-js/unit.js?v=20261004"></script>
+  <script src="../unit-js/report-modal.js?v=20261004"></script>
+  <script src="../unit-js/engine.js?v=20261004"></script>
+</div>
+</div>
+</body>
+</html>
