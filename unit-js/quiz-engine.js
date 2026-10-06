@@ -233,7 +233,13 @@ function quizInteractionHTML(q) {
            unit wrapped away from the box and off the column (dslide 41: the
            ס"מ landed outside .quiz-main entirely). Now a long label wraps and
            the answer stays whole on its own line. */
-        return `<div class="ratio-row">${label}<span class="ratio-row-answer"><span class="ratio-row-cells" dir="ltr">${cells.join('<span class="vi-colon">:</span>')}</span>${suffix}</span></div>`;
+        /* 06.10 — a label that is an EQUATION PREFIX ("x =") is maths, not
+           Hebrew: the deck draws it LEFT of the box on every one of these
+           rows (slides 31, 42, 44), and in an rtl row it came out as
+           "[box] = x". The row flips to ltr and stays pinned to the column's
+           right edge; a Hebrew label row is untouched. */
+        const eqLabel = /[=:]\s*$/.test(String(row.label || '')) && !/[\u0590-\u05FF]/.test(String(row.label || ''));
+        return `<div class="ratio-row${eqLabel ? ' ratio-row--eq' : ''}">${label}<span class="ratio-row-answer"><span class="ratio-row-cells" dir="ltr">${cells.join('<span class="vi-colon">:</span>')}</span>${suffix}</span></div>`;
       }).join('') + `</div>`;
     }
     // equation of two fractions; each cell is a fixed string or {input:true,label}
@@ -736,6 +742,65 @@ function quizFinish(screen) {
   hint.disabled = true;
 }
 
+/* ---------- the scroll-affordance sprite ----------
+   Same component and same drift the scroll SCREENS use (producer 14.09.26,
+   carried over from percent-04). The frame is 300x300 with the cursor tip at
+   (148,149); the sparks fan out from there. */
+const QUIZ_SPARK_DIRS = [
+  [0, -80], [56.57, -56.57], [80, 0], [56.57, 56.57],
+  [0, 80], [-56.57, 56.57], [-80, 0], [-56.57, -56.57],
+];
+
+function quizMakeClickHint(id) {
+  const el = document.createElement('div');
+  el.className = 'click-hint';
+  el.id = id;
+  el.setAttribute('aria-hidden', 'true');
+  el.innerHTML =
+    '<div class="click-hint__ripple1"><img src="../unit-assets/img/hint/ripple-ring-1.svg" alt=""></div>' +
+    '<div class="click-hint__ripple2"><img src="../unit-assets/img/hint/ripple-ring-2.svg" alt=""></div>' +
+    QUIZ_SPARK_DIRS.map(([dx, dy], i) =>
+      `<div class="click-hint__spark" style="--dx:${dx}px; --dy:${dy}px; --d:${i * 3}ms"><img src="../unit-assets/img/hint/spark.svg" alt=""></div>`
+    ).join('') +
+    '<div class="click-hint__cursor"><img src="../unit-assets/img/hint/cursor.svg" alt=""></div>';
+  return el;
+}
+
+/* A feedback body that actually overflows gets the drifting hint over its
+   scrollbar, so the learner knows there is more below the fold. It only
+   appears when `.fb-body` really is taller than its 360px cap, and it leaves
+   on the first scroll.
+
+   It is appended to the FEEDBOX, never to `.fb-body`: the body is the
+   scroller, so a child hanging at a negative left would give it a horizontal
+   scrollbar (percent-04 learned this the hard way). The feedbox is already
+   `position: absolute`, so it is the positioning context, and the hint drags
+   along with the panel for free.
+
+   setTimeout, not requestAnimationFrame — rAF does not fire when the
+   compositor is idle (headless capture, a backgrounded tab) and the hint would
+   simply never appear. */
+function quizFeedbackScrollHint(box) {
+  const old = box.querySelector('.click-hint');
+  if (old) old.remove();
+  setTimeout(() => {
+    const body = box.querySelector('.fb-body');
+    if (!body || body.scrollHeight <= body.clientHeight + 8) return;
+    const app = document.getElementById('app');
+    const scale = app ? app.getBoundingClientRect().width / 1280 : 1;
+    const br = body.getBoundingClientRect(), xr = box.getBoundingClientRect();
+    const hint = quizMakeClickHint(`q${box.id.replace(/\D/g, '')}-hint-scroll`);
+    hint.classList.add('click-hint--in-popup');
+    /* the bar is on the body's RIGHT edge (06.10 — the scroller is ltr so the
+       bar is always on the right). 148/149 is the cursor's own offset inside
+       the frame, so subtracting it puts the TIP on the bar. */
+    hint.style.left = Math.round((br.right - xr.left) / scale - 4 - 148) + 'px';
+    hint.style.top  = Math.round((br.top - xr.top) / scale + 34 - 149) + 'px';
+    box.appendChild(hint);
+    body.addEventListener('scroll', () => hint.remove(), { once: true });
+  });
+}
+
 function quizShowFeedback(screen, kind, fb) {
   const box = document.getElementById(`q${screen}-feedbox`);
   box.className = `quiz-feedbox ${kind === 'correct' ? 'is-correct' : 'is-wrong'}`;
@@ -743,6 +808,7 @@ function quizShowFeedback(screen, kind, fb) {
   quizFeedboxDrag(box);
   box.innerHTML = `
     <div class="scq-fb-title">${fb.title}</div>${fb.body ? `<div class="fb-body">${fb.body}</div>` : ''}`;
+  quizFeedbackScrollHint(box);
 }
 
 function quizHideFeedback(screen) {

@@ -58,8 +58,11 @@ function eqfigWire(sec) {
       if (!a) return;
       const b = box.getBoundingClientRect(), t = a.getBoundingClientRect();
       /* from the box's edge nearest the equation to the anchor's far edge */
+      /* 5px of air before the glyph — the line used to land ON the numerator
+         and denominator of the y fraction. 10px was too much (producer 06.10). */
+      const GAP = 5;
       const x1 = b.left - F.left, y1 = b.top - F.top + b.height / 2;
-      const x2 = t.right - F.left, y2 = t.top - F.top + t.height / 2;
+      const x2 = t.right - F.left + GAP, y2 = t.top - F.top + t.height / 2;
       d += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" />`;
     });
     svg.innerHTML = d;
@@ -164,7 +167,7 @@ const CAR = [
               'מספר כוסות הקמח<br>שאביבית רוצה לחשב',
               eqp(fr('280', 'x'), fr('140', '1')), { lines: false, tight: true, mirror: true })}
       <p><strong>ולכן יש שתי תשובות נכונות.</strong></p>` },
-      no: { t: 'זו טעות. לא נורא, ככה נבנית הבנה.<br>בואו נסביר:', b: `<p>אם נכתוב את היחס בין כוסות (1) לגרמים (140),<br>
+      no: { t: 'טעית בחלק מהסעיפים או בכולם. התשובה הנכונה מוצגת.', b: `<p>אם נכתוב את היחס בין כוסות (1) לגרמים (140),<br>
         אז היחס המתאים בפרופורציה ייכתב כך שמספר<br>
         הכוסות במונה וכמות הגרמים במכנה.</p>
       ${eqfig('היחס הידוע בין כוסות<br>לגרמים עבור קמח לבן',
@@ -278,10 +281,11 @@ function carRender() {
     const picked = carState.picked[i] || [];
     interaction = `<div class="car-opts" role="${g.kind === 'multi' ? 'group' : 'radiogroup'}">
         ${g.opts.map((o, k) => `<button type="button" class="scq-opt car-opt${picked.includes(k) ? ' selected' : ''}${done && g.correct.includes(k) ? ' correct' : ''}${done && picked.includes(k) && !g.correct.includes(k) ? ' wrong' : ''}"
-           data-k="${k}" ${done ? 'disabled' : ''}><span class="scq-radio"></span>${o}</button>`).join('')}
+           data-k="${k}" ${done ? 'disabled' : ''}><span class="scq-radio${g.kind === 'multi' ? ' is-box' : ''}"></span>${o}</button>`).join('')}
       </div>`;
   }
 
+  sec.dataset.carStep = i;          /* lets CSS address a single step */
   sec.innerHTML = `
     <h1 class="car-title">${CAR_TITLE[i]}</h1>
     <div class="car-body${cfg.stack ? ' car-body--stack' : ''}">
@@ -297,7 +301,10 @@ function carRender() {
       <img id="car-char" alt="הדמות המלווה">
     </div>` : ''}
     <div class="car-dots" role="progressbar" aria-valuemin="1" aria-valuemax="${CAR_STEPS}" aria-valuenow="${i}" aria-label="שלב ${i} מתוך ${CAR_STEPS}">
-      ${Array.from({ length: CAR_STEPS }, (_, k) => `<span class="car-dot${k + 1 === i ? ' is-on' : ''}${carState.answered[k + 1] === 'ok' ? ' is-done' : (carState.answered[k + 1] ? ' is-miss' : '')}"></span>`).join('')}
+      ${/* the dots say WHERE YOU ARE, nothing else — the done/missed states are
+            gone (producer 06.10). The stepper above the practice screens is
+            where progress is reported. */''}
+      ${Array.from({ length: CAR_STEPS }, (_, k) => `<span class="car-dot${k + 1 === i ? ' is-on' : ''}"></span>`).join('')}
     </div>
     <div class="car-fb" id="car-fb"></div>
     <button class="btn-continue" id="car-next">${g && !done ? 'צדקתי?' : 'המשך'}</button>

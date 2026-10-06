@@ -3,34 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>משימת ריצוף במיינקרפט - פרופורציה</title>
+    <link rel="stylesheet" href="../../unit-assets/fonts/fonts.css">
     <style>
+        /* 06.10, producer: "text in the app is small make it bigger. also make
+           the squares of the דשא ושיש more readable.. find a way."
+           Three changes, in order of how much they buy:
+             1. Hebrew is set in Assistant, not 'Courier New'. A monospace stack
+                has no Hebrew, so every Hebrew glyph here was falling back to a
+                thin system face at a monospace's small x-height. That alone was
+                most of the "small".
+             2. One step up on every size, and the tiles grow 46 -> 58px so the
+                label has room to be read rather than guessed.
+             3. The two tiles are now told apart by THREE signals, not one:
+                colour (green/brown turf vs grey stone), a texture, and a
+                high-contrast label — white on the turf's dark soil band, near
+                black on the stone. The old marble was near-white with a mid-grey
+                label, which is the pairing that failed. */
+        :root { --turf-top:#6FBF3B; --turf-soil:#6B4A2F; --stone:#C9CCD2; }
+
         body {
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Assistant', 'Arial Hebrew', Arial, sans-serif;
             background-color: #1a1a1a;
             color: #ffffff;
             text-align: center;
-            padding: 20px;
+            padding: 14px 16px 20px;
+            margin: 0;
+            font-size: 20px;
             user-select: none;
         }
         .container {
-            max-width: 720px;
+            max-width: 760px;
             margin: 0 auto;
             background-color: #2b2b2b;
-            padding: 25px;
+            padding: 18px 20px 22px;
             border-radius: 4px;
             border: 4px solid #111;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
-        h1 { 
-            color: #55ff55; 
+        h1 {
+            color: #7CFF6B;
+            font-size: 30px;
+            margin: 0 0 10px;
             text-shadow: 2px 2px 0px #000;
         }
+        .container > p { font-size: 20px; line-height: 1.45; margin: 0 0 4px; }
         .controls {
             display: flex;
             justify-content: space-around;
-            margin: 25px 0;
+            margin: 16px 0;
             background: #363636;
-            padding: 15px;
+            padding: 12px;
             border: 3px solid #1c1c1c;
         }
         .tile-group {
@@ -38,13 +60,17 @@
             flex-direction: column;
             align-items: center;
         }
-        
+        .tile-group h3 { font-size: 22px; margin: 0 0 6px; }
+        .tile-group p { font-size: 20px; margin: 6px 0 0; }
+        .tile-group p span { font-weight: 700; font-size: 22px; }
+
         button {
-            font-family: monospace;
-            font-size: 24px;
-            width: 50px;
-            height: 50px;
-            margin: 5px;
+            font-family: inherit;
+            font-size: 30px;
+            line-height: 1;
+            width: 56px;
+            height: 56px;
+            margin: 4px;
             cursor: pointer;
             border-top: 4px solid rgba(255,255,255,0.4);
             border-left: 4px solid rgba(255,255,255,0.4);
@@ -72,12 +98,12 @@
             flex-direction: column;
             align-items: center;
             gap: 10px;
-            min-height: 180px;
+            min-height: 120px;
             background: #141414;
-            padding: 20px;
+            padding: 16px;
             border: 3px solid #080808;
             box-shadow: inset 3px 3px 6px rgba(0,0,0,0.9);
-            margin-top: 20px;
+            margin-top: 14px;
         }
 
         /* כל קומה היא קבוצה של 2 שיש ו-5 דשא */
@@ -85,57 +111,65 @@
             display: flex;
             gap: 8px;
             background: #222;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 6px;
             border: 1px solid #333;
             box-shadow: 0 4px 6px rgba(0,0,0,0.4);
         }
 
         .block {
-            width: 46px;
-            height: 46px;
+            width: 58px;
+            height: 58px;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
-            font-size: 18px;
-            font-weight: 900;
-            text-shadow: 1px 1px 0px #000;
+            padding-bottom: 5px;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: .5px;
             position: relative;
             box-sizing: border-box;
-            box-shadow: 
-                inset 4px 4px 0px rgba(255, 255, 255, 0.35),
-                inset -4px -4px 0px rgba(0, 0, 0, 0.4),
+            box-shadow:
+                inset 3px 3px 0px rgba(255, 255, 255, 0.28),
+                inset -3px -3px 0px rgba(0, 0, 0, 0.35),
                 2px 3px 4px rgba(0,0,0,0.5);
         }
 
-        .grass { 
-            background: linear-gradient(180deg, #5c9e31 45%, #7a583b 45%);
-            border: 3px solid #322315;
-            color: #f0fff0;
+        /* דשא — turf band over soil. The label rides the DARK soil band, which
+           is what makes white text readable on a bright green tile. */
+        .grass {
+            background:
+                repeating-linear-gradient(90deg, rgba(0,0,0,.10) 0 4px, transparent 4px 12px),
+                linear-gradient(180deg, var(--turf-top) 0 38%, #4E8C27 38% 46%, var(--turf-soil) 46%);
+            border: 3px solid #241806;
+            color: #ffffff;
+            text-shadow: 0 1px 0 #000, 0 0 3px rgba(0,0,0,.9);
         }
 
-        .lapis { 
+        /* שיש — a real stone grey, not near-white, so the near-black label has
+           something to sit on and the tile reads as a different MATERIAL. */
+        .lapis {
             background:
-                linear-gradient(115deg, transparent 0 28%, rgba(120,128,140,0.55) 28% 31%, transparent 31% 100%),
-                linear-gradient(60deg, transparent 0 62%, rgba(120,128,140,0.45) 62% 64%, transparent 64% 100%),
-                linear-gradient(150deg, transparent 0 74%, rgba(150,156,166,0.4) 74% 76%, transparent 76% 100%),
-                linear-gradient(180deg, #f4f3ef 0%, #e2e0da 100%);
-            border: 3px solid #8b8d91;
-            color: #3a3b3f;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+                repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 3px, transparent 3px 11px),
+                repeating-linear-gradient(45deg, rgba(90,96,108,.30) 0 2px, transparent 2px 9px),
+                linear-gradient(180deg, #DDE0E5 0%, var(--stone) 55%, #AEB3BC 100%);
+            border: 3px solid #5E646E;
+            color: #15181D;
+            text-shadow: 0 1px 0 rgba(255,255,255,.85);
         }
 
         .status {
-            margin-top: 20px;
-            font-size: 18px;
+            margin-top: 14px;
+            font-size: 21px;
+            line-height: 1.35;
             padding: 12px;
             background: #3a3a3a;
             border: 2px solid #111;
-            font-weight: bold;
+            font-weight: 700;
         }
-        .success { 
-            background-color: #2b702f; 
-            color: #6cff70; 
+        .success {
+            background-color: #2b702f;
+            color: #8BFF8E;
             border-color: #6cff70;
             text-shadow: 1px 1px 0 #000;
         }

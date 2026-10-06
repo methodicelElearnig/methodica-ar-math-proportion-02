@@ -48,7 +48,7 @@ const GUIDED = [
   { /* 1 · deck 23 — no card: the companion and its callout stand in the left
        column, and the framed box carries the annotated photo. */
     topline: TOP_READ,
-    frameImg: 'guided-car.png', dims: true,
+    frameImg: 'guided-car-side.png', dims: true,
     monster: 'standing', bubble: 'מיד נסביר את הפתרון,<br>שלב אחר שלב' },
 
   { /* 2 · deck 24 — the only step with no topline, and the only one where the
@@ -93,7 +93,7 @@ const GUIDED = [
     /* 04.10, Elad: the closing clause stays on ONE line — break before it,
        and the clause itself may not wrap. */
     card: 'כדי שתישמר פרופורציה בין הממדים של הדגם המוגדל<br><span class="gc-oneline">והדגם המקורי, <strong>גובה הדגם המוגדל צריך להיות 20 ס"מ.</strong></span>',
-    cardImg: 'guided-car-big.png' },
+    cardImg: 'guided-car-side-big.png' },
 ];
 
 const GC_BULB = `<svg class="gc-bulb" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 28" fill="none" aria-hidden="true"><path fill="currentColor" d="M17.482 2.658A10.54 10.54 0 0 0 9.257.07C4.598.604.748 4.357.103 8.991a10.51 10.51 0 0 0 3.429 9.349c1.46 1.294 2.298 3.18 2.298 5.17v.406a4.09 4.09 0 0 0 4.084 4.083h1.166a4.09 4.09 0 0 0 4.084-4.083v-.412c0-1.967.877-3.86 2.47-5.333a10.49 10.49 0 0 0 3.363-7.672c0-2.99-1.281-5.849-3.515-7.841m-3.485 21.256a2.92 2.92 0 0 1-2.917 2.917H9.914a2.92 2.92 0 0 1-2.917-2.917v-.406c0-.453-.038-.904-.11-1.344h7.227q-.116.66-.117 1.338zm2.846-6.6c-1.152 1.063-1.978 2.325-2.435 3.684h-3.329v-8.8a3.505 3.505 0 0 0 2.917-3.45.584.584 0 0 0-1.167 0 2.336 2.336 0 0 1-2.333 2.333 2.336 2.336 0 0 1-2.334-2.333.584.584 0 0 0-1.166 0 3.505 3.505 0 0 0 2.916 3.45v8.8h-3.31a8 8 0 0 0-2.296-3.532C1.96 15.39.822 12.281 1.258 9.152c.573-4.116 3.992-7.448 8.13-7.924a10 10 0 0 1 1.123-.064c2.296 0 4.463.82 6.196 2.365a9.35 9.35 0 0 1 3.124 6.969 9.19 9.19 0 0 1-2.987 6.815z"/></svg>`;
@@ -105,6 +105,11 @@ function gRender() {
   if (!sec || !cfg) return;
   const picked = gState.picked[i];
   const revealed = picked !== undefined;
+  /* 06.10, producer: a step that ASKS something locks המשך until it is
+     answered. The handler already refused to advance, but the button stayed
+     live — it looked clickable and silently did nothing. The lock has to be
+     on the element, not only in the handler. */
+  const gate = !!cfg.opts && !revealed;
   /* the counter counts QUESTION steps only, exactly as 2.1 does */
   const steps = GUIDED.filter(c => c.opts);
   const stepIdx = steps.indexOf(cfg);
@@ -147,7 +152,7 @@ function gRender() {
       <div class="speech-bubble">${cfg.bubble}</div>
       <img id="g-char" alt="דמות מלווה">
     </div>` : ''}
-    <button class="btn-continue" id="g-next">המשך</button>
+    <button class="btn-continue" id="g-next"${gate ? ' disabled' : ''}>המשך</button>
     <button class="btn-back" id="g-prev">חזרה</button>`;
 
   if (cfg.monster && typeof setCharacter === 'function') setCharacter('g-char', cfg.monster);

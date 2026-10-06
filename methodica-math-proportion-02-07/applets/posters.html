@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../unit-assets/fonts/fonts.css">
     <title>סידור פוסטרים על קיר האולם (יחס 3:4)</title>
     <style>
         :root {
@@ -19,7 +20,11 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* 06.10, producer: "make the text inside the app bigger. the ס״מ
+               inside it is barely readable." The stack had no Hebrew face at
+               all, so every Hebrew glyph fell back to a thin system font at a
+               Latin UI's x-height — the same fault the tiling applet had. */
+            font-family: 'Assistant', 'Segoe UI', Tahoma, Arial, sans-serif;
         }
 
         body {
@@ -269,16 +274,48 @@
             pointer-events: none;
             z-index: 1;
         }
-            /* compact for the 460px embed */
-        .controls-card { padding: 10px; }
-        .controls-card h2 { font-size: 1.05em; margin: 0 0 8px; }
-        .rule-notice { font-size: .78em; line-height: 1.35; }
+        /* ── sizes for the embed. This block used to shrink everything with
+           em fractions of a 16px root "compact for the 460px embed"; the
+           screen actually gives the applet 608px, so the panel was ~12-13px
+           for no reason. Absolute values now, so nothing drifts if the root
+           changes, and the readings the question is answered from (the ס"מ
+           labels, the stats panel) are the largest things in the card. ── */
+        body { padding: 8px; font-size: 18px; }
+        /* bigger copy needs a wider panel, or it just wraps to more lines and
+           the card grows taller than the 500px box. 186 -> 232 buys back more
+           height than the type costs. */
+        header { margin-bottom: 10px; }
+        header h1 { font-size: 21px; }
+        .main-layout { grid-template-columns: 232px 1fr; gap: 10px; }
+        .controls-card { padding: 11px 12px; }
+        .controls-card h2 { font-size: 20px; margin: 0 0 8px; }
+        .rule-notice { font-size: 16px; line-height: 1.4; padding: 9px 11px; margin-bottom: 12px; }
         .rule-notice ul { padding-inline-start: 16px; margin: 4px 0; }
-        .form-group label { font-size: .8em; margin-bottom: 5px; }
-        .stats-box { font-size: .82em; }
-        .wall-title { font-size: .95em; }
-        .dimension-width-label, .dimension-height-label { font-size: .75em; }
-        body { padding: 8px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { font-size: 17px; margin-bottom: 5px; }
+        .slider-value { font-size: 20px; }
+        .stats-box { font-size: 18px; margin-top: 12px; padding: 10px 12px; }
+        .stats-box div { margin-bottom: 6px; }
+        .wall-title { font-size: 18px; }
+        /* the two readings the learner takes off the wall */
+        .dimension-width-label, .dimension-height-label { font-size: 18px; }
+        /* the strip stays true to scale; the number rides a chip on top of it.
+           Alternate chips sit high and low so neighbours clear each other once
+           the posters get narrow (8 posters put the strips ~45px apart, and a
+           single row of chips overlapped). */
+        .gap-visualizer { overflow: visible; align-items: flex-start; padding-top: 12%; z-index: 3; }
+        .gap-visualizer--low { align-items: flex-end; padding-top: 0; padding-bottom: 12%; }
+        .gap-visualizer--edge-start .gap-num { transform: translateX(55%); }
+        .gap-visualizer--edge-end .gap-num { transform: translateX(-55%); }
+        .gap-num {
+            font-size: 16px; font-weight: 700; line-height: 1;
+            color: #c0392b; white-space: nowrap;
+            background: rgba(255, 255, 255, .93);
+            border: 1px solid rgba(192, 57, 43, .45);
+            border-radius: 6px;
+            padding: 3px 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+        }
     </style>
 </head>
 <body>
@@ -382,13 +419,15 @@
         const startX = (WALL_WIDTH - totalSpanX) / 2 + GAP;
         const posY = (WALL_HEIGHT - posterH) / 2;
 
-        // Render Gaps
-        renderGapBox(startX - GAP, posY, GAP, posterH, scale, '10');
+        // Render Gaps. `g` staggers the labels high/low: at 8 posters the chips
+        // sit one poster-width apart and collided on a single row.
+        let g = 0;
+        renderGapBox(startX - GAP, posY, GAP, posterH, scale, '10', g++, 'start');
         for (let i = 0; i < N - 1; i++) {
             const gapX = startX + (i + 1) * posterW + i * GAP;
-            renderGapBox(gapX, posY, GAP, posterH, scale, '10');
+            renderGapBox(gapX, posY, GAP, posterH, scale, '10', g++);
         }
-        renderGapBox(startX + N * posterW + (N - 1) * GAP, posY, GAP, posterH, scale, '10');
+        renderGapBox(startX + N * posterW + (N - 1) * GAP, posY, GAP, posterH, scale, '10', g++, 'end');
 
         // Render Posters
         for (let i = 0; i < N; i++) {
@@ -422,7 +461,7 @@
         }
     }
 
-    function renderGapBox(x, y, w, h, scale, text) {
+    function renderGapBox(x, y, w, h, scale, text, idx, edge) {
         const gapEl = document.createElement('div');
         gapEl.className = 'gap-visualizer';
         gapEl.style.width = (w * scale) + 'px';
@@ -430,7 +469,22 @@
         gapEl.style.left = (x * scale) + 'px';
         gapEl.style.top = (y * scale) + 'px';
         
-        if ((w * scale) > 8) gapEl.textContent = text;
+        /* 06.10, producer: the 10 between the rectangles reads bigger and gets
+           some padding. The STRIP keeps its true width — it is a scale drawing
+           of the 10cm gap — so the number rides a chip that is centred on the
+           strip and allowed to spill over the posters either side. That also
+           drops the old `width > 8px` suppression, which hid the label outright
+           once there were enough posters to squeeze the strip. */
+        if (text) {
+            const num = document.createElement('span');
+            num.className = 'gap-num';
+            num.textContent = text;
+            gapEl.appendChild(num);
+            if (idx % 2) gapEl.classList.add('gap-visualizer--low');
+            /* the two wall-edge strips sit on the frame, so their chip is nudged
+               inward — `overflow: hidden` on the wall was cutting it in half */
+            if (edge) gapEl.classList.add('gap-visualizer--edge-' + edge);
+        }
         canvasWrapper.appendChild(gapEl);
     }
 

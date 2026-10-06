@@ -539,7 +539,7 @@ html, body {
   color: var(--gray-100);
 }
 .applet-frame p { font-size: 24px; font-weight: 700; }
-.applet-frame .applet-note { font-size: 16px; font-weight: 400; }
+.applet-frame .applet-note { font-size: 18px; font-weight: 400; }
 
 /* quiz feedback box (shared visual language with #scq-feedbox) */
 .quiz-feedbox {
@@ -549,7 +549,7 @@ html, body {
   width: 420px;
   border-radius: 24px;
   padding: 20px 52px 20px 24px;
-  font-size: 18px;
+  font-size: 20px;   /* 06.10 — same size as the app/board copy (producer) */
   line-height: 1.5;
   display: none;
   z-index: 6;
@@ -1012,7 +1012,7 @@ html, body {
   grid-template-rows: 100%; grid-template-columns: 100%;
   place-items: center; background: rgba(255, 255, 255, 0.92);
 }
-#img-zoom-overlay img { max-width: 82%; max-height: 82%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+#img-zoom-overlay img { max-width: 88%; max-height: 88%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
 #img-zoom-overlay .applet-close-btn { position: absolute; top: 24px; left: 24px; }
 
 /* QA visual pass fixes */
@@ -1938,7 +1938,7 @@ html, body {
 
 .applet-frame p { font-size: 24px; font-weight: 700; }
 
-.applet-frame .applet-note { font-size: 16px; font-weight: 400; }
+.applet-frame .applet-note { font-size: 18px; font-weight: 400; }
 
 /* quiz feedback box (shared visual language with #scq-feedbox) */
 .quiz-feedbox {
@@ -1948,7 +1948,7 @@ html, body {
   width: 420px;
   border-radius: 24px;
   padding: 20px 52px 20px 24px;
-  font-size: 18px;
+  font-size: 20px;   /* 06.10 — same size as the app/board copy (producer) */
   line-height: 1.5;
   display: none;
   z-index: 6;
@@ -2500,7 +2500,7 @@ html, body {
   place-items: center; background: rgba(255, 255, 255, 0.92);
 }
 
-#img-zoom-overlay img { max-width: 82%; max-height: 82%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+#img-zoom-overlay img { max-width: 88%; max-height: 88%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
 
 #img-zoom-overlay .applet-close-btn { position: absolute; top: 24px; left: 24px; }
 
@@ -3829,6 +3829,16 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    Producer 15.09.26: "should be in purple and have border radius — we already
    made slides like this". ── */
 
+/* ── the click/scroll hint sprite. The base frame rule was lost when this
+   stylesheet was vendored (only the __ripple/__spark/__cursor children came
+   across), so the sprite rendered as a 0-height inline div. 300x300 with the
+   cursor tip at (148,149) is the measured frame every unit uses. ── */
+.click-hint {
+  position: absolute;
+  width: 300px; height: 300px;
+  pointer-events: none;
+  z-index: 20;
+}
 .click-hint.hidden { display: none !important; }
 
 .click-hint__ripple1 {
@@ -3945,6 +3955,17 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .click-hint[id$="-hint-scroll"] {
   right: -135px; top: 60px;
   animation: hintDrift 4s ease-in-out infinite;
+}
+
+/* `.click-hint.click-hint--in-popup`, not the lone class: the id still ends in
+   -hint-scroll so the drift animation applies, but that base selector is
+   (0,2,0) and a single class would lose to it and keep the screen-edge offset.
+   left/top are set inline from the scroller's own box (see fbScrollHint); this
+   only has to drop the `right` and keep the sprite clear of clicks. */
+.click-hint.click-hint--in-popup {
+  position: absolute;
+  right: auto;
+  z-index: 60;
 }
 
 @keyframes hintDrift {
@@ -4876,6 +4897,14 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
   touch-action: pan-y;
   overscroll-behavior: contain;
 }
+/* 06.10, producer: "always needs to be on the right". An rtl scroller puts
+   its bar on the LEFT, which is where both feedback panels had it. The
+   container flips to ltr so the bar lands on the right, and every direct
+   child is flipped back to rtl so the Hebrew copy, the tables and the
+   fractions keep reading exactly as before. */
+.quiz-feedbox .fb-body, .car-fb { direction: ltr; }
+.quiz-feedbox .fb-body > *, .car-fb > * { direction: rtl; }
+
 /* a visible track, so it reads as scrollable rather than clipped */
 .quiz-feedbox .fb-body::-webkit-scrollbar { width: 8px; }
 .quiz-feedbox .fb-body::-webkit-scrollbar-track { background: rgba(0,0,0,.06); border-radius: 100px; }
@@ -4912,6 +4941,12 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 
 /* The fraction answer's rule should span the boxes, not the whole row. */
 .ratio-row--frac .vi-frac { width: fit-content; }
+
+/* an equation-prefix row ("x =") reads LEFT to RIGHT — the deck draws the x
+   and the = to the LEFT of the answer box on slides 31/42/44. In the rtl row
+   it rendered as "[box] = x". flex-end keeps the group on the column's right
+   edge, where every other answer sits. */
+.ratio-row.ratio-row--eq { direction: ltr; justify-content: flex-end; }
 
 /* Lines the deck sets on ONE line — never let the column width rebreak them. */
 .nowrap { white-space: nowrap; }
@@ -5079,6 +5114,23 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    I had also tinted purple. */
 .car-table thead th { font-weight: 400; background: var(--subject-100); color: var(--text); }
 .car-table tbody th { font-weight: 400; text-align: center; background: #fff; color: var(--text); }
+
+/* a table that carries the screen on its own (dslide 26) — one size up, and
+   pulled to the column's reading edge so it sits beside the sentence that
+   introduces it instead of floating in the middle of an empty half. RTL:
+   flex-start IS the right edge. */
+.car-table--lg {
+  font-size: 22px;
+  align-self: flex-start;
+  margin-top: 0;
+  /* --page-pad is the CANVAS-edge gutter. On the column's inner edge it is not
+     a canvas edge at all, so the table was paying it on top of the 44px gutter
+     between the two columns — 84px of air between the table and the sentence
+     that introduces it. Cancelled on the inner side only; the outer gutter and
+     every other screen are untouched. */
+  margin-inline-start: calc(-1 * var(--page-pad));
+}
+.car-table--lg th, .car-table--lg td { padding: 12px 20px; }
 
 /* drag-to-fill: chips below, drop cells inside the table */
 /* a drop target, not a text field: the dashed white box read as an <input>.
@@ -5371,7 +5423,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 /* table and photo sit SIDE BY SIDE — stacked they ran the column past the bar */
 .g-media { align-self: flex-start; width: 100%;
   display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
-.g-pic { max-height: 150px; width: auto; }
+.g-pic { max-height: 150px; max-width: 100%; width: auto; }
 /* deck slide 23 annotates the car with its two known dimensions: 4 ס"מ beside
    the left edge (height, 62% down) and 16 ס"מ across the bottom (length). */
 .g-figure { position: relative; display: inline-block; line-height: 0; }
@@ -5851,13 +5903,20 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 
 .gc-table .car-table td { color: var(--text); }
 
-.gc-pic { max-height: 140px; width: auto; align-self: center; }
+/* 06.10 — the side-profile car is 3.1:1, so `width:auto` at 140px tall ran
+   wider than the card and gave it a horizontal scrollbar. Art is sized to
+   FIT the box; a normal slide never scrolls. */
+.gc-pic { max-height: 140px; max-width: 100%; width: auto; align-self: center; }
 
-/* ═══ Applet — dinosaur resizer (deck slide 35) ═══════════════════════════ */
+/* ═══ Applet — dinosaur resizer (deck slide 35) ═══════════════════════════
+   06.10, producer: "make the app text bigger". The whole applet was sitting
+   on the 18px floor, which reads small against the 20px stem beside it. One
+   step up across the board (title 24, everything else 20); the frame had the
+   room, so nothing reflows. */
 .dino { border: 2px solid var(--subject-200, #DCCDFA); border-radius: 16px;
   padding: 14px 18px; background: #fff; width: 100%; max-width: 660px; }
-.dino-title { margin: 0; font-size: 20px; font-weight: 700; text-align: center; }
-.dino-sub { margin: 4px 0 12px; font-size: 18px; text-align: center; color: var(--gray-500, #6b6b73); }
+.dino-title { margin: 0; font-size: 24px; font-weight: 700; text-align: center; }
+.dino-sub { margin: 4px 0 12px; font-size: 20px; text-align: center; color: var(--gray-500, #6b6b73); }
 .dino-body { display: flex; gap: 16px; align-items: flex-start; direction: ltr; }
 .dino-plot { flex: 1 1 auto; min-width: 0; }
 .dino-plot svg { width: 100%; height: auto; display: block; }
@@ -5866,19 +5925,19 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .dino-axis { stroke: #1F8A7A; stroke-width: 2; }
 /* the svg renders at ~1.04x, so a viewBox font-size IS the rendered size —
    these have to clear the unit's 18px floor like any other text */
-.dino-tick, .dino-axis-label { font-size: 18px; fill: #1F8A7A; font-family: inherit; }
+.dino-tick, .dino-axis-label { font-size: 20px; fill: #1F8A7A; font-family: inherit; }
 .dino-rect { fill: rgba(59, 47, 194, .12); stroke: #3B2FC2; stroke-width: 2; }
-.dino-tag { font-size: 18px; fill: #3B2FC2; text-anchor: middle; font-family: inherit; }
-.dino-side { flex: 0 0 210px; direction: rtl; display: flex; flex-direction: column; gap: 10px; }
-.dino-ctl { display: flex; align-items: center; gap: 8px; font-size: 18px; }
+.dino-tag { font-size: 20px; fill: #3B2FC2; text-anchor: middle; font-family: inherit; }
+.dino-side { flex: 0 0 232px; direction: rtl; display: flex; flex-direction: column; gap: 10px; }
+.dino-ctl { display: flex; align-items: center; gap: 8px; font-size: 20px; }
 .dino-ctl input[type="range"] { flex: 1 1 auto; min-width: 0; accent-color: #3B2FC2; }
-.dino-ctl output { min-width: 26px; text-align: center; font-weight: 700; font-size: 18px; }
+.dino-ctl output { min-width: 30px; text-align: center; font-weight: 700; font-size: 20px; }
 .dino-readouts { display: flex; gap: 8px; flex-wrap: wrap; }
 .dino-pill { border: 1px solid var(--subject-200, #DCCDFA); border-radius: 999px;
-  padding: 4px 12px; font-size: 18px; }
+  padding: 5px 13px; font-size: 20px; }
 .dino-ratio { border: 1px solid var(--subject-200, #DCCDFA); border-radius: 12px;
   padding: 10px 14px; text-align: center; transition: border-color .15s, background-color .15s; }
-.dino-ratio p { margin: 0 0 6px; font-size: 18px; }
+.dino-ratio p { margin: 0 0 6px; font-size: 20px; }
 .dino-ratio.is-kept { border-color: #609E12; background: #EDF8ED; }
 
 /* the applet screen needs the wider half of the split — the dinosaur plot and
@@ -6183,35 +6242,33 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
   background: #fff;
   border: 1.5px solid #303030;
   border-radius: 14px;
-  padding: 10px 12px;
-  font-size: 18px;
-  line-height: 1.3;
+  padding: 9px 13px;
+  /* 06.10, producer: "make the text of the text bubble bigger". 18 -> 20 is
+     the most the 490px figure takes before the bubbles start covering the
+     two faces the tails have to point at. */
+  font-size: 20px;
+  line-height: 1.28;
   text-align: right;
   z-index: 2;
 }
-/* the tail is two triangles — the outer one draws the border, the inner one
-   punches the white fill back over it */
-.debate-bubble::before, .debate-bubble::after {
-  content: ''; position: absolute; width: 0; height: 0; border-style: solid;
+
+/* The tail is DRAWN, not a pair of CSS triangles: it has to run from the
+   bubble's bottom edge all the way down to a mouth inside the photo, and the
+   bubble's height moves with the copy. debateTails() writes one path per
+   bubble — fill white (which covers the bubble's own bottom border across the
+   tail's mouth, so the join is seamless), stroke only the two arms. The layer
+   sits ABOVE the bubbles for that reason. */
+.debate-tails {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  overflow: visible; pointer-events: none; z-index: 3;
 }
-.debate-bubble--natanel { left: 46.6%; top: 0; width: 53.4%; }
-.debate-bubble--natanel::before {
-  bottom: -26px; left: 26px;
-  border-width: 26px 30px 0 0; border-color: #303030 transparent transparent transparent;
-}
-.debate-bubble--natanel::after {
-  bottom: -22px; left: 28px;
-  border-width: 22px 26px 0 0; border-color: #fff transparent transparent transparent;
-}
-.debate-bubble--roni { left: 0; top: 23.4%; width: 51.5%; }
-.debate-bubble--roni::before {
-  bottom: -26px; right: 26px;
-  border-width: 26px 0 0 30px; border-color: #303030 transparent transparent transparent;
-}
-.debate-bubble--roni::after {
-  bottom: -22px; right: 28px;
-  border-width: 22px 0 0 26px; border-color: #fff transparent transparent transparent;
-}
+
+.debate-bubble--natanel { left: 54.6%; top: 0; width: 53.4%; }
+/* 06.10, producer — exact values supplied. natanel runs 8% past the figure's
+   right edge and roni is back flush left; at these positions the two no longer
+   overlap, so the -14% nudge that stopped roni painting over natanel's last
+   line is no longer needed. */
+.debate-bubble--roni { left: 0; top: 18.4%; width: 51.5%; }
 
 /* ═══ QA 30.09 — component 07 pictures ═══════════════════════════════════ */
 /* dslide 53 / deck 80: the deck sets the picture 262x440 with a callout above
@@ -6229,6 +6286,38 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .expo-shot { display: block; width: auto; max-width: 100%; max-height: 400px; border-radius: 10px; }
 /* dslide 57 / deck 84: a tall photo — let it use the column's height */
 .expo-shot--print { max-height: 470px; max-width: 100%; }
+
+/* ═══ ratio expansion — the "הרחבת היחס" diagram ══════════════════════════
+   Replaces two 289x138 rasters that were being upscaled inside the feedback
+   panel. Everything here scales with the surrounding font: the arcs are
+   bordered boxes with an elliptical radius, stretched by the flex row, so they
+   fit whatever height the two rows come out at. #156082 is the colour the
+   original artwork used. ═══ */
+.rx { display: block; margin: 14px 0 10px; color: #156082; text-align: center; }
+.rx-title { display: block; font-weight: 700; margin-bottom: 8px; }
+/* direction: ltr — the row is [left arc][rows][right arc] in DOM order, and in
+   an rtl container the first child renders RIGHTMOST, which swapped the two
+   sides. The rows inside already carry their own dir. */
+.rx-body { display: flex; align-items: stretch; justify-content: center; gap: 8px; direction: ltr; }
+/* stretch, not center: the arc has no content, so it takes its height from
+   the row. `align-items: center` collapsed it to a flat line. */
+.rx-side { display: flex; align-items: stretch; gap: 7px; }
+.rx-k { font-weight: 700; white-space: nowrap; align-self: center; direction: ltr; }
+.rx-rows {
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 2px 6px; white-space: nowrap;
+}
+.rx-arc { width: 15px; border: 2.5px solid currentColor; }
+.rx-arc--left  { border-right: none; border-radius: 50% 0 0 50% / 50% 0 0 50%; }
+.rx-arc--right { border-left: none;  border-radius: 0 50% 50% 0 / 0 50% 50% 0; }
+/* the head sits at the bottom of each arc, pointing in toward the lower row */
+.rx-arc { position: relative; }
+.rx-arc::after {
+  content: ''; position: absolute; bottom: -4px; width: 0; height: 0;
+  border: 6px solid transparent;
+}
+.rx-arc--left::after  { right: -5px; border-left-color: currentColor; border-right: 0; }
+.rx-arc--right::after { left: -5px;  border-right-color: currentColor; border-left: 0; }
 
 /* ═══ QA 30.09 — the camp bulletin board, dslides 46-50 ══════════════════
    Was a raster whose text was unreadable at column size. Now markup, so it
@@ -6249,25 +6338,33 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
   content: ''; position: absolute; inset: 16px;
   background: #fff; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.16);
 }
+/* 06.10, producer: the board's copy and the feedback's copy read at the SAME
+   size, one step up. The board had 18/19/20 against a 24px stem beside it. */
 .cb-title {
-  margin: 8px 0 14px; font-size: 20px; font-weight: 700; color: #303030;
+  margin: 8px 0 14px; font-size: 22px; font-weight: 700; color: #303030;
   text-align: center;
 }
 .cb-group { margin: 0 10px 12px; }
 .cb-group:last-child { margin-bottom: 8px; }
 .cb-group h4 {
-  margin: 0 0 4px; font-size: 19px; font-weight: 700; color: #303030;
+  margin: 0 0 4px; font-size: 21px; font-weight: 700; color: #303030;
   text-align: right;
 }
 .cb-group h4::before { content: '• '; }
 .cb-group p {
-  margin: 0 0 3px; font-size: 18px; line-height: 1.45; color: #303030;
+  margin: 0 0 3px; font-size: 20px; line-height: 1.4; color: #303030;
   text-align: center;
 }
 .cb-rate {
   display: inline-block; border: 1px dashed #B20010; border-radius: 5px;
   padding: 1px 8px; color: #B20010; font-weight: 700;
 }
+
+/* dslide 58 is the one screen in the unit with no content column at all, so
+   its text sat hard against the top of an otherwise empty stage. Producer
+   06.10: move the whole block ~100px down. Padding on the column, not a
+   margin on the stem, so the question rows travel with it. */
+#q58 .quiz-main { padding-top: 100px; }
 
 /* the answer boxes on the camp-board screens hold values like 30.48 / 91.44 —
    the 96px box clipped them once the ✓ took its share. Scoped to those
@@ -6364,3 +6461,12 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    image. Give the wrapper the ruler's flex-item geometry back. ── */
 .ct-wrap > .img-zoom-wrap { display: block; width: 420px; max-width: 100%; align-self: center; }
 .ct-wrap > .img-zoom-wrap > .ct-ruler { width: 100%; }
+
+/* ═══ Producer round 06.10 · carousel (screen 5) ═══════════════════════ */
+
+/* 5.1 reads small against its own empty column — that step only. */
+#s5[data-car-step="1"] .car-copy,
+#s5[data-car-step="1"] .car-copy p { font-size: 22px; line-height: 1.6; }
+
+/* the dots carry no done/missed state any more, so the state colours go too */
+.car-dot.is-done, .car-dot.is-miss { background: inherit; }

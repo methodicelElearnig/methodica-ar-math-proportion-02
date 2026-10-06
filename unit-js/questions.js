@@ -10,7 +10,7 @@ const sol = (h) => `<p class="car-solve" dir="ltr">${h}</p>`;
 /* a proportion table. RTL: the FIRST cell renders rightmost, which is the
    order the deck's own tables read in (their tblPr carries no rtl flag, so
    their first cell is leftmost and the two orders mirror). */
-const pTable = (head, rows) => `<table class="car-table">
+const pTable = (head, rows, mod) => `<table class="car-table${mod ? ' ' + mod : ''}">
   <thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead>
   <tbody>${rows.map(r => `<tr>${r.map((c, i) => i === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 
@@ -201,6 +201,23 @@ const C5_PUZZLE = `<p>נשמור על היחס המקורי בין השורות 
    Rebuilt as markup: crisp at any size, scales with the column, and the
    numbers are real text a translator can reach. Same content as the deck's
    image, same three sections. */
+/* ── ratio expansion ("הרחבת היחס") ──────────────────────────────────────
+   06.10, producer: "dslide 50 feedback image is really blury please
+   reconstruct it". It was a 289x138 raster being upscaled in the panel. Same
+   treatment the camp bulletin board got on 30.09: rebuilt as markup, so it is
+   sharp at any size, the copy is real text, and it grows with the feedback
+   font instead of staying a fixed bitmap. The arcs are CSS (a bordered box
+   with an elliptical radius) and therefore stretch to whatever height the two
+   rows take. ── */
+const ratioExpand = (title, top, bottom, factor) => `<span class="rx">
+  <span class="rx-title">${title}</span>
+  <span class="rx-body">
+    <span class="rx-side"><b class="rx-k">${factor}</b><i class="rx-arc rx-arc--left"></i></span>
+    <span class="rx-rows"><span dir="ltr">${top}</span><span dir="ltr">${bottom}</span></span>
+    <span class="rx-side"><i class="rx-arc rx-arc--right"></i><b class="rx-k">${factor}</b></span>
+  </span>
+</span>`;
+
 const BOARD = `<div class="camp-board" data-persist role="group" aria-label="לוח המידע של המחנה">
   <h3 class="cb-title">לוח המידע של המחנה <span dir="ltr">(Camp Bulletin Board)</span></h3>
   <div class="cb-group">
@@ -246,7 +263,7 @@ const C6_C = `<p>נחשב תחילה את כמות המים הנדרשת לפי 
   <p>לפי לוח המידע, 1 גלון שווה ל-3.785 ליטר.</p>
   <p>כדי לחשב כמה ליטרים שווים 8 גלונים של מים, נרחיב את היחס פי 8:</p>
   ${sol('8 · 3.785 = <span class="eq-unit" dir="rtl">30.28 ליטר</span>')}
-  <p class="fb-figure"><img src="assets/img/fb-gallon-litre.png" alt="הרחבת היחס גלון : ליטר פי 8 — מ-3.785 : 1 ל-30.28 : 8"></p>
+  <p class="fb-figure" role="img" aria-label="הרחבת היחס גלון : ליטר פי 8 — מ-1 : 3.785 ל-8 : 30.28">${ratioExpand('ליטר : גלון', '1 : 3.785', '8 : 30.28', '· 8')}</p>
   <p>כמות המים במיכל (30.28 ליטר) קטנה מהכמות הנדרשת (36 ליטר), ולכן <strong>המים לא יספיקו</strong>.</p>`;
 
 const C6_D = `<p>1 אינץ' שווה ל-2.54 ס"מ.</p>
@@ -264,7 +281,7 @@ const C6_E = `<p>מחיר כל חולצה הוא <span dir="ltr">$30</span> ול
   ${sol('15 · 30 = <span dir="ltr">$450</span>')}
   <p>יחס ההמרה היומי מדולרים ($) לשקלים (₪) הוא <span dir="ltr">1 : 3.25</span>, ולכן:</p>
   ${sol('450 · 3.25 = <span class="eq-unit" dir="rtl">1462.5 ₪</span>')}
-  <p class="fb-figure"><img src="assets/img/fb-dollar-shekel.png" alt="הרחבת יחס ההמרה דולר : שקל"></p>
+  <p class="fb-figure" role="img" aria-label="הרחבת יחס ההמרה דולר : שקל פי 450 — מ-1 : 3.25 ל-450 : 1462.5">${ratioExpand('שקל : דולר', '1 : 3.25', '450 : 1462.5', '· 450')}</p>
   <p>הסכום שהתקבל (1462.5 ₪) קטן מהתקציב (1500 ₪), ולכן <strong>התקציב יספיק</strong>.</p>`;
 
 
@@ -330,13 +347,13 @@ const QUESTIONS = [
     fb: { retry: 'זה לא מדויק, ננסה שוב?',
       correct: { title: 'נכון!', body: `<p>נכתוב את משוואת הפרופורציה המתאימה לנתונים:</p>
         <p class="car-center"><span class="car-eq" dir="ltr"><span class="fraction fr-inline"><span class="frac-top">10</span><span class="frac-bottom">x</span></span><span class="car-eq-op">=</span><span class="fraction fr-inline"><span class="frac-top">6</span><span class="frac-bottom">15</span></span></span></p>
-        <p>נכפול במכנה המשותף <span dir="ltr">(15x)</span>:</p>
+        <p>נכפול בכפולה המשותפת: <span dir="ltr">15x</span></p>
         <p class="car-solve" dir="ltr">6 · x = 10 · 15<br>6x = 150 &nbsp;/:6</p>
         <p>ונקבל:</p>
         <p class="car-solve" dir="ltr">x = 25</p>` },
       wrong: { title: 'כמעט...', body: `<p>נכתוב את משוואת הפרופורציה המתאימה לנתונים:</p>
         <p class="car-center"><span class="car-eq" dir="ltr"><span class="fraction fr-inline"><span class="frac-top">10</span><span class="frac-bottom">x</span></span><span class="car-eq-op">=</span><span class="fraction fr-inline"><span class="frac-top">6</span><span class="frac-bottom">15</span></span></span></p>
-        <p>נכפול במכנה המשותף <span dir="ltr">(15x)</span>:</p>
+        <p>נכפול בכפולה המשותפת: <span dir="ltr">15x</span></p>
         <p class="car-solve" dir="ltr">6 · x = 10 · 15<br>6x = 150 &nbsp;/:6</p>
         <p>ונקבל:</p>
         <p class="car-solve" dir="ltr">x = 25</p>` } },
@@ -358,7 +375,7 @@ const QUESTIONS = [
         <tbody><tr><td>100</td><td>11</td></tr><tr><td>300</td><td>x</td></tr></tbody></table>
         <p>נכתוב את משוואת הפרופורציה:</p>
         <p class="car-center"><span class="car-eq" dir="ltr"><span class="fraction fr-inline"><span class="frac-top">x</span><span class="frac-bottom">300</span></span><span class="car-eq-op">=</span><span class="fraction fr-inline"><span class="frac-top">11</span><span class="frac-bottom">100</span></span></span></p>
-        <p>נכפול במכנה המשותף (300) ונקבל:</p>
+        <p>נפתור את המשוואה ונקבל:</p>
         <p class="car-solve" dir="ltr">x = 33</p>
         <p>מסקנה: על שירה ורז לשלם 33 ₪.</p>` },
       wrong: { title: 'כמעט...', body: `<p>נסמן:<br>x - המחיר ששירה ורז צריכים לשלם.</p>
@@ -367,7 +384,7 @@ const QUESTIONS = [
         <tbody><tr><td>100</td><td>11</td></tr><tr><td>300</td><td>x</td></tr></tbody></table>
         <p>נכתוב את משוואת הפרופורציה:</p>
         <p class="car-center"><span class="car-eq" dir="ltr"><span class="fraction fr-inline"><span class="frac-top">x</span><span class="frac-bottom">300</span></span><span class="car-eq-op">=</span><span class="fraction fr-inline"><span class="frac-top">11</span><span class="frac-bottom">100</span></span></span></p>
-        <p>נכפול במכנה המשותף (300) ונקבל:</p>
+        <p>נפתור את המשוואה ונקבל:</p>
         <p class="car-solve" dir="ltr">x = 33</p>
         <p>מסקנה: על שירה ורז לשלם 33 ₪.</p>` } },
   },
@@ -379,10 +396,11 @@ const QUESTIONS = [
        (js/applet-dino.js) rather than shown as a picture. */
     screen: 13, type: 'value-input', label: '',
     step: { group: 'standard', index: 1, total: 4 },
-    stem: `תלמידים בנו סקיצה של דמות דינוזאור עבור משחק מחשב. העזרו ביישומון<br>
+    stem: `תלמידים בנו סקיצה של דמות דינוזאור עבור משחק מחשב.<br>
       בסקיצה הראשונית, ממדי הדינוזאור היו:<br>
       <strong>גובה: 12 ס"מ</strong><br><strong>רוחב: 9 ס"מ</strong><br>
-      כדי שהדמות תתאים למסך מחשב, יש להגדיל את דמות הדינוזאור כך שגובהה החדש יהיה <strong>20 ס"מ</strong>, תוך שמירה על פרופורציה<br><br>
+      כדי שהדמות תתאים למסך מחשב, יש להגדיל את דמות הדינוזאור כך שגובהה החדש יהיה <strong>20 ס"מ</strong>, תוך שמירה על פרופורציה,<br>
+      העזרו ביישומון כדי למצוא את התשובה<br><br>
       <strong>מה צריך להיות הרוחב החדש של דמות הדינוזאור(בסנטימטרים)?</strong>`,
     content: dinoAppletHTML(),
     ratioRows: [{ suffix: 'ס"מ', parts: 1 }],
@@ -416,10 +434,10 @@ const QUESTIONS = [
     screen: 15, type: 'value-input', label: '',
     step: { group: 'standard', index: 3, total: 4 },
     stem: `מידות שער כדורגל תקני משתנות בהתאם לגיל השחקנים.<br>
-      בליגת בוגרים (גילאי 15 ומעלה), מידות שער תקני הן<br>
+      בליגת הנערים מגילאי 15 ומעלה, מידות שער תקני הן<br>
       <strong>רוחב:</strong> 7.32 מטר.<br><strong>גובה:</strong> 2.44 מטר.<br>
       לשכבות גיל צעירות יותר, השערים מוקטנים כדי להתאים לממדי הגוף<br>ולשטח המגרש.<br>
-      לנערים בגילאי 12-14, - גובה השער הוא 2.13 מטר.<br><br>
+      לנערים בגילאי 12-14 - גובה השער הוא 2.13 מטר.<br><br>
       <strong>מהו רוחב השער המתאים, כך שישמר היחס בין רוחב לגובה של שער תקני לבוגרים?</strong>`,
     /* deck 37 image64 (16,282) 664x363 */
     content: `<img src="assets/img/q37-goal.jpg" alt="שער כדורגל תקני: רוחב 7.32 מטר, גובה 2.44 מטר">`,
@@ -454,7 +472,7 @@ const QUESTIONS = [
 
   { /* deck 41 — station 1א, pick the proportion */
     screen: 18, type: 'single', label: '',
-    step: { group: 'basic', index: 1, total: 6 },
+    step: { group: 'basic', index: 1, total: 4 },
     stem: `היחס בין x ל-27 שווה ליחס בין 6 ל-9.<br><br>
       <strong>א. סמנו את הפרופורציה (שוויון היחסים) המתאימה:</strong>`,
     /* rendered page order, top to bottom */
@@ -473,21 +491,21 @@ const QUESTIONS = [
 
   { /* deck 42 — station 1ב, solve for x */
     screen: 19, type: 'value-input', label: '',
-    step: { group: 'basic', index: 1, total: 6 },
+    step: { group: 'basic', index: 1, total: 4 },
     stem: `היחס בין x ל-27 שווה ליחס בין 6 ל-9.<br>
       מצאנו שהפרופורציה המתאימה היא ${qeq(qfr('x', '27'), qfr('6', '9'))}<br><br>
       <strong>ב. מצאו את x.</strong>`,
     ratioRows: [{ label: 'x =', parts: 1 }],
     correctInputs: ['18'],
     maxAttempts: 2, hintPolicy: 'after-wrong',
-    hint: { title: 'שימו לב:', body: 'ניתן לכפול במכנה המשותף (כפל בהצלבה) או לזהות את גורם ההרחבה של השבר.' },
+    hint: { title: 'שימו לב:', body: 'ניתן לכפול במכנה המשותף (טבלת פרופורציה) או לזהות את גורם ההרחבה של השבר.' },
     fb: { retry: 'זה לא מדויק, ננסה שוב?',
       correct: { title: 'נכון!', body: C3_Q1B }, wrong: { title: 'כמעט...', body: C3_Q1B } },
   },
 
   { /* deck 43 — station 2א: complete the DENOMINATOR of the right fraction */
     screen: 20, type: 'value-input', label: '',
-    step: { group: 'basic', index: 2, total: 6 },
+    step: { group: 'basic', index: 2, total: 4 },
     stem: `במשחק מחשב, שחקן צובר 120 מטבעות זהב וירטואליים על כל 3 משימות שהוא משלים.<br><br>
       איתי שיחק אחר הצהריים וראה שנצברו לזכותו 400 מטבעות, אבל לא זכר כמה משימות סיים בהצלחה.<br><br>
       נסמן: x - כמות המשימות שאיתי סיים.<br><br>
@@ -498,12 +516,12 @@ const QUESTIONS = [
     maxAttempts: 2, hintPolicy: 'after-wrong',
     hint: { title: 'העזרו בטבלת הפרופורציה:', body: 'על כל 3 משימות איתי מקבל 120 מטבעות — איזה נתון משלים את האגף השני?' },
     fb: { retry: 'זה לא מדויק, ננסה שוב?',
-      correct: { title: 'נכון!', body: C3_Q2A }, wrong: { title: 'כמעט...', body: C3_Q2A } },
+      correct: { title: 'נכון!', body: C3_Q2A }, wrong: { title: 'זו טעות, אבל אפשר ללמוד ממנה:', body: C3_Q2A } },
   },
 
   { /* deck 44 — station 2ב */
     screen: 21, type: 'value-input', label: '',
-    step: { group: 'basic', index: 2, total: 6 },
+    step: { group: 'basic', index: 2, total: 4 },
     stem: `במשחק מחשב, שחקן צובר 120 מטבעות זהב וירטואליים על כל 3 משימות שהוא משלים.<br><br>
       איתי שיחק אחר הצהריים וראה שנצברו לזכותו 400 מטבעות, אבל לא זכר כמה משימות סיים בהצלחה.<br><br>
       נסמן: x - כמות המשימות שאיתי סיים.<br>
@@ -520,7 +538,7 @@ const QUESTIONS = [
 
   { /* deck 45 — station 3 */
     screen: 22, type: 'value-input', label: '',
-    step: { group: 'basic', index: 3, total: 6 },
+    step: { group: 'basic', index: 3, total: 4 },
     stem: `במשחק מחשב, אתם עובדים על ריצוף הכניסה למבצר שלכם.<br>
       כדי ליצור דוגמה של בלוקים מעוצבים, אתם משתמשים ביחס קבוע של 2 בלוקים של <strong>שיש</strong> על כל 5 בלוקים של <strong>דשא</strong>.<br><br>
       <strong>אם השתמשתם ב- 30 בלוקים של דשא,<br>
@@ -539,7 +557,7 @@ const QUESTIONS = [
 
   { /* deck 46 — station 4 */
     screen: 23, type: 'value-input', label: '',
-    step: { group: 'basic', index: 4, total: 6 },
+    step: { group: 'basic', index: 4, total: 4 },
     stem: `אורי מכין פלייליסט של שירים אהובים לשמיעה בזמן הליכה.<br>
       הוא שם לב שכל 5 שירים בפלייליסט אורכים יחד בדיוק 15 דקות של השמעה.<br>
       אורי רוצה להכין פלייליסט שיימשך 60 דקות (שעה אחת).<br><br>
@@ -555,7 +573,7 @@ const QUESTIONS = [
 
   { /* deck 48 — station 5 */
     screen: 25, type: 'value-input', label: '',
-    step: { group: 'basic', index: 5, total: 6 },
+    step: { group: 'basic2', index: 1, total: 2 },
     stem: `לקראת הטיול השנתי, שכבת ח' מזמינה חולצות מודפסות לכל תלמידות ותלמידי השכבה.<br>
       בית דפוס מקומי נתן להם הצעת מחיר: 25 חולצות ב-550 ₪.<br>
       בשכבה 175 תלמידים.<br><br>
@@ -570,12 +588,15 @@ const QUESTIONS = [
 
   { /* deck 49 — station 6, THREE values */
     screen: 26, type: 'value-input', label: '',
-    step: { group: 'basic', index: 6, total: 6 },
+    step: { group: 'basic2', index: 2, total: 2 },
     stem: `להכנת רוטב לסלט יש לערבב את המרכיבים עבור 100 מ"ל רוטב:<br><br>
       <strong>השלימו:</strong><br>
       <strong>כדי להכין כמות של 150 מ"ל רוטב לסלט, יש לערבב:</strong>`,
+    /* 06.10, producer: bigger type AND closer to the opening sentence. The
+       content column is `align-items: center`, which parked the table in the
+       middle of an empty half-screen, far from the stem it belongs to. */
     content: pTable(['מרכיב', 'כמות'],
-      [['שמן זית', '60 מ"ל'], ['חומץ בלסמי', '30 מ"ל'], ['רוטב סויה', '10 מ"ל']]),
+      [['שמן זית', '60 מ"ל'], ['חומץ בלסמי', '30 מ"ל'], ['רוטב סויה', '10 מ"ל']], 'car-table--lg'),
     ratioRows: [
       { suffix: 'מ"ל שמן זית', parts: 1 },
       { suffix: 'מ"ל חומץ בלסמי', parts: 1 },
@@ -595,7 +616,7 @@ const QUESTIONS = [
     screen: 36, type: 'value-input', label: '',
     step: { group: 'advanced', index: 1, total: 4 },
     stem: `נטע חוגגת יום הולדת <strong>14</strong> בחדר בריחה.<br>
-      באחת המשימות היא לפתוח קופסה נעולה בקוד בן 4 ספרות.<br>
+      אחת המשימות היא לפתוח קופסה נעולה בקוד בן 4 ספרות.<br>
       נטע השאירה להם שני רמזים:<br><br>
       <strong>שתי הספרות הראשונות משמאל</strong> הן הגיל של אבא שלה היום.<br>
       בעוד שנתיים, היחס בין הגיל של נטע לגיל של אבא יהיה ${qfr('4','11')}.<br><br>
@@ -649,8 +670,14 @@ const QUESTIONS = [
        (stage coords: photo 3,241 506x375 · bubble נתנאל 243,52 · bubble רוני
        -1,184) and expressed as percentages of the figure so it scales with the
        column. The photo is the deck's own image119. */
-    content: `<figure class="debate-fig">
+    /* 06.10, producer: "i really want to make the text bubbles come out of
+       their mouths". The mouths are measured off the photo itself and carried
+       here as percentages OF THE PHOTO (x,y); debateTails() turns them into a
+       drawn tail per bubble at runtime, from the live boxes — a typed pixel
+       tail would be wrong the moment the copy rewraps. */
+    content: `<figure class="debate-fig" data-mouth-natanel="73.0,44.2" data-mouth-roni="31.2,44.2">
       <img class="debate-photo" data-no-zoom src="assets/img/pizza-debate.jpg" alt="נתנאל ורוני מתווכחים איזו פיצה משתלמת יותר">
+      <svg class="debate-tails" aria-hidden="true"></svg>
       <div class="debate-bubble debate-bubble--natanel">שתי הפיצות משתלמות באותה מידה!<br>קוטר הפיצה הבינונית הוא 30 ס"מ והמחיר הוא 30 ש"ח, קוטר הפיצה הגדולה הוא 40 ס"מ והמחיר הוא 40 ₪.<br>בשני המקרים היחס בין הקוטר למחיר הוא 1 ל-1, ולכן אין הבדל.</div>
       <div class="debate-bubble debate-bubble--roni">הפיצה הגדולה משתלמת יותר, כי היחס בין שטח הפיצה הגדולה למחיר שלה גדול מהיחס בין שטח הפיצה הבינונית למחיר שלה</div>
     </figure>`,
@@ -771,7 +798,7 @@ const QUESTIONS = [
 
   { /* deck 73 — section ב */
     screen: 47, type: 'value-input', label: '',
-    step: { group: 'peak1', index: 2, total: 5 },
+    step: { group: 'peak1', index: 2, total: 5, hideBar: true },
     stem: `ב. התלמידים מתכננים להכין פנקייקים עבור כל חברי הקבוצה. במתכון שלהם רשום שיש להוסיף 600 מ"ל חלב לבלילה.<br>
       במטבח של המחנה ישנו רק כלי מדידה אחד שהשנתות עליו מסומנות באונקיות נוזל (oz) בלבד.<br><br>
       <strong>כמה אונקיות חלב עליהם למדוד בכלי בכדי שהכמות<br>תתאים לכמות במתכון?</strong>`,
@@ -786,7 +813,7 @@ const QUESTIONS = [
 
   { /* deck 74 — section ג */
     screen: 48, type: 'single', label: '',
-    step: { group: 'peak1', index: 3, total: 5 },
+    step: { group: 'peak1', index: 3, total: 5, hideBar: true },
     stem: `ג. לקראת יום טיול בטבע, נהלי הבטיחות קובעים שכל אדם חייב לקחת עמו לפחות 2 ליטרים של מים לשתייה.<br>
       לטיול יוצאים כל 15 התלמידים ועוד 3 מדריכים מלווים.<br>
       לרשות הקבוצה הועמד מיכל מים מרכזי אחד שמכיל 8 גלונים של מים.<br><br>
@@ -802,7 +829,7 @@ const QUESTIONS = [
 
   { /* deck 75 — section ד */
     screen: 49, type: 'single', label: '',
-    step: { group: 'peak1', index: 4, total: 5 },
+    step: { group: 'peak1', index: 4, total: 5, hideBar: true },
     stem: `ד. הקבוצה מזמינה חולצות ייצוגיות מחנות אמריקאית.<br>
       כדי לבחור מידה, דויד מודד את רוחב החזה שלו ומקבל תוצאה של 50.8 ס"מ.<br>
       בטבלת המידות של החנות, רוחב החזה מופיע באינצ׳ים.<br><br>
@@ -823,7 +850,7 @@ const QUESTIONS = [
 
   { /* deck 76 — section ה */
     screen: 50, type: 'single', label: '',
-    step: { group: 'peak1', index: 5, total: 5 },
+    step: { group: 'peak1', index: 5, total: 5, hideBar: true },
     stem: `ה. לרשות הקבוצה עומד תקציב קבוע מראש של 1,500 ₪ לצורך רכישת חולצות ייצוגיות ל-15 התלמידים (אין צורך לקנות חולצות למדריכים).<br>
       מחיר כל חולצה בחנות המחנה הוא <span dir="ltr">$30</span>.<br><br>
       <strong>האם התקציב שעומד לרשות הקבוצה יספיק כדי לרכוש חולצות לכל התלמידים?</strong>`,
@@ -868,7 +895,7 @@ const QUESTIONS = [
 
   { /* deck 81 — section ב, the posters applet */
     screen: 54, type: 'value-input', label: '',
-    step: { group: 'peak2', index: 2, total: 6 },
+    step: { group: 'peak2', index: 2, total: 6, hideBar: true },
     stem: `ב. את הפוסטרים על הקיר יש לתלות כך שיישמר מרווח של 10 ס"מ בין כל שני פוסטרים סמוכים, וגם מרווח של 10 ס"מ בין הפוסטרים לקצות הקיר.<br><br>
       <strong>היעזרו ביישומון וחשבו:</strong><br>
       מה צריך להיות רוחב כל פוסטר, אם נרצה לתלות 5 פוסטרים על הקיר?`,
@@ -884,7 +911,7 @@ const QUESTIONS = [
 
   { /* deck 82 — section ג */
     screen: 55, type: 'value-input', label: '',
-    step: { group: 'peak2', index: 3, total: 6 },
+    step: { group: 'peak2', index: 3, total: 6, hideBar: true },
     stem: `ג. התלמידים התבקשו לצלם את התמונות בנייד ביחס בין רוחב לגובה התמונה של 3:4.<br><br>
       על מנת שהתמונות לא יתעוותו, הפוסטרים יודפסו תוך שמירה על אותו יחס בין הרוחב לגובה.<br>
       מצאנו שרוחב פוסטר הוא 78 ס"מ.<br><br>
@@ -901,7 +928,7 @@ const QUESTIONS = [
 
   { /* deck 83 — section ד */
     screen: 56, type: 'value-input', label: '',
-    step: { group: 'peak2', index: 4, total: 6 },
+    step: { group: 'peak2', index: 4, total: 6, hideBar: true },
     stem: `ד. שלוש תלמידות נוספות מצטרפות לתערוכה, וכעת יש לחשב מחדש את רוחב הפוסטרים.<br>
       מה יהיו ממדי כל פוסטר, אם נרצה לתלות 8 פוסטרים?<br>
       נזכיר כי היחס בין רוחב לגובה התמונות המצולמות בטלפון הנייד הוא 3:4.`,
@@ -915,15 +942,15 @@ const QUESTIONS = [
     hint: { title: 'שימו לב:', body: 'התחילו בחישוב רוחב כל פוסטר - העזרו ביישומון.' },
     fb: { retry: 'זה לא מדויק, ננסה שוב?',
       correct: { title: 'יופי, תשובה נכונה!', body: C7_D },
-      wrong: { title: 'טעית. לא נורא, בואו נלמד מזה יחד:', body: C7_D } },
+      wrong: { title: 'טעית בחלק מהסעיפים או בכולם. התשובה הנכונה מוצגת.', body: C7_D } },
   },
 
   { /* deck 84 — section ה */
     screen: 57, type: 'single', label: '',
-    step: { group: 'peak2', index: 5, total: 6 },
+    step: { group: 'peak2', index: 5, total: 6, hideBar: true },
     stem: `ה. התלמידות והתלמידים פנו לשני בתי דפוס להצעות מחיר כדי להדפיס את הפוסטרים. התקבלו שתי הצעות מחיר:<br><br>
-      דפוס 1: 20 ₪ לכל 500 סמ"ר<br>
-      דפוס 2: 15 ₪ לכל 400 סמ"ר<br><br>
+      דפוס 1 - 20 ש"ח לכל 500 סמ"ר<br>
+      דפוס 2 - 15 ש"ח לכל 400 סמ"ר<br><br>
       <strong>איזו הצעה משתלמת יותר?</strong>`,
     content: `<img class="expo-shot expo-shot--print" data-no-zoom src="assets/img/expo-print.jpg" alt="פוסטרים מודפסים">`,
     /* 30.09 — deck page 84 puts "שתי ההצעות" third and "לא ניתן לקבוע" last */
@@ -941,8 +968,9 @@ const QUESTIONS = [
 
   { /* deck 85 — section ו */
     screen: 58, type: 'value-input', label: '',
-    step: { group: 'peak2', index: 6, total: 6 },
-    stem: `ו. הועד בחר בהצעה של דפוס 2, בה המחיר הוא 15 ₪ לכל 400 סמ"ר.<br><br>
+    step: { group: 'peak2', index: 6, total: 6, hideBar: true },
+    stem: `גילינו שגודל כל פוסטר הוא 2,700 סמ"ר.<br>
+      ו. הועד בחר בהצעה של דפוס 2, בה המחיר הוא 15 ₪ לכל 400 סמ"ר.<br><br>
       <strong>השלימו: מה יהיה מחיר ההדפסה של 8 פוסטרים?</strong>`,
     ratioRows: [{ suffix: 'ש"ח', parts: 1 }],
     correctInputs: ['810'],

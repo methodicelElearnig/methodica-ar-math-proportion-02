@@ -207,12 +207,76 @@ function resetScreenState(n) {
     case 31: setCharacter('s31-char', 'standing'); break;
     case 34: setCharacter('s34-char', 'victory'); break;
     case 35: setCharacterMedia('s35-char', 'spinning'); break;
+    case 38: debateTails(); break;                  /* the two speech-bubble tails */
     case 43: setCharacterMedia('s43-char', 'breakdance'); break;
     case 44: setCharacter('s44-char', 'standing'); break;
     case 45: setCharacterMedia('s45-char', 'victory'); break;   /* deck 71: מטפס על הר, מגיע לפסגה */
     case 51: setCharacterMedia('s51-char', 'climbing'); break;  /* deck 78 — producer clips 30.09 */
     default: break;
   }
+}
+
+/* ─── dslide 38 — the debate bubbles' tails ────────────────────────
+   Producer 06.10: "i really want to make the text bubbles come out of their
+   mouths". The two mouths were measured off pizza-debate.jpg and live on the
+   figure as percentages OF THE PHOTO; everything else is read from the live
+   boxes, so the tail re-aims itself when the copy rewraps or the type size
+   changes. (Typed tail coordinates are what the callout-positioning rule
+   forbids, and they would be wrong the moment a bubble gains a line.)
+
+   The path is open — M base1 L apex L base2 — with a white fill and a stroke.
+   The fill auto-closes across the base and therefore paints over the bubble's
+   own bottom border between the two base points, which is what makes the tail
+   read as part of the bubble instead of a triangle stuck to it. Only the two
+   arms are stroked. ─── */
+function debateTails() {
+  const fig = document.querySelector('#q38 .debate-fig, [data-screen="38"] .debate-fig');
+  const svg = fig && fig.querySelector('.debate-tails');
+  const photo = fig && fig.querySelector('.debate-photo');
+  if (!fig || !svg || !photo) return;
+
+  const draw = () => {
+    const F = fig.getBoundingClientRect(), P = photo.getBoundingClientRect();
+    /* a hidden screen measures 0 (maven-skills §8) — never draw from that */
+    if (!F.width || !P.width) return;
+    svg.setAttribute('viewBox', `0 0 ${F.width} ${F.height}`);
+
+    const paths = ['natanel', 'roni'].map(who => {
+      const bub = fig.querySelector('.debate-bubble--' + who);
+      const raw = fig.dataset['mouth' + who[0].toUpperCase() + who.slice(1)];
+      if (!bub || !raw) return '';
+      const [mx, my] = raw.split(',').map(Number);
+      /* mouth, in figure coordinates */
+      const ax = P.left - F.left + P.width * mx / 100;
+      const ay = P.top - F.top + P.height * my / 100;
+
+      const B = bub.getBoundingClientRect();
+      const by = B.bottom - F.top - 1;            /* sit on the bubble's border */
+      /* The tail leaves from the bubble's INNER edge — the one nearer the middle
+         of the figure — not from directly above the mouth. Dropped straight down
+         it ran over the speaker's forehead and eyes; leaving from the inner edge
+         sends it through the empty gap between the two of them (whiteboard) and
+         it only meets the face at the mouth itself. Narrow, 18px, for the same
+         reason. */
+      const W = 18, R = 16;
+      const left = B.left - F.left, right = B.right - F.left;
+      const mid = F.width / 2;
+      const inner = Math.abs(left - mid) < Math.abs(right - mid)
+        ? left + R + W / 2          /* bubble sits right of centre */
+        : right - R - W / 2;        /* bubble sits left of centre */
+      const cx = Math.min(Math.max(inner, left + R + W / 2), right - R - W / 2);
+      if (!isFinite(cx)) return '';
+      return `<path d="M ${cx - W / 2} ${by} L ${ax} ${ay} L ${cx + W / 2} ${by}" ` +
+             `fill="#fff" stroke="#303030" stroke-width="1.5" stroke-linejoin="round"/>`;
+    }).join('');
+    svg.innerHTML = paths;
+  };
+
+  draw();
+  /* the photo decides the geometry, so redraw once it has actually decoded —
+     a cold load measures an unsized <img> (the zoom-init decode race) */
+  if (!photo.complete || !photo.naturalWidth) photo.addEventListener('load', draw, { once: true });
+  window.addEventListener('resize', draw);
 }
 
 /* ─── Speech-bubble frame ──────────────────────────────────────────
