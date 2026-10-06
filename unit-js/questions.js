@@ -218,7 +218,7 @@ const ratioExpand = (title, top, bottom, factor) => `<span class="rx">
   </span>
 </span>`;
 
-const BOARD = `<div class="camp-board" data-persist role="group" aria-label="לוח המידע של המחנה">
+const BOARD = `<div class="camp-board" data-persist data-zoom data-zoom-label="הגדלת הלוח" role="group" aria-label="לוח המידע של המחנה">
   <h3 class="cb-title">לוח המידע של המחנה <span dir="ltr">(Camp Bulletin Board)</span></h3>
   <div class="cb-group">
     <h4>שער ההמרה היומי:</h4>
@@ -400,7 +400,7 @@ const QUESTIONS = [
       בסקיצה הראשונית, ממדי הדינוזאור היו:<br>
       <strong>גובה: 12 ס"מ</strong><br><strong>רוחב: 9 ס"מ</strong><br>
       כדי שהדמות תתאים למסך מחשב, יש להגדיל את דמות הדינוזאור כך שגובהה החדש יהיה <strong>20 ס"מ</strong>, תוך שמירה על פרופורציה,<br>
-      העזרו ביישומון כדי למצוא את התשובה<br><br>
+      העזרו ביישומון כדי למצוא את התשובה.<br><br>
       <strong>מה צריך להיות הרוחב החדש של דמות הדינוזאור(בסנטימטרים)?</strong>`,
     content: dinoAppletHTML(),
     ratioRows: [{ suffix: 'ס"מ', parts: 1 }],
@@ -940,7 +940,9 @@ const QUESTIONS = [
     correctInputs: ['45', '60'],
     maxAttempts: 2, hintPolicy: 'after-wrong',
     hint: { title: 'שימו לב:', body: 'התחילו בחישוב רוחב כל פוסטר - העזרו ביישומון.' },
-    fb: { retry: 'זה לא מדויק, ננסה שוב?',
+    /* 06.10, producer: this wrong title ALWAYS — also when one of the two
+       fields is right, where the engine would otherwise say "כמעט!". */
+    fb: { retry: 'זה לא מדויק, ננסה שוב?', partial: null,
       correct: { title: 'יופי, תשובה נכונה!', body: C7_D },
       wrong: { title: 'טעית בחלק מהסעיפים או בכולם. התשובה הנכונה מוצגת.', body: C7_D } },
   },

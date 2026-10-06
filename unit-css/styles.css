@@ -6341,8 +6341,9 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 /* 06.10, producer: the board's copy and the feedback's copy read at the SAME
    size, one step up. The board had 18/19/20 against a 24px stem beside it. */
 .cb-title {
-  margin: 8px 0 14px; font-size: 22px; font-weight: 700; color: #303030;
-  text-align: center;
+  margin: 8px 10px 14px; font-size: 22px; font-weight: 700; color: #303030;
+  /* 06.10, producer: everything on the board right-aligned (was centered) */
+  text-align: right;
 }
 .cb-group { margin: 0 10px 12px; }
 .cb-group:last-child { margin-bottom: 8px; }
@@ -6353,18 +6354,26 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .cb-group h4::before { content: '• '; }
 .cb-group p {
   margin: 0 0 3px; font-size: 20px; line-height: 1.4; color: #303030;
-  text-align: center;
+  text-align: right;
 }
+
+/* 06.10, producer: the board is magnifiable. The wrap is the shared table-zoom
+   frame; the chip sits inside the cork corner (the title now starts at the
+   right, so the top-left of the sheet is empty). In the overlay the clone is
+   the board itself, scaled up — no white card around a card. */
+.table-zoom-wrap--inset { display: block; width: 100%; max-width: 470px; padding-top: 0; }
+.table-zoom-wrap--inset .img-zoom-btn { top: 8px; left: 8px; }
+#img-zoom-overlay .zoom-node:has(> .camp-board) { background: transparent; padding: 0; box-shadow: none; }
+#img-zoom-overlay .zoom-node .camp-board { max-width: 800px; width: 800px; padding: 22px; }
+#img-zoom-overlay .zoom-node .camp-board::before { inset: 22px; }
+#img-zoom-overlay .zoom-node .cb-title { font-size: 34px; margin: 14px 16px 20px; }
+#img-zoom-overlay .zoom-node .cb-group { margin: 0 16px 18px; }
+#img-zoom-overlay .zoom-node .cb-group h4 { font-size: 32px; margin-bottom: 6px; }
+#img-zoom-overlay .zoom-node .cb-group p { font-size: 30px; line-height: 1.45; margin-bottom: 5px; }
 .cb-rate {
   display: inline-block; border: 1px dashed #B20010; border-radius: 5px;
   padding: 1px 8px; color: #B20010; font-weight: 700;
 }
-
-/* dslide 58 is the one screen in the unit with no content column at all, so
-   its text sat hard against the top of an otherwise empty stage. Producer
-   06.10: move the whole block ~100px down. Padding on the column, not a
-   margin on the stem, so the question rows travel with it. */
-#q58 .quiz-main { padding-top: 100px; }
 
 /* the answer boxes on the camp-board screens hold values like 30.48 / 91.44 —
    the 96px box clipped them once the ✓ took its share. Scoped to those

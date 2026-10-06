@@ -440,8 +440,12 @@ function quizCheck(screen) {
     if (hintBtn) hintBtn.style.display = 'none';
     quizMarkOutcome(screen, q, false);
     const fb = { ...q.fb.wrong };
+    /* a multi-field question that is PARTLY right swaps the title for the
+       shared "כמעט!" line — unless the question pins its own wrong title
+       with `fb.partial: null` (06.10, producer, dslide 56). */
     if (q.type === 'value-input' && st.slotOk && st.slotOk.some(Boolean)) {
-      fb.title = 'כמעט! חלק מהתשובות נכונות';
+      const partial = 'partial' in q.fb ? q.fb.partial : 'כמעט! חלק מהתשובות נכונות';
+      if (partial) fb.title = partial;
     }
     quizShowFeedback(screen, 'wrong', fb);
     if (q.type === 'value-input') quizAnswerToggleAdd(screen, q);
@@ -599,16 +603,20 @@ function quizImageZoomInit(scope) {
    overlay is the same one images use; the table is cloned into it and scaled,
    so the live one keeps whatever state it has. */
 function quizTableZoomInit(scope) {
-  (scope || document).querySelectorAll('table[data-zoom]').forEach(tbl => {
+  /* 06.10, producer (dslides 46-50): any block can opt in with `data-zoom`,
+     not only a table — the camp bulletin board is the first. A non-table
+     block gets the button INSIDE its top-left corner (the table variant
+     reserves a strip above, so the chip never sits on a column heading). */
+  (scope || document).querySelectorAll('[data-zoom]').forEach(tbl => {
     if (tbl.parentNode.classList && tbl.parentNode.classList.contains('table-zoom-wrap')) return;
     const wrap = document.createElement('div');
-    wrap.className = 'table-zoom-wrap';
+    wrap.className = 'table-zoom-wrap' + (tbl.tagName === 'TABLE' ? '' : ' table-zoom-wrap--inset');
     tbl.parentNode.insertBefore(wrap, tbl);
     wrap.appendChild(tbl);
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'applet-zoom-btn img-zoom-btn';
-    btn.setAttribute('aria-label', 'הגדלת הטבלה');
+    btn.setAttribute('aria-label', tbl.dataset.zoomLabel || 'הגדלת הטבלה');
     btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7.5 10.5h6M10.5 7.5v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
     btn.onclick = () => quizNodeZoomOpen(tbl);
     wrap.appendChild(btn);
