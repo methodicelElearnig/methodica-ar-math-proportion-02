@@ -21,6 +21,7 @@ is specific to this unit and what was decided. Branch `vadimr/feat/reporting-res
 | — | **metadata sent to Kata and the live run — §6** |
 | `2773ad0` | **image resize** (owner's go-ahead "if it preserves quality"), `?v=20261008c` |
 | `791bfe2` | **the unused `calculator` / `measuring` stills removed** (owner's go-ahead, −3.7 MB), `?v=20261008d` |
+| `fef19f7` | **package `deployments/2026-10-08b` uploaded by the owner — verified 105 / 105 byte-identical on the CDN**; the seven components **published** in Kata by the owner (`send-metadata.ps1 -Status`: published=7, draft=0) |
 
 **Image resize.** Every raster image was measured at the largest size it is displayed at (canvas
 pixels, every screen, every carousel / guided step, both companions, every zoom view) and kept at
@@ -170,8 +171,10 @@ cannot read statements back).
 links carry the test learners' reporting token; there is no self-service rotation (guide §12) —
 ask the Kata team to rotate it.
 
-**The image resize (`2773ad0`) is a NEW package** — upload it before anyone else tests; the live
-run above covered `c8bebba`'s package. The resize touches no reporting or resume code.
+The live run covered `c8bebba`'s package. The later package (`fef19f7`: the image resize and the
+removed stills) changes no reporting, resume or issue-report code; it is uploaded and verified
+(105 / 105). The seven pre-resize / removed images are still on the CDN, unreferenced.
+**Token:** the owner decided (2026-10-08) not to rotate the test learners' reporting token for now.
 
 ## 7. Open
 
@@ -182,5 +185,7 @@ run above covered `c8bebba`'s package. The resize touches no reporting or resume
 3. ~~Image resize~~ — done (`2773ad0`); upload the new package.
 4. ~~Content URL~~ — confirmed 2026-10-08.
 5. ~~The unused `calculator` / `measuring` stills~~ — removed. The two unused green clips (§0) — remove?
-6. Publish the seven components in Kata (`send-metadata.ps1 -Publish`, one-way) when the open
-   content items are settled.
+6. ~~Publish~~ — published by the owner 2026-10-08 (all seven).
+7. Items 1 and 2: the owner will handle them later. A metadata change after publishing (e.g. 02's
+   `recommendedAfterFail`) goes through `send-metadata.ps1` (upsert) and `retrieve-metadata.ps1
+   -FailOnDrift`; a text change on s51 needs a `?v=` bump, a new package and an upload.
