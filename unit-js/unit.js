@@ -25,8 +25,8 @@ const CHARACTER_ASSETS = {
   'character-yellow': {
     selection: '../unit-assets/video/character-yellow-selection.mp4',
     standing:  '../unit-assets/img/character-yellow.png',
-    squashed:  '../unit-assets/img/character-squashed-yellow.png',
-    victory:   '../unit-assets/img/character-victory-yellow.png',
+    squashed:  '../unit-assets/img/character-squashed-yellow-715.png',
+    victory:   '../unit-assets/img/character-victory-yellow-328.png',
     magnifier: '../unit-assets/img/character-magnifier-yellow.png',
     calculator:'../unit-assets/img/character-calculator-yellow.png',
     measuring: '../unit-assets/img/character-measuring-yellow.png',

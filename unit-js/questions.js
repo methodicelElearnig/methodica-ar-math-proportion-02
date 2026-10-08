@@ -954,7 +954,7 @@ const QUESTIONS = [
       דפוס 1 - 20 ש"ח לכל 500 סמ"ר<br>
       דפוס 2 - 15 ש"ח לכל 400 סמ"ר<br><br>
       <strong>איזו הצעה משתלמת יותר?</strong>`,
-    content: `<img class="expo-shot expo-shot--print" data-no-zoom src="assets/img/expo-print.jpg" alt="פוסטרים מודפסים">`,
+    content: `<img class="expo-shot expo-shot--print" data-no-zoom src="assets/img/expo-print-565.jpg" alt="פוסטרים מודפסים">`,
     /* 30.09 — deck page 84 puts "שתי ההצעות" third and "לא ניתן לקבוע" last */
     options: [
       { id: 'p1', html: 'דפוס 1' }, { id: 'p2', html: 'דפוס 2' },
