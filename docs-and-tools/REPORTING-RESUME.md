@@ -20,6 +20,7 @@ is specific to this unit and what was decided. Branch `vadimr/feat/reporting-res
 | `74ccab9` | content URL confirmed; the upload checked: 109 / 109 files byte-identical on the CDN |
 | — | **metadata sent to Kata and the live run — §6** |
 | `2773ad0` | **image resize** (owner's go-ahead "if it preserves quality"), `?v=20261008c` |
+| *(next)* | **the unused `calculator` / `measuring` stills removed** (owner's go-ahead, −3.7 MB), `?v=20261008d` |
 
 **Image resize.** Every raster image was measured at the largest size it is displayed at (canvas
 pixels, every screen, every carousel / guided step, both companions, every zoom view) and kept at
@@ -30,9 +31,16 @@ after: mean change 2–2.7 / 255, at most 17 of 3.6 M pixels flagged visible (ed
 re-compression gains nothing (already optimal). Not resized: everything else is shown at or near
 its stored size — the `expo-intro` / `expo-end` backgrounds (1.8 MB each) fill the canvas from
 1400×933, and smaller files would need lossy re-encoding.
-**Found:** the `calculator` and `measuring` stills, both colours (3.7 MB), are listed in
-`unit.js CHARACTER_ASSETS` but no screen asks for those poses — dead weight in every package
-(owner's decision). The fonts were already one subset variable woff2; the assets were already
+**Removed:** the `calculator` and `measuring` stills, both colours (3.7 MB) — listed in
+`unit.js CHARACTER_ASSETS` but never used, checked three ways: no mention anywhere but that map;
+no screen, step config (`cfg.monster`) or `POSE_FALLBACK` chain asks for those poses (`calc` is the
+clip, another pose); a full walk with each companion — every screen, carousel and guided step,
+every question answered wrong twice with its hint — never requested the files. After removal: both
+companions walked, 449 requests, 0 failed; `run-all` green.
+**Found, not removed (owner's decision):** two green clips are never used either —
+`character-green-selection.mp4` (1.58 MB; 01's s0 card plays `character-green-ball.mp4` in its
+markup and nothing asks for the `selection` pose) and `character-green-cube.mp4` (the `cube` pose
+is only a fallback of `cube2`, and green has its own `cube2`). The fonts were already one subset variable woff2; the assets were already
 hoisted, with no duplicates (md5).
 
 ## 1. The layer
@@ -173,6 +181,6 @@ run above covered `c8bebba`'s package. The resize touches no reporting or resume
    (`recommendedAfterFail: []`).
 3. ~~Image resize~~ — done (`2773ad0`); upload the new package.
 4. ~~Content URL~~ — confirmed 2026-10-08.
-5. The unused `calculator` / `measuring` stills (3.7 MB) — remove? (§0)
+5. ~~The unused `calculator` / `measuring` stills~~ — removed. The two unused green clips (§0) — remove?
 6. Publish the seven components in Kata (`send-metadata.ps1 -Publish`, one-way) when the open
    content items are settled.

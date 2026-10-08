@@ -20,7 +20,10 @@ const LEGACY_CHARACTER_KEY = 'proportion02_selectedCharacter';
 /* The producer's picked set, carried over from the previous build (Elad,
    27.09.26 — "ready and picked"). Pose coverage is ASYMMETRIC: yellow has a
    reading clip and green does not; green has a cube clip and yellow does not.
-   POSE_FALLBACK below resolves that rather than showing the wrong monster. */
+   POSE_FALLBACK below resolves that rather than showing the wrong monster.
+   2026-10-08: the `calculator` and `measuring` stills (both colours, 3.7 MB) are gone — no screen,
+   step config or fallback chain ever asked for those poses, and a full walk with each companion
+   never requested the files (`calc` is the clip, a different pose). */
 const CHARACTER_ASSETS = {
   'character-yellow': {
     selection: '../unit-assets/video/character-yellow-selection.mp4',
@@ -28,8 +31,6 @@ const CHARACTER_ASSETS = {
     squashed:  '../unit-assets/img/character-squashed-yellow-715.png',
     victory:   '../unit-assets/img/character-victory-yellow-328.png',
     magnifier: '../unit-assets/img/character-magnifier-yellow.png',
-    calculator:'../unit-assets/img/character-calculator-yellow.png',
-    measuring: '../unit-assets/img/character-measuring-yellow.png',
     duo:       '../unit-assets/video/character-yellow-duo.mp4',
     reading:   '../unit-assets/video/character-yellow-reading.mp4',
     spinning:  '../unit-assets/video/character-yellow-spinning.mp4',
@@ -44,8 +45,6 @@ const CHARACTER_ASSETS = {
     squashed:  '../unit-assets/img/character-squashed-green.png',
     victory:   '../unit-assets/img/character-victory-green.png',
     magnifier: '../unit-assets/img/character-magnifier-green.png',
-    calculator:'../unit-assets/img/character-calculator-green.png',
-    measuring: '../unit-assets/img/character-measuring-green.png',
     duo:       '../unit-assets/video/character-green-duo.mp4',
     cube:      '../unit-assets/video/character-green-cube.mp4',
     spinning:  '../unit-assets/video/character-green-spinning.mp4',
