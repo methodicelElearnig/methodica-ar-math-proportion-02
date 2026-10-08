@@ -1,0 +1,33 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-04/",
+  "title": "משימה בכיתה",
+  "learningUnitId": "methodica-math-proportion-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 3,
+  "masteryLevel": null,
+  "order": 4,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": [
+    "process-thinking"
+  ],
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 1,
+  "createdAt": "2026-10-06T00:00:00.000Z",
+  "updatedAt": "2026-10-06T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-04/methodica-math-proportion-02-04-001/",
+      "title": "משימת כיתה — מדידה בסרגל והמרת יחידות",
+      "informationToBot": "מטרת הפריט: משימה מעשית בכיתה (סרגל, עיפרון, דף משבצות): מדידה והמרה בין מילימטרים, סנטימטרים ואינצ'ים בעזרת יחס המרה ופרופורציה. מה התלמיד אמור להבין/לתרגל: 1 ס\"מ = 10 מ\"מ (יחס ס\"מ : מ\"מ הוא 1 : 10); 450 מ\"מ = 45 ס\"מ; מודדים קטע של 5 אינצ'ים בסרגל (כ-12.7 ס\"מ) ומשלימים פרופורציה 5 אינצ'ים / 12.7 ס\"מ = 1 אינץ' / 2.54 ס\"מ. בסוף ממירים את אלכסון מסך אמיתי מסנטימטרים לאינצ'ים לפי 1 אינץ' = 2.54 ס\"מ. כיווני חשיבה ואסטרטגיות: היכרות עם שנתות הסרגל, מדידה בפועל בזוגות או לבד, והשלמת פרופורציות על בסיס המדידה. טעויות נפוצות: אי-דיוק במדידה; בלבול בין שנתה גדולה (ס\"מ) לקטנה (מ\"מ); בלבול בכיוון ההמרה בין אינצ'ים לסנטימטרים. מידע נוסף: שבעה מסכים: התנעה, חמישה מסכי משימה וסיום עם מדידת מסך. השדות נועדו להזנה אך אינם נאספים כתשובה מוערכת. דרושים סרגל, כלי כתיבה ודף משבצות. צילום מסך: לא צורף.",
+      "contentType": "project-or-inquiry-task",
+      "mediaFormat": "text",
+      "questions": []
+    }
+  ]
+}

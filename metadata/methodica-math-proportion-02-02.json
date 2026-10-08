@@ -1,0 +1,101 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/",
+  "title": "זמן תרגול",
+  "learningUnitId": "methodica-math-proportion-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 3,
+  "masteryLevel": null,
+  "order": 2,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": [
+    "process-thinking"
+  ],
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 8,
+  "createdAt": "2026-10-06T00:00:00.000Z",
+  "updatedAt": "2026-10-06T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/methodica-math-proportion-02-02-001/",
+      "title": "דמות דינוזאור למשחק מחשב",
+      "informationToBot": "מטרת הפריט: תרגול סטנדרטי: שמירה על יחס בין גובה לרוחב בהגדלת דמות, בעזרת יישומון. מה התלמיד אמור להבין/לתרגל: ממדי הדמות המקורית 12 × 9 (יחס גובה:רוחב = 4/3). גובה חדש 20 ס\"מ ולכן 20/x = 4/3 ו-x = 15 ס\"מ. כיווני חשיבה ואסטרטגיות: שימוש ביישומון לבדיקת הממדים החדשים, צמצום היחס המקורי ופתרון בכפל במכנה המשותף. טעויות נפוצות: חישוב הפרש במקום יחס (גובה גדל ב-8 ולכן גם הרוחב גדל ב-8); היפוך הסדר גובה/רוחב באגף אחד. מידע נוסף: מסך הקדמה לרכיב (4 שאלות; נדרש להצליח ב-3 לפחות) ושאלה אחת עם יישומון. שדה קלט מספרי, שני ניסיונות, רמז אחרי טעות ראשונה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/methodica-math-proportion-02-02-001/q1",
+          "questionType": "numeric",
+          "questionText": "תלמידים בנו סקיצה של דמות דינוזאור עבור משחק מחשב. בסקיצה הראשונית ממדי הדינוזאור היו: גובה 12 ס\"מ ורוחב 9 ס\"מ. כדי שהדמות תתאים למסך מחשב, יש להגדיל אותה כך שגובהה החדש יהיה 20 ס\"מ, תוך שמירה על פרופורציה. העזרו ביישומון: מה צריך להיות הרוחב החדש של הדמות (בסנטימטרים)?",
+          "answers": [],
+          "correctAnswers": [
+            15
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/methodica-math-proportion-02-02-002/",
+      "title": "ערכים תזונתיים בחטיף בריאות",
+      "informationToBot": "מטרת הפריט: תרגול סטנדרטי: שימוש בפרופורציה לחישוב כמות מרכיב לפי משקל. מה התלמיד אמור להבין/לתרגל: כל 100 גרם חטיף מכילים 18 גרם חלבון; חטיף של 45 גרם מכיל x גרם: x/45 = 18/100 = 9/50, ולכן x = 8.1. כיווני חשיבה ואסטרטגיות: לסדר את הנתונים בטבלה, לצמצם את היחס הידוע ולפתור בכפל במכנה המשותף (450). טעויות נפוצות: היפוך הסדר חלבון/משקל באחד האגפים; טעות בחישוב עשרוני. מידע נוסף: שדה קלט מספרי (גרם חלבון), שני ניסיונות, רמז אחרי טעות ראשונה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/methodica-math-proportion-02-02-002/q1",
+          "questionType": "numeric",
+          "questionText": "ניב רכש בקפיטריה של בית הספר חטיף בריאות חדש. על החטיף מצוינים הערכים התזונתיים ל-100 גרם: כל 100 גרם חטיף מכילים 18 גרם חלבונים. משקל חטיף אנרגיה בודד הוא 45 גרם. כמה גרם חלבון מכיל חטיף בריאות בודד?",
+          "answers": [],
+          "correctAnswers": [
+            8.1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/methodica-math-proportion-02-02-003/",
+      "title": "מידות שער כדורגל",
+      "informationToBot": "מטרת הפריט: תרגול סטנדרטי: שמירה על יחס רוחב-גובה בשער מוקטן. מה התלמיד אמור להבין/לתרגל: שער בוגרים: רוחב 7.32 מ' וגובה 2.44 מ' — היחס רוחב:גובה הוא 3. בשער נוער בגובה 2.13 מ' הרוחב הוא 2.13 · 3 = 6.39 מטרים. כיווני חשיבה ואסטרטגיות: לזהות שהרוחב גדול פי 3 מהגובה ולהחיל את אותו גורם על הגובה החדש, או לכתוב פרופורציה. טעויות נפוצות: חיסור הפרש הגבהים מהרוחב המקורי; חישוב עם מספרים עשרוניים בלי להתייחס לגורם ההרחבה. מידע נוסף: שדה קלט מספרי (מטרים), שני ניסיונות, רמז אחרי טעות ראשונה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/methodica-math-proportion-02-02-003/q1",
+          "questionType": "numeric",
+          "questionText": "בליגת הנערים מגילאי 15 ומעלה, מידות שער תקני הן: רוחב 7.32 מטר, גובה 2.44 מטר. לנערים בגילאי 12-14 גובה השער הוא 2.13 מטר. מהו רוחב השער המתאים (במטרים), כך שישמר היחס בין רוחב לגובה של שער תקני לבוגרים?",
+          "answers": [],
+          "correctAnswers": [
+            6.39
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/methodica-math-proportion-02-02-004/",
+      "title": "טעינת טלפון נייד",
+      "informationToBot": "מטרת הפריט: תרגול סטנדרטי: שימוש בפרופורציה להחלטה מנומקת (האם יעל תספיק). מה התלמיד אמור להבין/לתרגל: ב-5 דקות נטענים 12%, ולכן ב-30 דקות (פי 6) נטענים 72%. מכיוון ש-72% גדול מ-70%, יעל תספיק. כיווני חשיבה ואסטרטגיות: לזהות את גורם ההרחבה בין הזמנים (פי 6), להחיל אותו על אחוזי הטעינה ולהשוות ליעד של 70%. טעויות נפוצות: חישוב עד 70% בלבד בלי להשוות לזמן העומד לרשותה; בחירה ב\"לא ניתן לדעת\" משום שהנתונים לא מופיעים במפורש. מידע נוסף: שאלת בחירה עם שלוש אפשרויות, שני ניסיונות, רמז אחרי טעות ראשונה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/methodica-math-proportion-02-02-004/q1",
+          "questionType": "choice",
+          "questionText": "מטען לטלפון נייד מסוגל להטעין כל 5 דקות 12% סוללה. יעל רוצה להטעין את הטלפון לרמת טעינה של 70%, אבל היא צריכה לצאת מהבית בעוד חצי שעה. האם יעל תספיק להטעין את הטלפון?",
+          "answers": [
+            "כן",
+            "לא",
+            "לא ניתן לדעת"
+          ],
+          "correctAnswers": [
+            "כן"
+          ]
+        }
+      ]
+    }
+  ]
+}

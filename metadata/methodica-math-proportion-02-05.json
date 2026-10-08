@@ -1,0 +1,141 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/",
+  "title": "בואו נאתגר את עצמנו",
+  "learningUnitId": "methodica-math-proportion-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": false,
+  "relativeDifficulty": 5,
+  "masteryLevel": null,
+  "order": 5,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": [
+    "interpretation-and-reasoning"
+  ],
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 15,
+  "createdAt": "2026-10-06T00:00:00.000Z",
+  "updatedAt": "2026-10-06T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-001/",
+      "title": "חדר בריחה — קוד הנעילה",
+      "informationToBot": "מטרת הפריט: תרגול מתקדם: מציאת נעלם בפרופורציה שבה הנתונים משתנים עם הזמן (גילאים בעוד שנים ולפני שנים). מה התלמיד אמור להבין/לתרגל: נטע בת 14. אבא: 16/(x+2) = 4/11 ולכן x = 42. אמא: 10/(y−4) = 2/7 ולכן y = 39. הקוד הוא 4239. כיווני חשיבה ואסטרטגיות: לסמן את הגיל היום כנעלם, לבטא את הגיל בעוד שנתיים/לפני 4 שנים, לכתוב פרופורציה ולפתור; ואז לחבר את שני הגילאים לקוד בן 4 ספרות. טעויות נפוצות: שימוש בגיל של היום (14) במקום הגיל בעוד שנתיים/לפני 4 שנים; פתרון של x+2 בלי חיסור 2 בסוף; סדר ספרות הפוך בקוד. מידע נוסף: מסך הקדמה (4 שאלות מתקדמות). שדה קלט מספרי, שני ניסיונות, רמז אחרי טעות ראשונה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-001/q1",
+          "questionType": "numeric",
+          "questionText": "נטע חוגגת יום הולדת 14 בחדר בריחה. אחת המשימות היא לפתוח קופסה נעולה בקוד בן 4 ספרות. שתי הספרות הראשונות משמאל הן הגיל של אבא שלה היום: בעוד שנתיים היחס בין הגיל של נטע לגיל של אבא יהיה 4/11. שתי הספרות האחרונות הן הגיל של אמא שלה היום: לפני 4 שנים היחס בין הגיל של נטע לגיל של אמא היה 2/7. הזינו את הקוד לפתיחת המנעול.",
+          "answers": [],
+          "correctAnswers": [
+            4239
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-002/",
+      "title": "פיצה בינונית מול פיצה גדולה (3 סעיפים)",
+      "informationToBot": "מטרת הפריט: תרגול מתקדם: השוואת כדאיות באמצעות יחס שטחים ויחס מחיר לשטח, ומציאת מחיר שמשמר יחס. מה התלמיד אמור להבין/לתרגל: שטח עיגול הוא π·R². בינונית: קוטר 30 (R = 15, שטח 225π, מחיר 30 ₪). גדולה: קוטר 40 (R = 20, שטח 400π, מחיר 40 ₪). יחס השטחים הוא 400π : 225π = 16 : 9. רוני צודקת: לשקל מקבלים בגדולה 31.4 סמ\"ר לעומת 23.55 בבינונית. מחיר פיצה משפחתית (קוטר 50, שטח 1962.5): x/1962.5 = 5/157 ולכן x = 62.5 ₪. כיווני חשיבה ואסטרטגיות: סעיף א׳: לחשב שטחים ולצמצם יחס. סעיף ב׳: לחשב שטח לכל שקל בשתי הפיצות. סעיף ג׳: לבנות פרופורציה בין מחיר לשטח. טעויות נפוצות: בלבול בין קוטר לרדיוס; טעות בהשוואה לפי יחס הקטרים (1 : 1) במקום יחס השטחים; בחירת \"אף אחד\" כי יחס הקוטר למחיר זהה. מידע נוסף: שלושה סעיפים: א׳ בחירה (4 אפשרויות), ב׳ בחירה (נתנאל / רוני / אף אחד), ג׳ קלט מספרי. שני ניסיונות ורמז אחרי טעות בכל סעיף. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-002/q1",
+          "questionType": "choice",
+          "questionText": "פיצרייה מגישה שתי פיצות עגולות בעלות אותו עובי אך בגדלים שונים: פיצה בינונית בקוטר 30 ס\"מ ובמחיר 30 שקלים, ופיצה גדולה בקוטר 40 ס\"מ ובמחיר 40 שקלים. נתנאל ורוני מתווכחים איזו פיצה משתלמת יותר. א. היחס בין שטח הפיצה הגדולה לבין שטח הפיצה הבינונית הוא:",
+          "answers": [
+            "4:3",
+            "15:4",
+            "16:9",
+            "3:2"
+          ],
+          "correctAnswers": [
+            "16:9"
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-002/q2",
+          "questionType": "choice",
+          "questionText": "ב. מי צודק?",
+          "answers": [
+            "נתנאל",
+            "רוני",
+            "אף אחד"
+          ],
+          "correctAnswers": [
+            "רוני"
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-002/q3",
+          "questionType": "numeric",
+          "questionText": "פיצה משפחתית חדשה עומדת לצאת לשוק. הפיצרייה רוצה לשמור על אותו יחס מחיר לשטח כמו של הפיצה הגדולה. ג. אם קוטר הפיצה המשפחתית הוא 50 ס\"מ, כמה היא צריכה לעלות (בשקלים)?",
+          "answers": [],
+          "correctAnswers": [
+            62.5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-003/",
+      "title": "קפיץ ומשקולות (2 סעיפים)",
+      "informationToBot": "מטרת הפריט: תרגול מתקדם: זיהוי יחס קבוע בין מסה להתארכות קפיץ בעזרת יישומון, והכללתו למסה שלא מופיעה ביישומון. מה התלמיד אמור להבין/לתרגל: מסה של 100 גרם מתארכת ב-5 ס\"מ; מסה של 250 גרם ב-12.5 ס\"מ. היחס הקבוע הוא 20 גרם לס\"מ, ולכן מסה של 180 גרם גורמת להתארכות של 9 ס\"מ (20/1 = 180/x). כיווני חשיבה ואסטרטגיות: להשתמש ביישומון כדי לאסוף נתונים, לצמצם את היחס מסה:התארכות ולהשתמש בו בפרופורציה גם למסה שאינה בכפולות של 50 גרם. טעויות נפוצות: ניסיון לקרוא את התוצאה מהיישומון בלבד, כשהוא תומך רק בקפיצות של 50 גרם; היפוך היחס מסה/התארכות. מידע נוסף: שני סעיפים, בכל אחד שתי תיבות קלט (סעיף א׳: התארכות ל-100 גרם ומסה להתארכות 12.5 ס\"מ; סעיף ב׳: היחס הקבוע והתארכות ל-180 גרם). כולל יישומון. שני ניסיונות ורמז אחרי טעות. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-003/q1",
+          "questionType": "fill-in",
+          "questionText": "בתליית משקולת על קפיץ, הקפיץ מתארך. הוסיפו משקולות לסל ובחנו את מידת התארכות הקפיץ לפי מד ההתארכות הדינמי. א. השלימו: מסה של 100 גרם גורמת להתארכות של __ ס\"מ; מסה של __ גרם גורמת להתארכות של 12.5 ס\"מ.",
+          "answers": [],
+          "correctAnswers": [
+            "מסה של 100 גרם גורמת להתארכות של 5 ס\"מ, מסה של 250 גרם גורמת להתארכות של 12.5 ס\"מ"
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-003/q2",
+          "questionType": "fill-in",
+          "questionText": "ביישומון ניתן להוסיף או להסיר משקולות רק בקפיצות של 50 גרם. במציאות ניתן לתלות על הקפיץ מסות בגדלים שונים. ב. השלימו: היחס הקבוע בין המסה להתארכות הקפיץ הוא __ גרם לס\"מ, ולכן מסה של 180 גרם גורמת להתארכות של __ ס\"מ.",
+          "answers": [],
+          "correctAnswers": [
+            "היחס הקבוע בין המסה להתארכות הקפיץ הוא 20 גרם לס\"מ, ולכן מסה של 180 גרם גורמת להתארכות של 9 ס\"מ"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-004/",
+      "title": "פאזל — שמירה על יחס שורות וטורים",
+      "informationToBot": "מטרת הפריט: תרגול מתקדם: שמירה על יחס בין שורות לטורים בפאזל מוגדל, ואחר כך חישוב מספר החלקים הכולל. מה התלמיד אמור להבין/לתרגל: בפאזל המקורי 12 שורות ו-20 טורים; בפאזל החדש 30 טורים ו-x שורות: x/30 = 12/20 ולכן x = 18. מספר החלקים 30 · 18 = 540. כיווני חשיבה ואסטרטגיות: לפתור קודם את מספר השורות החדש בפרופורציה ורק אז להכפיל שורות בטורים; היישומון מסייע לבדיקה. טעויות נפוצות: הכפלת מספר השורות והטורים המקוריים (240) במקום החדשים; עצירה אחרי מציאת מספר השורות (18) בלי חישוב מספר החלקים. מידע נוסף: כולל יישומון פאזל. שדה קלט מספרי, שני ניסיונות, רמז אחרי טעות. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-004/q1",
+          "questionType": "numeric",
+          "questionText": "העזרו ביישומון. כמה חלקים סך הכל יכיל הפאזל החדש?",
+          "answers": [],
+          "correctAnswers": [
+            540
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-05/methodica-math-proportion-02-05-005/",
+      "title": "שיטות מדידה בעולם",
+      "informationToBot": "מטרת הפריט: העשרה: היכרות עם השיטה המטרית והשיטה האימפריאלית והצורך ביחס המרה קבוע, כהכנה לשאלת השיא. מה התלמיד אמור להבין/לתרגל: ברוב העולם משתמשים בשיטה המטרית (מטרים, קילוגרמים, ליטרים) ובארצות הברית נפוצה גם השיטה האימפריאלית (אינצ'ים, רגל, יארד, פאונד, גלון). במעבר בין השיטות משתמשים ביחס המרה קבוע, ולכן אפשר להשתמש בפרופורציה (למשל 1 ק\"ג ≈ 2.2 פאונד). כיווני חשיבה ואסטרטגיות: קריאה והתבוננות בלבד. טעויות נפוצות: אין (אין שאלה מוערכת). מידע נוסף: שני מסכי העשרה (\"הידעת?\" ו\"מטר או רגל?\"), בלי שאלה מוערכת. צילום מסך: לא צורף.",
+      "contentType": "motivational",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    }
+  ]
+}
