@@ -4,134 +4,36 @@
    Design tokens per 720-design-guidelines (Math theme active on <body>).
    ===================================================================== */
 
-:root {
-  --icon-correct: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0iIzYwOUUxMiIvPjxwYXRoIGQ9Ik0xMy4xNjYxIDIxLjVDMTIuNzEyIDIxLjUwMDIgMTIuMjc2NCAyMS4zMjgzIDExLjk1NTUgMjEuMDIyMkw4LjI5NTM3IDE3LjUzNzdDNy45MDE1NCAxNy4xNjI1IDcuOTAxNTQgMTYuNTU0MyA4LjI5NTM3IDE2LjE3OTFDOC42ODkzMyAxNS44MDQgOS4zMjc5NCAxNS44MDQgOS43MjE4OSAxNi4xNzkxTDEzLjE2NjEgMTkuNDU5M0wyMi4yNzgxIDEwLjc4MTNDMjIuNjcyMSAxMC40MDYyIDIzLjMxMDcgMTAuNDA2MiAyMy43MDQ2IDEwLjc4MTNDMjQuMDk4NSAxMS4xNTY1IDI0LjA5ODUgMTEuNzY0NyAyMy43MDQ2IDEyLjEzOTlMMTQuMzc2OCAyMS4wMjIyQzE0LjA1NTkgMjEuMzI4MyAxMy42MjAzIDIxLjUwMDIgMTMuMTY2MSAyMS41WiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=");
-  --icon-incorrect: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0iI0IyMDAxMCIvPjxwYXRoIGQ9Ik0yMy42Mjc4IDguMzcyMjJDMjMuMzg5NCA4LjEzMzg5IDIzLjA2NjEgOCAyMi43MjkgOEMyMi4zOTE5IDggMjIuMDY4NiA4LjEzMzg5IDIxLjgzMDIgOC4zNzIyMkwxNiAxNC4yMDI0TDEwLjE2OTggOC4zNzIyMkM5LjkzMTQzIDguMTMzODkgOS42MDgxMyA4IDkuMjcxMDMgOEM4LjkzMzkyIDggOC42MTA2MiA4LjEzMzg5IDguMzcyMjIgOC4zNzIyMkM4LjEzMzg5IDguNjEwNjIgOCA4LjkzMzkyIDggOS4yNzEwM0M4IDkuNjA4MTMgOC4xMzM4OSA5LjkzMTQzIDguMzcyMjIgMTAuMTY5OEwxNC4yMDI0IDE2TDguMzcyMjIgMjEuODMwMkM4LjEzMzg5IDIyLjA2ODYgOCAyMi4zOTE5IDggMjIuNzI5QzggMjMuMDY2MSA4LjEzMzg5IDIzLjM4OTQgOC4zNzIyMiAyMy42Mjc4QzguNjEwNjIgMjMuODY2MSA4LjkzMzkyIDI0IDkuMjcxMDMgMjRDOS42MDgxMyAyNCA5LjkzMTQzIDIzLjg2NjEgMTAuMTY5OCAyMy42Mjc4TDE2IDE3Ljc5NzZMMjEuODMwMiAyMy42Mjc4QzIyLjA2ODYgMjMuODY2MSAyMi4zOTE5IDI0IDIyLjcyOSAyNEMyMy4wNjYxIDI0IDIzLjM4OTQgMjMuODY2MSAyMy42Mjc4IDIzLjYyNzhDMjMuODY2MSAyMy4zODk0IDI0IDIzLjA2NjEgMjQgMjIuNzI5QzI0IDIyLjM5MTkgMjMuODY2MSAyMi4wNjg2IDIzLjYyNzggMjEuODMwMkwxNy43OTc2IDE2TDIzLjYyNzggMTAuMTY5OEMyMy44NjYxIDkuOTMxNDMgMjQgOS42MDgxMyAyNCA5LjI3MTAzQzI0IDguOTMzOTIgMjMuODY2MSA4LjYxMDYyIDIzLjYyNzggOC4zNzIyMloiIGZpbGw9IndoaXRlIi8+PC9zdmc+");
-  /* Subject tokens — default theme: science (720-design-guidelines) */
-  --subject-100: #D4F3FF;
-  --subject-200: #C7F0FF;
-  --subject-300: #B9ECFF;
-  --subject-400: #00BAFF;
-  --subject-500: #019DE5;
-  --subject-600: #0690D0;
-  --subject-700: #007AC6;
-  --subject-800: #0070C0;
-  --subject-900: #002060;
-  --subject-alpha-100: rgba(0, 186, 255, 0);
-  --subject-alpha-200: rgba(0, 186, 255, 0.3);
 
-  /* Theme-independent */
-  --text: #222222;
-  --gray-100: #AEAEAE;
-  --correct-bg: #EDF8ED;
-  --correct-fg: #609E12;
-  --incorrect-bg: #FFF0F4;
-  --incorrect-bg-strong: #FFDBDC;
-  --incorrect-fg: #B20010;
-}
 
-body[data-subject-theme="math"] {
-  --subject-100: #F1D9FF;
-  --subject-200: #E7C2FF;
-  --subject-300: #E0BFF5;
-  --subject-400: #CE82FF;
-  --subject-500: #7100B9;
-  --subject-600: #8518CC;
-  --subject-700: #8300D9;
-  --subject-800: #7106B7;
-  --subject-900: #580091;
-  --subject-alpha-100: rgba(165, 28, 255, 0);
-  --subject-alpha-200: rgba(165, 28, 255, 0.3);
-}
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-html, body {
-  height: 100%;
-  background: #e9e9ee;
-  font-family: 'Assistant', 'Arial Hebrew', Arial, sans-serif;
-  color: var(--text);
-  overflow: hidden;
-}
 
 /* ---------- Canvas & scaling ---------- */
-#stage {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-}
 
-#app {
-  position: relative;
-  width: 1280px;
-  height: 710px;
-  background: #ffffff;
-  overflow: hidden;
-  direction: rtl;
-  transform-origin: center center;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
-  border-radius: 8px;
-}
 
 /* ---------- Screens ---------- */
-.screen {
-  position: absolute;
-  inset: 0;
-  display: none;
-}
-.screen.active { display: block; }
 
 /* Bottom feedback bar on every screen */
-.screen::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 74px;
-  background: #fff;
-  border-top: 1px solid #e3e3e8;
-  pointer-events: none;
-}
 
 /* ---------- Global buttons ---------- */
 .btn-continue {
   /* the APPROVED math-unit primary action (percent-04/ratio, Figma 1731:45026)
      — a new unit gets this as-is; never restyle (producer 30.08) */
-  position: absolute;
-  bottom: 17px; left: 24px;
-  z-index: 12;
-  height: 40px; box-sizing: border-box;
+ box-sizing: border-box;
   display: inline-flex; align-items: center; justify-content: center;
-  min-width: 140px;
-  padding: 0 40px;
-  background: var(--primary-action-gradient, linear-gradient(to bottom, #6f6ad5 9%, #4b35a5 38%, #270075 100%));
-  color: #fff;
-  border: none; border-radius: 1000px;
-  font-family: 'Assistant', sans-serif;
-  font-size: 20px; font-weight: 400;
-  cursor: pointer; direction: rtl;
+ direction: rtl;
   text-align: center; white-space: nowrap;
 }
 .btn-continue:disabled {
-  background: #AEAEAE;
   color: #303030;
-  cursor: not-allowed;
   opacity: 1;
 }
 
 .btn-back {
-  position: absolute;
-  bottom: 17px; right: 24px;
-  z-index: 12;
-  height: 40px; box-sizing: border-box;
+ box-sizing: border-box;
   display: inline-flex; align-items: center; justify-content: center;
-  width: auto; min-width: 140px; padding: 0 40px;
-  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
-  color: var(--subject-700);
-  font-family: 'Assistant', sans-serif; font-size: 20px; font-weight: 400;
-  cursor: pointer; direction: rtl; white-space: nowrap;
+  width: auto;
+ direction: rtl; white-space: nowrap;
 }
 .btn-back:hover { font-weight: 600; border-width: 1.5px; }
 
@@ -150,21 +52,10 @@ html, body {
   /* the approved TwoOptionSelection geometry (ratio-01-01) — left-anchored
      ONLY; never right/inset (RTL over-constraint flips the anchor and the
      whole block drifts 170px left, 30.08) */
-  position: absolute;
-  left: 50%; right: auto; inset: auto;
-  top: calc(50% - 37px);
-  transform: translate(-50%, -50%);
-  width: 810px;
-  display: flex; flex-direction: column; align-items: center; gap: 40px;
+ right: auto; inset: auto;
 }
 .select-head { text-align: center; }
-.select-title {
-  font-size: 40px;
-  font-weight: 700;
-  color: var(--text);
-}
 .select-subtitle {
-  font-size: 24px;
   margin-top: 8px;
 }
 /* .option-card* deliberately not styled here — the approved look is
@@ -173,732 +64,74 @@ html, body {
 
 
 /* ---------- Screen 4 & 6 — transition screens ---------- */
-.transition-content {
-  position: absolute;
-  inset: 0 0 74px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 32px;
-}
-.transition-title {
-  font-size: 64px;
-  font-weight: 700;
-  color: var(--subject-500);
-  text-align: center;
-}
-.transition-character { height: 260px; }
-.transition-character img { height: 100%; }
 
 /* ---------- Screen 5 — section placeholder ---------- */
-.placeholder-content {
-  position: absolute;
-  inset: 0 0 74px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  color: var(--gray-100);
-}
-.placeholder-content h2 { font-size: 36px; }
-.placeholder-content p { font-size: 22px; }
 
 /* ---------- Screen 7 — SingleChoiceQuestion ---------- */
-.scq-progress {
-  position: absolute;
-  top: 24px;
-  right: 40px;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--subject-700);
-}
-.scq-question {
-  position: absolute;
-  top: 120px;
-  right: 40px;
-  width: 700px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-.scq-qtext {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--subject-500);
-}
-.scq-answers {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 584px;
-}
-.scq-opt {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 22px;
-  border: 1.5px solid var(--subject-500);
-  border-radius: 999px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 22px;
-  transition: border-color 0.15s, background-color 0.15s;
-  position: relative;
-}
-.scq-opt:hover, .scq-opt:focus-visible {
-  border-color: var(--subject-500);
-  outline: none;
-}
-.scq-radio {
-  order: -1; /* radio on the RIGHT in RTL */
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--subject-500);
-  border-radius: 50%;
-  flex: 0 0 auto;
-  position: relative;
-}
-.scq-opt.selected { border-color: var(--subject-500); }
-.scq-opt.selected .scq-radio {
-  border-color: var(--subject-500);
-}
-.scq-opt.selected .scq-radio::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--subject-500);
-}
-.scq-opt.correct {
-  border-color: var(--correct-fg);
-  background: var(--correct-bg);
-}
-.scq-opt.correct .scq-radio,
-.scq-opt.wrong .scq-radio {
-  border: none;
-  background-color: transparent;
-  background-image: none;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-}
-.scq-opt.correct .scq-radio { background-image: var(--icon-correct); }
-.scq-opt.wrong .scq-radio { background-image: var(--icon-incorrect); }
-.scq-opt.correct .scq-radio::after, .scq-opt.wrong .scq-radio::after { content: none; }
-.scq-opt.correct { border-color: var(--correct-fg); background: var(--correct-bg); }
-.scq-opt.wrong { border-color: var(--incorrect-fg); background: var(--incorrect-bg); }
 
-.scq-opt.locked { pointer-events: none; }
-.ratio { direction: ltr; unicode-bidi: isolate; }
 
 /* Feedback box — left side, bottom-anchored above the bar */
-#scq-feedbox {
-  position: absolute;
-  bottom: 90px;
-  left: 40px;
-  width: 420px;
-  border-radius: 16px;
-  padding: 20px 24px;
-  font-size: 20px;
-  line-height: 1.5;
-  display: none;
-  z-index: 6;
-}
-#scq-feedbox.is-correct { display: block; background: var(--correct-bg); }
-#scq-feedbox.is-wrong { display: block; background: var(--incorrect-bg-strong); }
-#scq-feedbox .scq-fb { display: none; }
-#scq-feedbox .scq-fb.visible { display: block; }
-.scq-fb-title { font-weight: 700; margin-bottom: 6px; }
-#scq-feedbox.is-correct .scq-fb-title { color: var(--correct-fg); }
-#scq-feedbox.is-wrong .scq-fb-title { color: var(--incorrect-fg); }
 
 /* SCQ action bar */
-.scq-bar {
-  /* 08.09 — the approved bar geometry is a 40px pill at bottom:17px
-     (Figma 1731:45026), which is what .btn-continue already uses. The quiz
-     bar sat 2px lower and 4px taller, so a unit that mixes static screens
-     with quiz screens showed two different button baselines. */
-  position: absolute;
-  bottom: 17px;
-  left: 0;
-  right: 0;
-  height: 40px;
-  direction: ltr;
-  z-index: 5;
-}
-#scq-check {
-  position: absolute;
-  left: 40px;
-  bottom: 0;
-  min-width: 152px;
-  height: 44px;
-  padding: 0 28px;
-  border: none;
-  border-radius: 24px;
-  background: linear-gradient(180deg, var(--subject-500), var(--subject-700));
-  color: #fff;
-  font-family: inherit;
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-}
-#scq-check:disabled { background: var(--gray-100); cursor: default; }
-#scq-hint {
-  position: absolute;
-  left: 212px;
-  bottom: 0;
-  height: 44px;
-  padding: 0 24px;
-  border: 1px solid var(--subject-700);
-  border-radius: 24px;
-  background: #fff;
-  color: var(--subject-700);
-  font-family: inherit;
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-}
-#scq-hint:disabled { opacity: 0.45; cursor: default; }
-#scq-back {
-  position: absolute;
-  right: 40px;
-  bottom: 0;
-  min-width: 116px;
-  height: 44px;
-  padding: 0 24px;
-  border: 1px solid var(--subject-700);
-  border-radius: 24px;
-  background: #fff;
-  color: var(--subject-700);
-  font-family: inherit;
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
 /* Hint overlays — live outside .screen divs */
-#quiz-hint-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 40;
-  background: rgba(0, 0, 0, 0.35);
-  display: grid;
-  place-items: center;
-}
-#quiz-hint-overlay.hidden { display: none; }
-.hint-popup {
-  width: 560px;
-  border-radius: 48px;
-  background: var(--subject-500);
-  color: #fff;
-  padding: 40px 48px;
-  text-align: center;
-  direction: rtl;
-}
-.hint-popup h3 { font-size: 32px; font-weight: 700; margin-bottom: 16px; }
-.hint-popup p { font-size: 24px; line-height: 1.5; }
-.hint-popup .hint-close-btn {
-  margin-top: 28px;
-  height: 44px;
-  padding: 0 32px;
-  border: none;
-  border-radius: 24px;
-  background: #fff;
-  color: var(--subject-700);
-  font-family: inherit;
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
 /* ---------- Quiz engine screens (standard practice, slides 33-74) ---------- */
-.quiz-cols {
-  position: absolute;
-  top: 70px;
-  right: 40px;
-  left: 40px;
-  bottom: 70px;
-  display: flex;
-  gap: 40px;
-  overflow: hidden;
-}
-.quiz-main {
-  flex: 1 1 58%;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  min-width: 0;
-  overflow-y: auto;
-  padding-left: 4px;
-}
-.quiz-content {
-  flex: 1 1 42%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-}
-.quiz-stem { font-size: 20px; line-height: 1.5; }
 /* client design QA 20/07: purple is for headings only — stem emphasis stays text color */
-.quiz-stem strong { color: var(--text); }
-.quiz-screen .scq-answers { width: 100%; max-width: 560px; gap: 12px; }
-.quiz-screen .scq-opt { padding: 10px 18px; font-size: 20px; }
 
 /* checkbox variant for multi-select */
-.scq-radio.is-box { border-radius: 6px; }
-.scq-opt.is-multi.selected .scq-radio::after {
-  content: '✓';
-  width: auto; height: auto;
-  background: none;
-  color: var(--subject-500);
-  font-weight: 700;
-  font-size: 16px;
-}
 
 /* data tables (live HTML per the no-baked-text rule) */
-.data-table {
-  border-collapse: collapse;
-  font-size: 18px;
-  width: 100%;
-  max-width: 460px;
-  background: #fff;
-}
-.data-table th, .data-table td {
-  border: 1px solid #d8d8de;
-  padding: 8px 12px;
-  text-align: center;
-}
-.data-table th {
-  background: var(--subject-100);
-  color: var(--subject-900);
-  font-weight: 700;
-}
 
 /* dual year select */
-.dual-select-sentence { font-size: 20px; line-height: 2.2; max-width: 560px; }
-.year-select {
-  font-family: inherit;
-  font-size: 20px;
-  padding: 6px 12px;
-  margin: 0 8px;
-  border: 2px solid #d8d8de;
-  border-radius: 12px;
-  background: #fff;
-  color: var(--text);
-}
-.year-select:focus { border-color: var(--subject-500); outline: none; }
-.year-select.wrong { border-color: var(--incorrect-fg); background: var(--incorrect-bg); }
-.year-select.correct { border-color: var(--correct-fg); background: var(--correct-bg); }
 
 /* value-input equation */
-.vi-equation {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  font-size: 28px;
-  margin-top: 8px;
-}
-.vi-eq { font-weight: 700; }
-.vi-input {
-  width: 96px;
-  height: 44px;
-  font-family: inherit;
-  font-size: 24px;
-  font-weight: 700;
-  text-align: center;
-  border: 2px solid #d8d8de;
-  border-radius: 12px;
-  /* client QA note 61 (גורף): input text is standard black, not subject color */
-  color: #303030;
-}
-.vi-input:focus { border-color: var(--subject-500); outline: none; }
-.vi-input.wrong { border-color: var(--incorrect-fg); background: var(--incorrect-bg); }
-.vi-input.correct { border-color: var(--correct-fg); background: var(--correct-bg); }
-.vi-frac .frac-top { padding-bottom: 8px; }
-.vi-frac .frac-bottom { padding-top: 8px; }
 
 /* applet placeholder frame */
-.applet-frame {
-  width: 100%;
-  max-width: 420px;
-  height: 340px;
-  border: 2px dashed var(--gray-100);
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: var(--gray-100);
-}
-.applet-frame p { font-size: 24px; font-weight: 700; }
-.applet-frame .applet-note { font-size: 18px; font-weight: 400; }
 
 /* quiz feedback box (shared visual language with #scq-feedbox) */
-.quiz-feedbox {
-  position: absolute;
-  bottom: 90px;
-  left: 40px;
-  width: 420px;
-  border-radius: 24px;
-  padding: 20px 52px 20px 24px;
-  font-size: 20px;   /* 06.10 — same size as the app/board copy (producer) */
-  line-height: 1.5;
-  display: none;
-  z-index: 6;
-}
-.quiz-feedbox.is-correct { display: block; background: var(--correct-bg); }
-.quiz-feedbox.is-wrong { display: block; background: var(--incorrect-bg-strong); }
-.quiz-feedbox .scq-fb-title { color: var(--text); }
-.quiz-feedbox .fb-toggle {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #30303040;
-  background: #fff;
-  color: var(--text);
-  font-size: 15px;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-}
-.quiz-feedbox.collapsed .fb-body { display: none; }
 
 /* quiz bar buttons reuse scq styles */
-.quiz-check {
-  position: absolute; left: 40px; bottom: 0;
-  min-width: 152px; height: 44px; padding: 0 28px;
-  border: none; border-radius: 24px;
-  background: linear-gradient(180deg, var(--subject-500), var(--subject-700));
-  color: #fff; font-family: inherit; font-size: 22px; font-weight: 600; cursor: pointer;
-}
-.quiz-check:disabled { background: var(--gray-100); cursor: default; }
-.quiz-hint {
-  position: absolute; left: 212px; bottom: 0;
-  height: 44px; padding: 0 24px;
-  border: 1px solid var(--subject-700); border-radius: 24px;
-  background: #fff; color: var(--subject-700);
-  font-family: inherit; font-size: 22px; font-weight: 600; cursor: pointer;
-}
-.quiz-hint:disabled { opacity: 0.45; cursor: default; }
-.quiz-back {
-  position: absolute; right: 40px; bottom: 0;
-  min-width: 116px; height: 44px; padding: 0 24px;
-  border: 1px solid var(--subject-700); border-radius: 24px;
-  background: #fff; color: var(--subject-700);
-  font-family: inherit; font-size: 22px; font-weight: 600; cursor: pointer;
-}
 
 /* practice intro screen */
-.practice-intro-lines { font-size: 26px; line-height: 1.7; text-align: center; }
 
 /* content image in the quiz content column */
-.content-img {
-  width: 100%;
-  max-width: 440px;
-  border-radius: 16px;
-  object-fit: contain;
-}
 
 /* image-based answer options */
-.opt-img { max-height: 56px; max-width: 260px; object-fit: contain; }
 
 /* ratio-rows value-input layout */
-.ratio-rows { display: flex; flex-direction: column; gap: 22px; max-width: 620px; }
-.ratio-row { display: flex; flex-direction: column; gap: 8px; font-size: 20px; }
-.ratio-row-label { font-weight: 600; }
-.ratio-row-cells { display: flex; align-items: center; gap: 10px; }
-.vi-colon { font-size: 26px; font-weight: 700; }
 
 /* in-question note popup (e.g. unit-conversion reminder) */
-.popup-trigger {
-  align-self: flex-start;
-  height: 40px;
-  padding: 0 20px;
-  border: 1px solid var(--subject-700);
-  border-radius: 20px;
-  background: var(--subject-100);
-  color: var(--subject-700);
-  font-family: inherit;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.note-popup {
-  position: absolute;
-  inset: 0;
-  z-index: 40;
-  background: rgba(0, 0, 0, 0.35);
-  display: grid;
-  place-items: center;
-}
-.note-popup.hidden { display: none; }
-.note-popup-panel {
-  width: 640px;
-  border-radius: 24px;
-  background: #fff;
-  padding: 36px 44px;
-  text-align: right;
-  direction: rtl;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
-}
-.note-popup-panel h3 { font-size: 28px; font-weight: 700; color: var(--subject-500); margin-bottom: 14px; }
-.note-popup-body { font-size: 20px; line-height: 1.6; }
 /* canonical popup close X (Figma FeedbackCloseButton 249:5259 — one state, no hover) */
-.popup-x {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 1px solid #303030;
-  background: #fff;
-  cursor: pointer;
-  padding: 0;
-}
-.popup-x::before,
-.popup-x::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 11.31px;
-  height: 1.333px;
-  background: #303030;
-}
-.popup-x::before { transform: translate(-50%, -50%) rotate(45deg); }
-.popup-x::after { transform: translate(-50%, -50%) rotate(-45deg); }
-.note-popup-panel { position: relative; }
 
-.note-popup-panel .hint-close-btn {
-  margin-top: 24px;
-  height: 44px;
-  padding: 0 32px;
-  border: none;
-  border-radius: 24px;
-  background: var(--subject-500);
-  color: #fff;
-  font-family: inherit;
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
 /* transition screens with a story image */
-.transition-img {
-  max-height: 330px;
-  max-width: 760px;
-  border-radius: 16px;
-  object-fit: contain;
-}
 
 /* class-task screens */
-.ct-content {
-  position: absolute;
-  inset: 0 0 74px 0;
-  overflow-y: auto;
-  padding: 48px 90px 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.ct-title { font-size: 36px; font-weight: 700; color: var(--subject-500); }
-.ct-body { font-size: 21px; line-height: 1.6; display: flex; flex-direction: column; gap: 10px; }
-.ct-table input.ct-input {
-  width: 84px;
-  height: 34px;
-  font-family: inherit;
-  font-size: 18px;
-  text-align: center;
-  border: 1.5px solid #d8d8de;
-  border-radius: 8px;
-}
-.ct-table input.ct-input:focus { border-color: var(--subject-500); outline: none; }
 
 
 /* applet (יישומון) embed */
-.applet-embed {
-  position: relative;
-  width: 100%;
-  max-width: 460px;
-  height: 380px;
-  border: 1px solid #e3e3e8;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #fff;
-}
-.applet-embed iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-.applet-zoom-btn {
-  /* Figma Zoom/Close components 1589:17043 / 1589:17081 — 44px circle,
-     white fill, 2px subject stroke; hover inverts */
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 5;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid var(--subject-500);
-  background: #fff;
-  color: var(--subject-500);
-  display: grid;
-  place-items: center;
-  padding: 0;
-  cursor: pointer;
-}
-.applet-zoom-btn:hover { background: var(--subject-500); color: #fff; }
 
-#applet-zoom-popup {
-  position: absolute;
-  inset: 0;
-  z-index: 50;
-  background: rgba(255, 255, 255, 0.78);
-  display: grid;
-  place-items: center;
-}
-#applet-zoom-popup.hidden { display: none; }
-.applet-zoom-panel {
-  position: relative;
-  width: 1080px;
-  height: 640px;
-  background: #fff;
-  border-radius: 24px;
-  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-}
-.applet-zoom-panel iframe { width: 100%; height: 100%; border: none; }
-.applet-zoom-close {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 5;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid var(--subject-500);
-  background: #fff;
-  color: var(--subject-500);
-  font-size: 20px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.applet-zoom-close:hover { background: var(--subject-500); color: #fff; }
 
 /* content column may hold table + applet together */
-.quiz-content { overflow-y: auto; gap: 16px; }
 
 
 /* in-place applet fullscreen — same iframe, state persists */
-.applet-embed .applet-close-btn { display: none; }
-#app .applet-embed.is-zoomed {
-  position: fixed;      /* containing block = #app (transformed) */
-  inset: 24px;
-  width: auto;          /* explicit — the base width:100% over-constrains
-                           against inset in RTL and misplaces the frame */
-  height: auto;
-  max-width: none;
-  max-height: none;
-  z-index: 60;
-  box-shadow: 0 0 0 2000px rgba(255, 255, 255, 0.78), 0 10px 50px rgba(0, 0, 0, 0.25);
-}
-#app .applet-embed.is-zoomed .applet-zoom-btn[data-applet-toggle="open"] { display: none; }
-#app .applet-embed.is-zoomed .applet-close-btn { display: block; }
 
 /* dropdown-in-sentence (DropdownQuestion) */
-.dd-sentence { font-size: 21px; line-height: 2.4; max-width: 640px; }
 /* the 2.4 line-height is for selects inline in running text; inside a table it
    inflates every row — cells revert to normal rhythm */
-.dd-sentence .dd-table th, .dd-sentence .dd-table td { line-height: 1.4; }
-.dd-sentence .dd-table th, .dd-sentence .dd-table td { white-space: nowrap; }
-.dd-select {
-  font-family: inherit;
-  font-size: 19px;
-  padding: 6px 12px;
-  margin: 0 6px;
-  min-width: 130px;
-  border: 1.5px solid #d8d8de;
-  border-radius: 10px;
-  background: #fff;
-  color: var(--text);
-  vertical-align: middle;
-}
-.dd-select:focus { border-color: var(--subject-500); outline: none; }
-.dd-select.wrong { border-color: var(--incorrect-fg); background: var(--incorrect-bg); }
-.dd-select.correct { border-color: var(--correct-fg); background: var(--correct-bg); }
 
 /* statement assessment (נכון / לא נכון) */
-.stmt-list { display: flex; flex-direction: column; gap: 18px; max-width: 660px; }
-.stmt-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
-.stmt-text { font-size: 20px; line-height: 1.5; flex: 1; }
-.stmt-pills { display: flex; gap: 10px; flex: 0 0 auto; }
-.stmt-pill {
-  min-width: 88px;
-  height: 40px;
-  border: 1.5px solid var(--subject-500);
-  border-radius: 20px;
-  background: #fff;
-  color: var(--subject-500);
-  font-family: inherit;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.stmt-pill.selected { background: var(--subject-500); color: #fff; }
-.stmt-pill.correct { border-color: var(--correct-fg); background: var(--correct-bg); color: var(--correct-fg); }
-.stmt-pill.wrong { border-color: var(--incorrect-fg); background: var(--incorrect-bg); color: var(--incorrect-fg); }
-.stmt-pill:disabled { cursor: default; }
-.stmt-row.wrong .stmt-text { color: var(--incorrect-fg); }
 
 /* question progress stepper (סרגל שאלה) — percent-04's approved `qprog`.
    07.09 — the old .qstep-* strip is gone: 13px labels, ✓/✕ text glyphs, connectors
    that never filled, and red-for-wrong (the approved rule is that colour never
    encodes correctness — correct and wrong share the same --subject-500 disc and
    differ only by glyph). Do not re-add .qstep-* rules. */
-.qprog {
-  position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
-  display: flex; align-items: flex-start; direction: rtl; z-index: 5;
-}
-.qprog-station { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 96px; }
-.qprog-dot {
-  width: 26px; height: 26px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; box-sizing: border-box;
-  background: #f1f1f3; border: 2px solid #d5d6da; position: relative;
-}
-.qprog-dot::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #c9cad0; }
-.qprog-station.is-current .qprog-dot { background: #fff; border-color: var(--subject-500); }
-.qprog-station.is-current .qprog-dot::after { background: var(--subject-500); }
-.qprog-station.is-correct .qprog-dot,
-.qprog-station.is-wrong  .qprog-dot { background: var(--subject-500); border-color: var(--subject-500); }
-.qprog-station.is-correct .qprog-dot::after,
-.qprog-station.is-wrong  .qprog-dot::after { display: none; }
-.qprog-dot svg { width: 12px; height: 12px; display: none; }
-.qprog-station.is-correct .qprog-dot svg.qp-tick { display: block; }
-.qprog-station.is-wrong   .qprog-dot svg.qp-x    { display: block; }
-.qprog-label { font-family: 'Assistant', sans-serif; font-size: 18px; color: #b9bac0; white-space: nowrap; }
-.qprog-station.is-current .qprog-label { color: #303030; font-weight: 700; }
-.qprog-station.is-correct .qprog-label,
-.qprog-station.is-wrong   .qprog-label { color: #303030; }
-.qprog-line { flex: 1; height: 2px; background: #d5d6da; margin-top: 12px; min-width: 30px; }
-.qprog-line.is-done { background: var(--subject-500); }
 
 
 /* hint button lightbulb (per Figma SCQ frame) */
-.quiz-hint svg, #scq-hint svg { vertical-align: -3px; margin-inline-start: 6px; }
 
 /* screens with a stepper need more headroom */
 /* producer 01.09, GENERAL RULE: at least 25px between the progress strip and
@@ -907,35 +140,14 @@ html, body {
 
 /* the action bar is direction:ltr for positional layout only — button TEXT
    must render RTL so trailing punctuation (צדקתי?) lands at the reading end */
-.scq-bar button { direction: rtl; }
 
 /* stacked fraction (מונה/מכנה) — used by vi-equation, explanations, formulas */
-.fraction {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  vertical-align: middle;
-  margin: 0 12px;
-  font-weight: inherit;
-  color: var(--subject-500);
-  font-size: 24px;
-}
-.fraction .frac-top { padding: 0 16px 6px; }
 /* client QA 29/07 note 68 (גורף): fraction bar is a thin black line */
-.fraction .frac-bottom {
-  border-top: 2px solid #222;
-  padding: 6px 16px 0;
-}
 
 /* scroll screens: styled scrollbar per Figma Vertical Slider bar language
    (thin light track, rounded subject thumb) — physical right via ltr container */
-.teach-scroll::-webkit-scrollbar { width: 6px; }
-.teach-scroll::-webkit-scrollbar-track { background: transparent; }
-.teach-scroll::-webkit-scrollbar-thumb { background: var(--subject-300); border-radius: 100px; }
-.teach-scroll { scrollbar-color: var(--subject-300) transparent; scrollbar-width: thin; }
 
 /* client rule: subject color is for headings/chrome only — formula math is content */
-.vi-equation, .vi-equation .fraction, .fraction { color: var(--text); }
 
 /* ============ QA 26/07 — Figma component conformance ============ */
 /* .btn-continue / .btn-back deliberately NOT restyled here — the approved
@@ -947,30 +159,7 @@ html, body {
   background: var(--primary-action-gradient, linear-gradient(to bottom, #6f6ad5 9%, #4b35a5 38%, #270075 100%));
   color: #fff; border: none; cursor: pointer;
 }
-.quiz-check:disabled { background: #AEAEAE; color: #303030; cursor: not-allowed; opacity: 1; }
-.quiz-back {
-  min-width: 140px; height: 40px; padding: 0 40px;
-  border: 1px solid var(--subject-700); border-radius: 1000px;
-  font-size: 20px; font-weight: 400; color: var(--subject-700); background: #fff;
-}
-.quiz-hint {
-  min-width: 158px; height: 39px; padding: 0 20px;
-  border: 1px solid var(--subject-500); border-radius: 1000px;
-  background: #fff; color: var(--subject-700);
-  font-size: 20px; font-weight: 400;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-}
-.quiz-hint svg { margin: 0; vertical-align: middle; }
-.scq-opt {
-  min-height: 46px; border-radius: 1000px; font-size: 22px; color: #222;
-  padding-top: 8px; padding-bottom: 8px;
-}
-.scq-opt.selected { border-width: 2px; border-color: var(--subject-500); }
-.scq-options { align-items: stretch; }
-#quiz-hint-overlay {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-}
+.quiz-check:disabled { color: #303030; opacity: 1; }
 .stmt-pill.correct, .stmt-pill.wrong, .dd-select.correct, .dd-select.wrong,
 .vi-input.mark-ok, .vi-input.mark-bad, .year-select.correct, .year-select.wrong {
   background-repeat: no-repeat; background-size: 22px 22px;
@@ -978,59 +167,24 @@ html, body {
 }
 .stmt-pill.correct, .dd-select.correct, .vi-input.mark-ok, .year-select.correct { background-image: var(--icon-correct); }
 .stmt-pill.wrong, .dd-select.wrong, .vi-input.mark-bad, .year-select.wrong { background-image: var(--icon-incorrect); }
-.vi-input, .ct-input, .dd-select { color: #303030; font-size: 22px; font-weight: 400; }
-.teach-scroll::-webkit-scrollbar { width: 10px; }
-.teach-scroll::-webkit-scrollbar-track { background: var(--subject-100); border-radius: 100px; }
-.teach-scroll::-webkit-scrollbar-thumb { background: var(--subject-300); border-radius: 100px; }
-.teach-scroll { scrollbar-color: var(--subject-300) var(--subject-100); scrollbar-width: auto; }
-.applet-zoom-btn, .applet-close-btn { display: inline-flex; align-items: center; justify-content: center; padding: 0; line-height: 0; }
-.applet-zoom-btn svg, .applet-close-btn svg { display: block; margin: 0; }
 
 /* feedback box floats above content, draggable (notes 38/58/60) */
-.quiz-feedbox {
-  position: absolute; left: 40px; bottom: 84px; width: min(620px, 60%);
-  z-index: 40; cursor: grab; touch-action: none;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
-}
-.quiz-feedbox:active { cursor: grabbing; }
-.fb-answer-toggle {
-  display: inline-block; margin-top: 10px; height: 34px; padding: 0 18px;
-  border: 1px solid var(--subject-500); border-radius: 1000px;
-  background: #fff; color: var(--subject-700);
-  font-family: inherit; font-size: 17px; cursor: pointer;
-}
 
 /* image magnifier + lightbox (note 67) */
-.img-zoom-wrap { position: relative; display: inline-block; }
-.img-zoom-btn { position: absolute; top: 8px; left: 8px; z-index: 4; }
 #img-zoom-overlay {
-  position: absolute; inset: 0; z-index: 90; display: none;
   /* the JS sets display:grid. WITHOUT explicit tracks the single row is
      content-sized, so the image's `max-height: 82%` resolves against an auto
      track and is dropped — a 4:3 still then rendered 645px tall and hung 6px
      off the stage. Pinning the track to 100% makes the percentage definite. */
   grid-template-rows: 100%; grid-template-columns: 100%;
-  place-items: center; background: rgba(255, 255, 255, 0.92);
 }
-#img-zoom-overlay img { max-width: 88%; max-height: 88%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
-#img-zoom-overlay .applet-close-btn { position: absolute; top: 24px; left: 24px; }
 
 /* QA visual pass fixes */
 /* bulb sits RIGHT of the text (note 35): svg is first child, rtl row places it at main-start (right) */
-.hint-popup .hint-close-btn { color: #303030; }        /* per 526:12948 button text */
+        /* per 526:12948 button text */
 
 /* nav-button width consistency (Foundation rule): reserve the hover-weight
    width so a bold-on-hover label never reflows */
-.nav-label { display: inline-grid; }
-.nav-label::before {
-  content: attr(data-label);
-  grid-area: 1 / 1;
-  font-weight: 600;
-  block-size: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-.nav-label > span { grid-area: 1 / 1; }
 
 /* ── Report flag — the APPROVED percent-04 block (Figma-exact glyph) ── */
 /* ═══════════════════════════════════════════════════════
@@ -1058,55 +212,14 @@ html, body {
    icon shapes as "the exact Figma PNG exports" — superseded here by
    the higher-order rule never to bake a subject colour into an asset.
    ═══════════════════════════════════════════════════════ */
-.flag-btn {
-  position: absolute; top: 16px; left: 16px;
-  width: 88px;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  background: none; border: none; padding: 0; cursor: pointer;
-  z-index: 30;          /* above screen content + feedback bar */
-}
-.flag-btn-icon {
-  position: relative;
-  width: 38px; height: 38px; flex-shrink: 0;
-  border-radius: 1000px;
-  overflow: hidden;
-  background: #ececec;
-  border: 0.5px solid rgba(0, 0, 0, 0.06);
-  color: #484848;               /* glyph colour — Natural, theme-independent */
-}
-.flag-btn:hover .flag-btn-icon,
-.flag-btn:focus-visible .flag-btn-icon {
-  background: #fff;
-  border: 0.7px solid var(--subject-500);
-  color: var(--subject-500);    /* glyph follows the Subject token */
-}
 /* Glyph box — Figma "icon" frame: aspect 28/40, left calc(50% + 1px),
    top calc(31.58% - 0.26px), bottom calc(23.68% - 0.37px) of the 38px
    circle. Resolved to px for determinism: top 11.74, height
    38 - 11.74 - 8.63 = 17.63, width 17.63 x 28/40 = 12.34.
    (Figma's default state differs from hover by <0.12px on these
    offsets — below one rendered pixel, so one geometry serves both.) */
-.flag-btn-glyph {
-  position: absolute;
-  top: 11.74px;
-  left: calc(50% + 1px);
-  transform: translateX(-50%);
-  width: 12.34px; height: 17.63px;
-}
 /* Each vector keeps its own Figma inset box and stretches into it,
    exactly as the original <img size-full> exports did. */
-.flag-btn-glyph-pole,
-.flag-btn-glyph-banner { position: absolute; display: block; }
-.flag-btn-glyph-pole   { inset: 0 93.38% 0 0; }
-.flag-btn-glyph-banner { inset: 3.49% 0 41.72% 0; }
-.flag-btn-label {
-  font-family: 'Assistant', sans-serif;
-  font-weight: 600; font-size: 18px; color: var(--subject-500);   /* 18px type floor */
-  text-align: center; width: 92px; line-height: 1.15;
-  direction: rtl; display: none;
-}
-.flag-btn:hover .flag-btn-label,
-.flag-btn:focus-visible .flag-btn-label { display: block; }
 
 /* =====================================================================
    08.09 — the refreshed hint chrome ships two SVG icons in
@@ -1117,20 +230,13 @@ html, body {
    proportion-02-01, where the pair was signed off (QA closed 07.09.26).
    ===================================================================== */
 .quiz-hint .quiz-hint-icon {
-  width: 26px; height: 22.288px; flex-shrink: 0; display: inline-block;
-  color: var(--subject-500);
+ display: inline-block;
 }
-.quiz-hint:disabled .quiz-hint-icon { color: #aeaeae; }
 /* the card title becomes a centred row so the bulb sits beside the words */
-.hint-popup .hint-title {
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-}
-.hint-title-icon { width: 26px; height: 34.7px; flex-shrink: 0; display: block; }
 /* The stepper container carries BOTH names: `.qprog` (the approved component)
    and `.qstepper` (the name percent-04/05/08's layout rules use). quiz-engine
    emits both on purpose, so alias the headroom rule rather than leave the
    second name styling nothing. */
-.quiz-screen:has(.qstepper) .quiz-cols { top: 112px; }
 
 /* Art that enters WITH the feedback rather than with the screen: mark it
    `class="… cw-after-fb" hidden` inside a question's `content` and
@@ -1157,16 +263,6 @@ html, body {
    vocabulary and are not auto-applied on screen transitions.
    ═══════════════════════════════════════════════════════════ */
 
-:root {
-  /* Screen-reveal tokens */
-  --m-reveal-duration: 600ms;
-  --m-reveal-stagger: 180ms;
-  --m-distance: 16px;    /* float travel — shared by float-in/out keyframes */
-  --m-ease: ease;
-  /* Popup-motion tokens */
-  --m-popup-duration: 260ms;
-  --m-popup-exit-duration: 200ms;  /* outside-dismiss fade-out ONLY */
-}
 
 /* ─── Keyframes — the entire allowed vocabulary ───────────── */
 @keyframes m-fade-in {
@@ -1210,27 +306,15 @@ html, body {
    float-in, convert any such static transform to a non-transform
    technique (e.g. `left` + `margin`) first. See
    references/DECISIONS.md for the full rule and a worked example. */
-.screen.m-animate [data-reveal] {
-  animation: m-float-in var(--m-reveal-duration) var(--m-ease) both;
-}
-.screen.m-animate [data-reveal="2"] { animation-delay: var(--m-reveal-stagger); }
-.screen.m-animate [data-reveal="3"] { animation-delay: calc(var(--m-reveal-stagger) * 2); }
-.screen.m-animate [data-reveal="4"] { animation-delay: calc(var(--m-reveal-stagger) * 3); }
 
 /* Hold state — the initial screen's reveal is paused until the
    page has actually painted (window load); without this the
    animation runs during the loading white-screen and is over
    before the learner sees anything. fill-mode "both" keeps the
    groups at their hidden from-state while paused, so no flash. */
-.screen.m-animate.m-hold [data-reveal] {
-  animation-play-state: paused;
-}
 
 /* Fade variant — for elements whose geometry must never move
    (JS-measured images, canvases) or where float adds nothing. */
-.screen.m-animate [data-reveal][data-reveal-fade] {
-  animation-name: m-fade-in;
-}
 
 /* ─── Popup transition — separate from screen reveal ───────
    Opt-in via .m-popup on the popup root (a standalone popup box, or
@@ -1242,9 +326,6 @@ html, body {
    One unit, no stagger, no inner-element animation, and no blocking:
    the popup is interactive the moment it opens. Close stays instant
    by default (no fade-out/float-out unless explicitly wired). */
-.m-popup:not(.hidden) {
-  animation: m-fade-in var(--m-popup-duration) var(--m-ease) both;
-}
 
 /* Popup EXIT (outside-dismiss only, if wired): applied by
    Motion.dismissPopup() as an INLINE animation — deliberately not a
@@ -1255,10 +336,6 @@ html, body {
 
 /* ─── prefers-reduced-motion — everything instant ─────────── */
 @media (prefers-reduced-motion: reduce) {
-  .screen.m-animate [data-reveal],
-  .m-popup:not(.hidden) {
-    animation: none !important;
-  }
 }
 
 
@@ -1443,7 +520,7 @@ html, body {
   position: absolute; top: 16px; left: 16px;
   width: 88px;
   display: flex; flex-direction: column; align-items: center; gap: 4px;
-  background: none; border: none; padding: 0; cursor: pointer;
+  background: none; border: none; padding: 0;
   z-index: 30;          /* above screen content + feedback bar */
 }
 
@@ -1582,13 +659,9 @@ html, body {
 .scq-opt {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 14px 22px;
   border: 1.5px solid var(--subject-500);
-  border-radius: 999px;
   background: #fff;
   cursor: pointer;
-  font-size: 22px;
   transition: border-color 0.15s, background-color 0.15s;
   position: relative;
 }
@@ -1600,22 +673,18 @@ html, body {
 
 .scq-radio {
   order: -1; /* radio on the RIGHT in RTL */
-  width: 24px;
-  height: 24px;
   border: 2px solid var(--subject-500);
   border-radius: 50%;
   flex: 0 0 auto;
   position: relative;
 }
 
-.scq-opt.selected { border-color: var(--subject-500); }
 
 .scq-opt.selected .scq-radio {
   border-color: var(--subject-500);
 }
 
 .scq-opt.selected .scq-radio::after {
-  content: '';
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1626,28 +695,15 @@ html, body {
   background: var(--subject-500);
 }
 
-.scq-opt.correct {
-  border-color: var(--correct-fg);
-  background: var(--correct-bg);
-}
 
 .scq-opt.correct .scq-radio, .scq-opt.wrong .scq-radio {
-  border: none;
-  background-color: transparent;
   background-image: none;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
 }
 
-.scq-opt.correct .scq-radio { background-image: var(--icon-correct); }
 
-.scq-opt.wrong .scq-radio { background-image: var(--icon-incorrect); }
 
-.scq-opt.correct .scq-radio::after, .scq-opt.wrong .scq-radio::after { content: none; }
 
-.scq-opt.correct { border-color: var(--correct-fg); background: var(--correct-bg); }
 
-.scq-opt.wrong { border-color: var(--incorrect-fg); background: var(--incorrect-bg); }
 
 .scq-opt.locked { pointer-events: none; }
 
@@ -1751,7 +807,6 @@ html, body {
   position: absolute;
   inset: 0;
   z-index: 40;
-  background: rgba(0, 0, 0, 0.35);
   display: grid;
   place-items: center;
 }
@@ -1764,7 +819,6 @@ html, body {
   background: var(--subject-500);
   color: #fff;
   padding: 40px 48px;
-  text-align: center;
   direction: rtl;
 }
 
@@ -1779,7 +833,6 @@ html, body {
   border: none;
   border-radius: 24px;
   background: #fff;
-  color: var(--subject-700);
   font-family: inherit;
   font-size: 22px;
   font-weight: 600;
@@ -1819,7 +872,6 @@ html, body {
   min-width: 0;
 }
 
-.quiz-stem { font-size: 20px; line-height: 1.5; }
 
 /* client design QA 20/07: purple is for headings only — stem emphasis stays text color */
 .quiz-stem strong { color: var(--text); }
@@ -1838,7 +890,6 @@ html, body {
 .scq-radio.is-box { border-radius: 6px; }
 
 .scq-opt.is-multi.selected .scq-radio::after {
-  content: '✓';
   width: auto; height: auto;
   background: none;
   color: var(--subject-500);
@@ -1942,16 +993,11 @@ html, body {
 
 /* quiz feedback box (shared visual language with #scq-feedbox) */
 .quiz-feedbox {
-  position: absolute;
-  bottom: 90px;
-  left: 40px;
-  width: 420px;
   border-radius: 24px;
   padding: 20px 52px 20px 24px;
   font-size: 20px;   /* 06.10 — same size as the app/board copy (producer) */
   line-height: 1.5;
   display: none;
-  z-index: 6;
 }
 
 .quiz-feedbox.is-correct { display: block; background: var(--correct-bg); }
@@ -1991,10 +1037,7 @@ html, body {
 
 .quiz-hint {
   position: absolute; left: 212px; bottom: 0;
-  height: 44px; padding: 0 24px;
-  border: 1px solid var(--subject-700); border-radius: 24px;
-  background: #fff; color: var(--subject-700);
-  font-family: inherit; font-size: 22px; font-weight: 600; cursor: pointer;
+  font-family: inherit; cursor: pointer;
 }
 
 .quiz-hint:disabled { opacity: 0.45; cursor: default; }
@@ -2008,7 +1051,7 @@ html, body {
 }
 
 /* practice intro screen */
-.practice-intro-lines { font-size: 26px; line-height: 1.7; text-align: center; }
+.practice-intro-lines { text-align: center; }
 
 /* content image in the quiz content column */
 .content-img {
@@ -2022,9 +1065,9 @@ html, body {
 .opt-img { max-height: 56px; max-width: 260px; object-fit: contain; }
 
 /* ratio-rows value-input layout */
-.ratio-rows { display: flex; flex-direction: column; gap: 22px; max-width: 620px; }
+.ratio-rows { display: flex; flex-direction: column; gap: 22px; }
 
-.ratio-row { display: flex; flex-direction: column; gap: 8px; font-size: 20px; }
+.ratio-row { display: flex; font-size: 20px; }
 
 .ratio-row-label { font-weight: 600; }
 
@@ -2135,7 +1178,6 @@ html, body {
   gap: 18px;
 }
 
-.ct-title { font-size: 36px; font-weight: 700; color: var(--subject-500); }
 
 .ct-body { font-size: 21px; line-height: 1.6; display: flex; flex-direction: column; gap: 10px; }
 
@@ -2282,36 +1324,19 @@ html, body {
 .dd-select.correct { border-color: var(--correct-fg); background: var(--correct-bg); }
 
 /* statement assessment (נכון / לא נכון) */
-.stmt-list { display: flex; flex-direction: column; gap: 18px; max-width: 660px; }
 
-.stmt-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.stmt-row { justify-content: space-between; }
 
-.stmt-text { font-size: 20px; line-height: 1.5; flex: 1; }
 
-.stmt-pills { display: flex; gap: 10px; flex: 0 0 auto; }
+.stmt-pills { flex: 0 0 auto; }
 
-.stmt-pill {
-  min-width: 88px;
-  height: 40px;
-  border: 1.5px solid var(--subject-500);
-  border-radius: 20px;
-  background: #fff;
-  color: var(--subject-500);
-  font-family: inherit;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
-.stmt-pill.selected { background: var(--subject-500); color: #fff; }
 
-.stmt-pill.correct { border-color: var(--correct-fg); background: var(--correct-bg); color: var(--correct-fg); }
+.stmt-pill.correct { color: var(--correct-fg); }
 
-.stmt-pill.wrong { border-color: var(--incorrect-fg); background: var(--incorrect-bg); color: var(--incorrect-fg); }
+.stmt-pill.wrong { color: var(--incorrect-fg); }
 
-.stmt-pill:disabled { cursor: default; }
 
-.stmt-row.wrong .stmt-text { color: var(--incorrect-fg); }
 
 /* question progress stepper (סרגל שאלה) — percent-04's approved `qprog`.
    07.09 — the old .qstep-* strip is gone: 13px labels, ✓/✕ text glyphs, connectors
@@ -2390,13 +1415,9 @@ html, body {
 
 /* scroll screens: styled scrollbar per Figma Vertical Slider bar language
    (thin light track, rounded subject thumb) — physical right via ltr container */
-.teach-scroll::-webkit-scrollbar { width: 6px; }
 
-.teach-scroll::-webkit-scrollbar-track { background: transparent; }
 
-.teach-scroll::-webkit-scrollbar-thumb { background: var(--subject-300); border-radius: 100px; }
 
-.teach-scroll { scrollbar-color: var(--subject-300) transparent; scrollbar-width: thin; }
 
 /* client rule: subject color is for headings/chrome only — formula math is content */
 .vi-equation, .vi-equation .fraction, .fraction { color: var(--text); }
@@ -2431,11 +1452,10 @@ html, body {
 .quiz-hint svg { margin: 0; vertical-align: middle; }
 
 .scq-opt {
-  min-height: 46px; border-radius: 1000px; font-size: 22px; color: #222;
-  padding-top: 8px; padding-bottom: 8px;
+  min-height: 46px; font-size: 22px; color: #222;
 }
 
-.scq-opt.selected { border-width: 2px; border-color: var(--subject-500); }
+.scq-opt.selected { border-color: var(--subject-500); }
 
 .scq-options { align-items: stretch; }
 
@@ -2449,7 +1469,6 @@ html, body {
    fought both. The other controls keep it. */
 .stmt-pill.correct, .stmt-pill.wrong, .dd-select.correct, .dd-select.wrong, .year-select.correct, .year-select.wrong {
   background-repeat: no-repeat; background-size: 22px 22px;
-  background-position: left 8px center; padding-left: 36px;
 }
 
 .stmt-pill.correct, .dd-select.correct, .year-select.correct { background-image: var(--icon-correct); }
@@ -2486,7 +1505,7 @@ html, body {
   display: inline-block; margin-top: 24px; height: 39px; padding: 0 20px;
   border: 1px solid #484848; border-radius: 1000px;
   background: #FFFFFF; color: #222222;
-  font-family: inherit; font-size: 18px; cursor: pointer;
+  font-family: inherit; cursor: pointer;
 }
 .fb-answer-toggle:hover { border-color: #484848; background: #FFFFFF; }
 
@@ -2557,7 +1576,6 @@ html, body {
 .city-title {
   font-size: 32px;
   font-weight: 700;
-  text-align: center;
   max-width: 1050px;
 }
 
@@ -2625,15 +1643,7 @@ html, body {
 
 /* ---------- Screens 2–3 — explanation screens (custom) ---------- */
 .explain-content {
-  position: absolute;
-  inset: 0 0 74px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  gap: 28px;
-  padding: 0 120px;
-  text-align: center;
 }
 
 .explain-title {
@@ -2689,7 +1699,6 @@ html, body {
   inset: 0 0 74px 0;
   overflow-y: auto;
   padding: 44px 110px 30px;
-  display: flex;
   flex-direction: column;
   gap: 26px;
 }
@@ -2738,9 +1747,9 @@ html, body {
   border-top: 2px solid var(--subject-300);
 }
 
-.teach-question { display: flex; flex-direction: column; gap: 16px; max-width: 640px; }
+.teach-question { display: flex; flex-direction: column; gap: 16px; }
 
-.teach-q-text { font-size: 22px; font-weight: 700; color: var(--subject-500); }
+.teach-q-text { font-size: 22px; }
 
 .teach-feedback { display: none; border-radius: 14px; padding: 14px 20px; font-size: 20px; }
 
@@ -2749,23 +1758,17 @@ html, body {
 .teach-feedback.is-wrong { display: block; background: var(--incorrect-bg-strong); }
 
 /* ---------- Guided exercise (תרגול מונחה) ---------- */
-.g-table td, .g-table th { font-size: 17px; padding: 8px 10px; }
 
 .g-table .g-label { font-weight: 700; background: var(--subject-100); }
 
-.g-table .g-yes { color: var(--correct-fg); font-size: 22px; font-weight: 700; }
+.g-table .g-yes { font-size: 22px; }
 
-.g-table .g-no { color: var(--incorrect-fg); font-size: 22px; font-weight: 700; }
+.g-table .g-no { font-size: 22px; }
 
-.g-after { font-size: 20px; line-height: 1.55; color: var(--text); background: var(--subject-100); border-radius: 14px; padding: 0; }
 
-.g-after:not(:empty) { padding: 14px 20px; }
 
 .recipe-box {
   background: #fff;
-  border: 2px solid var(--subject-300);
-  border-radius: 16px;
-  padding: 16px 22px;
   margin: 12px 0;
 }
 
@@ -2785,13 +1788,8 @@ html, body {
 
 .city-card.locked { pointer-events: none; }
 
-.city-card.correct {
-  border-color: var(--correct-fg);
-  background: var(--correct-bg);
-}
 
 .city-card.correct::after {
-  content: '✓';
   position: absolute;
   top: -14px;
   left: -14px;
@@ -2822,11 +1820,8 @@ html, body {
 .character-widget {
   position: absolute;
   left: var(--page-pad);
-  bottom: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
   z-index: 10;
 }
 
@@ -2835,10 +1830,7 @@ html, body {
   border: 4px solid var(--subject-500);   /* Figma bubble 551:12741 */
   border-radius: 10px;
   font-weight: 400;
-  padding: 10px 16px;
-  font-size: 20px;
   color: #303030;
-  text-align: center;
   position: relative;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   min-width: 200px;
@@ -2852,7 +1844,7 @@ html, body {
   transform: translateX(-50%);
 }
 
-.character-widget img { width: 200px; object-fit: contain; }
+.character-widget img { object-fit: contain; }
 
 /* jump animation (interim for the missing jump GIF) */
 @keyframes char-jump {
@@ -2905,17 +1897,15 @@ html, body {
 .recipe-img { height: 120px; object-fit: contain; }
 
 /* guided table — centered, larger (client fix) */
-.g-table { max-width: 520px; margin: 0 auto; }
+.g-table { margin: 0 auto; }
 
-.g-table td, .g-table th { font-size: 18px; padding: 10px 12px; }
+.g-table td, .g-table th { padding: 10px 12px; }
 
 /* hook reveal: label the green card so it reads as the answer, not a selection */
-.city-card.correct { animation: hook-reveal 0.3s ease-out; }
 
 @keyframes hook-reveal { from { opacity: 0.4; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
 
 .city-card.correct::before {
-  content: 'התשובה הנכונה';
   position: absolute;
   top: -14px;
   right: 24px;
@@ -2968,66 +1958,18 @@ html, body {
 /* guided question screens: fixed-width table column, top-aligned, clear of the widget */
 /* question screens (7-11): slightly compact table + options so both columns fit */
 /* note 12: readable table font */
-.g-media .g-table th, .g-media .g-table td { font-size: 18px; padding: 8px 11px; }
 
 /* ===== Guided practice — client Figma qLkMM66DSE4xpV5ap3jYLd (notes 14/15/33):
    title right-aligned; story/question on the RIGHT (past context dimmed);
    purple callout card with the step instruction + answers on the LEFT. ===== */
-.g-title {
-  position: absolute;
-  top: 26px;
-  right: 44px;
-  left: 44px;
-  text-align: right;
-  font-size: 34px;
-  font-weight: 700;
-  color: var(--subject-500);
-}
 
-.g-layout {
-  position: absolute;
-  top: 92px;
-  right: 44px;
-  left: 44px;
-  bottom: 80px;
-  display: flex;
-  gap: 36px;
-  overflow: hidden;
-}
 
-.g-right {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  overflow-y: auto;
-  text-align: right;
-}
 
-.g-story { font-size: 21px; line-height: 1.55; color: var(--text); }
 
-.g-story.g-dim { color: #8f8f8f; font-size: 18px; }
 
-.g-qline { font-size: 21px; font-weight: 600; color: var(--subject-500); }
 
-.g-step-line { font-size: 21px; line-height: 1.5; color: var(--text); }
 
-.g-media { align-self: flex-start; width: 100%; }
 
-.g-callout {
-  flex: 0 0 400px;
-  align-self: flex-start;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  background: var(--subject-500);
-  color: #fff;
-  border-radius: 24px;
-  padding: 22px 26px 16px;
-  max-height: 100%;
-  overflow-y: auto;
-}
 
 /* slide-8 applet screenshot (popup_01) with the blue frame the notes suggest */
 .bowls-applet-img {
@@ -3217,7 +2159,6 @@ html, body {
   box-shadow: none;
 }
 
-.character-widget { gap: 15px; }
 
 /* room for the 15px tail below the bubble */
 
@@ -3311,13 +2252,8 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 /* only the named words are bold */
 
 /* s3 options: selecting fills the circle — the pill keeps its border weight */
-.scq-opt.selected { border-width: 1.5px; }
 
-.scq-opt.selected .scq-radio {
-  background: var(--subject-500);            /* the circle fills completely */
-}
 
-.scq-opt.selected .scq-radio::after { content: none; }
 
 /* s0: the correct card gets the same growth as any picked card */
 .city-card.correct .city-card-img { width: 264px; height: 250px; }
@@ -3379,20 +2315,11 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 
 /* no outline around the question — the pptx has none (producer 19.08.26) */
 /* grouping wrapper only — it must not change the approved layout */
-.g-instruction { display: contents; }
 
 /* purple step card */
-.g-callout {
-  flex: 0 0 461px;
-  background: #3B2FC2;   /* one colour for card + frame (template rule) */
-  border-radius: 24px;
-  padding: 26px;
-  gap: 20px;
-}
 
 /* the recipe/table keep their approved measure: dropping the purple card from
    screens 5-6 widened the column, and .g-media is width:100% */
-.g-media { max-width: 700px; }
 
 /* slide 11 lead-in above the recipe, bold and set on the story measure */
 .recipe-lead { font-weight: 700; font-size: 20px; line-height: 1.5; margin: 0 0 10px; text-align: right; }
@@ -3420,12 +2347,9 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 
 /* inside the frame the title is part of the box, so it loses the standalone
    spacing it carried when it sat loose in the column */
-.g-frame .g-qline, .g-frame .g-step-line { margin: 0; }
 
 /* the frame's title is bold — deck slide 12 sets the run bold */
-.g-frame .g-step-line { font-weight: 700; }
 
-.g-frame .g-media { margin: 0; }
 
 /* 07.09 — the step's instruction line, now leading the callout card. It is
    card type: white, and it keeps whatever bold the deck gives it (screen 7's
@@ -3551,7 +2475,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    Producer 07.09. */
 .ct-row { display: flex; gap: 28px; align-items: flex-start; }
 
-.ct-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.ct-text { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
 
 .ct-figure { flex: 0 0 auto; }
 
@@ -3641,7 +2565,6 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 /* the density formula chip: solid #019DE5, white type, floated left in the card */
 .story-formula {
   float: left;
-  background: #019DE5;
   color: #fff;
   border-radius: 8px;
   padding: 12px 18px;
@@ -3984,7 +2907,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .vi-slot { position: relative; display: inline-flex; }
 
 .vi-slot::after {
-  content: ''; position: absolute; top: -9px; left: -9px;
+ position: absolute; top: -9px; left: -9px;
   width: 22px; height: 22px; border-radius: 50%;
   background: #fff no-repeat center / 22px 22px; pointer-events: none;
 }
@@ -4216,7 +3139,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .s1-answers .scq-opt { min-width: 137px; width: auto; }
 
 /* ══ S4 (deck slide 9): two verdict pills, a vertical stack in the deck ══ */
-.s4-answers { display: flex; flex-direction: column; gap: 14px; width: fit-content; align-self: center; }
+.s4-answers { display: flex; flex-direction: column; gap: 14px; width: fit-content; }
 
 .s4-answers .scq-opt { min-width: 247px; width: 247px; }
 
@@ -4341,7 +3264,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .ts-character img { height: 320px; width: auto; display: block; }
 
 /* ══ S19 (deck slide 28) ══ */
-.s19-answers { display: flex; flex-direction: column; gap: 12px; width: fit-content; align-self: center; }
+.s19-answers { display: flex; flex-direction: column; width: fit-content; }
 
 .s19-answers .scq-opt { min-width: 603px; width: 603px; }
 
@@ -4413,15 +3336,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    verdict (the one-choice rows are the ones that get a tinted fill) */
 .scq-opt.is-multi.correct, .scq-opt.is-multi.wrong { background: #fff; border-width: 2px; }
 
-.scq-opt.is-multi.correct .scq-radio {
-  border: 2px solid var(--correct-fg); border-radius: 2px;
-  background-color: var(--correct-fg); background-image: var(--glyph-check-white);
-}
 
-.scq-opt.is-multi.wrong .scq-radio {
-  border: 2px solid var(--incorrect-fg); border-radius: 2px;
-  background-color: var(--incorrect-fg); background-image: var(--glyph-x-white);
-}
 
 /* True/False Short — a 128x46 pill pair, 8px gap (opt in per screen) */
 .scq-answers--short .scq-opt {
@@ -4556,15 +3471,8 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    line with the boxes stranded underneath and adrift of the right margin.
    RTL: flex-start is the RIGHT side — never use flex-end here.
    ══════════════════════════════════════════════════════════════════════ */
-.ratio-rows { align-items: flex-start; width: 100%; max-width: none; }
+.ratio-rows { max-width: none; }
 
-.ratio-row {
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  justify-content: flex-start;
-  width: 100%;
-}
 
 .ratio-row-label { flex: 0 0 auto; }
 
@@ -4917,7 +3825,6 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .scq-answers--short-wide .scq-opt { min-width: 220px; }
 
 /* A row whose boxes sit inside a sentence: label right, boxes, tail left. */
-.ratio-row-suffix { white-space: nowrap; }
 
 /* The peak-question gates (deck 62 / 72) now run the climbing clip, and the
    whole block — copy then artwork — sits at the top, centred. */
@@ -5057,8 +3964,8 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .dim-rule--h { height: 2px; }
 /* the width rule spans the photo edge to edge */
 .dim-rule--h { left: 114px; width: 302px; }
-.dim-label { position: absolute; font-size: 18px; white-space: nowrap; transform: translateX(8px); }
-.dim-label--q { color: #D23; font-size: 26px; font-weight: 700; transform: none; }
+.dim-label { position: absolute; font-size: 18px; white-space: nowrap; }
+.dim-label--q { color: #D23; font-size: 26px; font-weight: 700; }
 
 /* ═══ S5 carousel · S8 guided — both pack many deck slides into one screen ═══ */
 .car-screen, .guided-screen { padding: 0; }
@@ -5085,7 +3992,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    In an RTL column, flex-end is the left edge. */
 .car-body--stack .car-media { align-self: flex-end; min-height: 0; }
 /* the deck sets the companion's line ON the photo, lower-right */
-.car-bubble { position: absolute; right: -18px; bottom: 26px; width: max-content; max-width: 230px; text-align: center; }
+.car-bubble { position: absolute; right: -18px; bottom: 26px; width: max-content; text-align: center; }
 .car-bubble::before { content: none; }
 /* `right: auto` matters: the base .car-bubble sets right:-18px, and leaving it
    standing over-constrains the box — in RTL `right` wins and the bubble slides
@@ -5159,14 +4066,12 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 }
 .car-drop:focus-visible { box-shadow: 0 0 0 3px rgba(87,73,196,.35); }
 .car-drop.is-over::after { border-style: solid; }
-.car-drop.is-filled { font-weight: 600; }
 .car-pool { display: flex; gap: 12px; margin-top: 10px; }
 .car-chip { border: 2px solid var(--subject-500); border-radius: 10px; padding: 6px 18px;
   font-size: 19px; font-weight: 600; cursor: grab; background: #fff; }
 .car-chip:active { cursor: grabbing; }
 .car-chip.is-used { opacity: .35; cursor: default; }
 /* a placed value can be dragged back out; the pool highlights as a target */
-.car-drop.is-filled { cursor: grab; }
 .car-drop.is-lifting { opacity: .4; }
 .car-pool.is-over { outline: 2px dashed var(--subject-500); outline-offset: 6px; border-radius: 10px; }
 
@@ -5188,7 +4093,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .car-dot.is-on { background: var(--subject-500); transform: scale(1.25); }
 .car-dot.is-done { background: #1E8F4E; }
 
-.car-fb { display: none; position: absolute; left: 40px; bottom: 116px; width: 430px;
+.car-fb { display: none; position: absolute; left: 40px; bottom: 116px;
   border-radius: 20px; padding: 16px 20px; font-size: 18px; line-height: 1.5; z-index: 6; }
 .car-fb.is-correct { display: block; background: var(--correct-bg, #E8F7EE); }
 .car-fb.is-wrong { display: block; background: var(--incorrect-bg-strong, #FDECEC); }
@@ -5196,7 +4101,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 /* the deck-derived .car-bubble above already places it ON the photo; this
    blanket re-position threw step 12's bubble 8px above the stage. */
 .car-bubble { max-width: 260px; }
-.car-scales { display: flex; gap: 28px; align-items: flex-end; }
+.car-scales { gap: 28px; align-items: flex-end; }
 .car-scales figure { margin: 0; text-align: center; font-size: 18px; }
 .car-scales img { width: 120px; display: block; margin: 0 auto 6px; }
 
@@ -5393,7 +4298,6 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 
 .g-layout {
   position: absolute;
-  top: 84px;
   right: 44px;
   left: 44px;
   bottom: 76px;
@@ -5449,27 +4353,19 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .g-figure { margin-bottom: 26px; }
 
 .g-callout {
-  flex: 0 0 400px;
   align-self: flex-start;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  background: var(--subject-500);
   color: #fff;
-  border-radius: 24px;
-  padding: 22px 26px 16px;
   max-height: 100%;
   overflow-y: auto;
 }
 
-.g-callout .fraction .frac-bottom { border-top-color: #fff; }
 
-.g-callout .fraction, .g-callout .ratio { color: #fff; }
 
 /* 07.09 — and the equals sign between them. It inherits .vi-eq's dark body
    colour, so on the purple card the two fractions were white either side of
    a near-black "=". Everything in the equation is card type; it is white. */
-.g-callout .vi-eq { color: #fff; }
 
 /* =====================================================================
    Guided Instruction Flow — Figma 3582:26228 / 26525 / 26600 (19.08.26)
@@ -5642,7 +4538,7 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 
 .gc-eq .fraction .frac-bottom { padding: 4px 10px 0; }
 
-.gc-bulb { width: 26px; height: 30px; flex: 0 0 auto; }
+.gc-bulb { flex: 0 0 auto; }
 
 .gc-text { font-size: 20px; line-height: 1.5; font-weight: 400; }
 .gc-text .gc-oneline { white-space: nowrap; word-spacing: -1px; } /* 5px short of the column at 20px; -1px × 8 gaps */
@@ -5664,14 +4560,11 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   border: 2px solid #fff;
   user-select: none;
 }
 
-.gc-opt:hover:not(.locked):not(.selected):not(.correct):not(.wrong) { background: #F3EDFB; border-color: #F3EDFB; }
 
-.gc-opt.selected { background: #E4D6F5; border-color: #E4D6F5; }
 
 .gc-opt.locked { cursor: default; }
 
@@ -5684,13 +4577,12 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
   flex: 0 0 auto;
 }
 
-.gc-opt.correct::after { background-image: var(--icon-correct); }
 
 .gc-opt.wrong::after { background-image: var(--icon-incorrect); }
 
 .gc-opt .ratio { font-weight: 700; }
 
-.gc-counter { margin-top: 4px; align-self: flex-end; font-size: 18px; color: #DBDBDB; }
+.gc-counter { margin-top: 4px; align-self: flex-end; font-size: 18px; }
 
 .g-callout .fraction .frac-bottom { border-top-color: #fff; }
 
@@ -5726,11 +4618,11 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    than inheriting the card's flex-wrap. */
 .gc-opts--right {
   flex-direction: column; align-items: flex-start;
-  width: 100%; max-width: 420px; gap: 12px; margin-top: 8px;
+ gap: 12px; margin-top: 8px;
 }
 
 .gc-opts--right .gc-opt {
-  width: 100%; justify-content: center;
+  width: 100%;
   border-color: var(--subject-500);
   font-size: 20px;
 }
@@ -5786,14 +4678,11 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .gc-opt.correct::before { background-image: var(--icon-correct); }
 
 /* the ::after mark is no longer needed — the reserved ::before carries it */
-.gc-opt.correct::after { content: none; }
 
 
 /* ── s15: the answer pills read right and the group is only as wide as its
    longest answer (the unit-wide answer-width standard). ── */
-.gc-opts--right .gc-opt { text-align: right; justify-content: flex-start; }
 
-.gc-opts--right { width: fit-content; max-width: 100%; margin-inline-start: auto; }
 
 
 /* ── callout answer pill: the text reads CENTRED again (producer 15.09.26).
@@ -5801,7 +4690,6 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    label sat visibly off-centre. The slot is now mirrored by an equal, empty
    spacer at the other end, so the text is centred between two matching boxes
    AND still does not move when the ✓ paints into the start-side slot. ── */
-.gc-opt { justify-content: center; text-align: center; }
 
 .gc-opt::after {
   content: '';
@@ -5816,7 +4704,6 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 
 /* the s15 pills stay right-aligned — they are full-width rows in the column,
    not pills inside the callout card */
-.gc-opts--right .gc-opt { justify-content: flex-start; text-align: right; }
 
 .gc-opts--right .gc-opt::after { display: none; }
 
@@ -5837,7 +4724,6 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
   background-position: right 10px center; }
 
 /* the s15 pills are full-width rows in the column, not callout pills */
-.gc-opts--right .gc-opt { justify-content: flex-start; text-align: right; }
 
 
 /* ── s15: the answer group hugs the RIGHT (reading) edge.
@@ -5955,19 +4841,14 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
    the same screen and are left alone — these are additive.
    ═══════════════════════════════════════════════════════════════════════ */
 
-.viq-input-box { width: 96px; height: 52px; border: 1.5px solid rgba(174, 174, 174, 0.5); border-radius: 10px; background: rgb(255, 255, 255); font-family: Assistant, sans-serif; font-weight: 700; font-size: 24px; text-align: center; color: rgb(48, 48, 48); }
 
-.viq-input-box::-webkit-inner-spin-button, .viq-input-box::-webkit-outer-spin-button { appearance: none; margin: 0px; }
 
-.viq-input-box { appearance: textfield; }
 
-.viq-input-box:focus { outline: none; border-color: var(--subject-500); }
 
-.viq-input-box:disabled { background: rgb(247, 247, 247); color: rgb(48, 48, 48); opacity: 1; }
 
-.viq-rows { display: flex; flex-direction: column; gap: 9px; max-width: 560px; }
+.viq-rows { max-width: 560px; }
 
-.viq-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; font-family: Assistant, sans-serif; font-size: 20px; color: rgb(34, 34, 34); }
+.viq-row { justify-content: space-between; font-family: Assistant, sans-serif; font-size: 20px; color: rgb(34, 34, 34); }
 
 .viq-row-label { line-height: 1.3; }
 
@@ -6015,7 +4896,6 @@ p, li, h1, h2, h3, .scq-opt-text, .teach-q-text, .explain-body, .teach-intro {
 .ct-prop { display: flex; align-items: center; gap: 18px; justify-content: center; font-size: 22px; }
 .ct-prop .frac-bottom { display: flex; align-items: center; gap: 6px; }
 .ct-prop .viq-input-box { width: 78px; }
-.s34-char-wrap { left: auto; right: var(--page-pad, 44px); bottom: 0; }
 /* deck 58 draws the companion on the LEFT (image105 at x=-1), clear of the copy */
 .s34-char-wrap { left: var(--page-pad, 44px); right: auto; bottom: 0; }
 .s34-char-wrap.is-hidden { visibility: hidden; opacity: 0; }
