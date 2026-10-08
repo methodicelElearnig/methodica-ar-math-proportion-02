@@ -194,6 +194,65 @@ function onGuidedAnswered(i, k) {
   flushResumeSave();
 }
 
+/* ── component 04 · the class task (s28-s34, classtask.js) ──
+   Declares no catalogue question, so it reports nothing — but it is resumable work: the boxes the
+   learner typed, which screens were checked, and on a wrong check which of the two views the
+   answer toggle shows. classtask.js keeps TASKS[sid] = {done, userInputs, answerKey, slotOk, tgl};
+   the typed values live only in the DOM until the check, and after a wrong check the DOM shows
+   the KEY (the reveal) while userInputs holds the learner's own (§8.9 hidden state).
+   CUSTOM_STATE[n] = { vals, done, tgl } — vals are the learner's own values either way. */
+function _ctScreens() {
+  return Array.prototype.slice.call(document.querySelectorAll('.ct-screen[data-screen]'))
+    .map(function (s) { return Number(s.dataset.screen); }).filter(inPart);
+}
+function _ctInputs(n) { return Array.prototype.slice.call(document.querySelectorAll('#s' + n + ' .task-input')); }
+function _ctCapture() {
+  if (typeof TASKS === 'undefined') return;
+  _ctScreens().forEach(function (n) {
+    var ins = _ctInputs(n);
+    if (!ins.length) return;
+    var st = TASKS['s' + n];
+    var done = !!(st && st.done);
+    var vals = (done && st.userInputs) ? st.userInputs.slice() : ins.map(function (i) { return i.value; });
+    if (!done && !vals.some(function (v) { return v; })) { delete CUSTOM_STATE[n]; return; }
+    CUSTOM_STATE[n] = { vals: vals, done: done, tgl: (st && st.tgl) || null };
+  });
+}
+/* classtask.js taskCheck(), after the check is committed (done, userInputs, the reveal). */
+function onTaskChecked(sid) {
+  if (resumeIsPainting()) return;
+  _ctCapture();
+  flushResumeSave();
+}
+/* The class-task screen's look from its state, by replaying classtask.js's own handlers with the
+   learner's values — exactly what the live typing and the live check drew. Idempotent: a checked
+   screen already showing its check (boxes locked) is left alone. */
+function _paintTask(n) {
+  if (typeof TASKS === 'undefined') return;
+  var sid = 's' + n, s = CUSTOM_STATE[n], st = TASKS[sid];
+  var ins = _ctInputs(n);
+  if (!s || !ins.length) return;
+  if (ins.some(function (i) { return i.disabled; })) return;          // already painted (checked)
+  var empty = ins.every(function (i) { return !i.value; });
+  /* pending: fill only empty boxes — never overwrite what the learner is typing now */
+  if (!s.done && !empty) return;
+  ins.forEach(function (inp, i) { inp.value = s.vals[i] == null ? '' : s.vals[i]; });
+  var keyed = typeof TASK_KEYS !== 'undefined' && !!TASK_KEYS[sid];
+  TASKS[sid] = TASKS[sid] || { done: false };
+  TASKS[sid].done = false;
+  taskOnInput(sid);                                                   // the button and s34's cheer, as live
+  if (!s.done) return;
+  if (keyed) {
+    taskCheck(sid);                                                   // marks, card, reveal, toggle; done = true
+    if (s.tgl === 'answer') {
+      var tb = document.querySelector('#' + sid + ' .fb-answer-toggle');
+      if (tb) tb.click();
+    }
+  } else {
+    TASKS[sid].done = true;                                           // s34: no key, nothing to show
+  }
+}
+
 /* Back into the screens' own objects (applyResumeVars). Mutated in place: carousel.js and
    guided.js hold them as const. */
 function _restoreCustomScreens() {
@@ -209,6 +268,16 @@ function _restoreCustomScreens() {
   if (g && typeof gState !== 'undefined') {
     gState.step = g.step || 1;
     gState.picked = _clone(g.picked);
+  }
+  /* The class task: the verdict travels in TASKS so a screen not painted yet still counts as checked
+     (keyboardForwardAllowed, the next capture); its look waits for _paintTask. */
+  if (typeof TASKS !== 'undefined') {
+    _ctScreens().forEach(function (n) {
+      var t = CUSTOM_STATE[n];
+      if (!t) return;
+      TASKS['s' + n] = Object.assign(TASKS['s' + n] || {}, { done: !!t.done, tgl: t.tgl || undefined },
+        t.done ? { userInputs: (t.vals || []).slice() } : {});
+    });
   }
 }
 
@@ -416,6 +485,7 @@ function capturePartPayload() {
     });
     qs[q.screen] = o;
   });
+  _ctCapture();
   return {
     currentScreen: currentScreen,
     qResults: JSON.parse(JSON.stringify(XAPI_Q_RESULTS)),
@@ -452,9 +522,17 @@ function applyResumeVars(st) {
   _restoreCustomScreens();
 }
 
-/* Values that live only in the DOM (§8.9). ⚑ None yet — the class task's boxes join here when
-   component 04 is wired. */
-function applyResumeDom(st) {}
+/* Values that live only in the DOM (§8.9): the class task's PENDING boxes. Written back here — not
+   only by the painter — because capture reads them off the DOM, and the first save after a resume
+   that lands anywhere else would otherwise persist empty boxes. Checked screens carry their values
+   in TASKS[sid].userInputs (applyResumeVars) and are drawn by _paintTask. */
+function applyResumeDom(st) {
+  _ctScreens().forEach(function (n) {
+    var s = CUSTOM_STATE[n];
+    if (!s || s.done) return;
+    _ctInputs(n).forEach(function (inp, i) { if (!inp.value && typeof s.vals[i] === 'string') inp.value = s.vals[i]; });
+  });
+}
 
 /* One painter per interaction type, config-driven (§8.8). Every painter:
    - repaints from state, never resets it; never reports; mutates no score state
@@ -575,10 +653,11 @@ function paintValue(n, q, st) {
 /* The hand-built screens render from their own state objects, so their painter is their render:
    idempotent, it draws exactly what the live clicks drew (answered steps locked with their
    feedback, pending picks and placements in place), and the hooks ignore it (resumeIsPainting).
-   ⚑ The class task (component 04) joins here in the resume phase. */
+   The class task's screens replay classtask.js's own handlers (_paintTask). */
 function paintCustom(n) {
   if (n === 5 && CUSTOM_STATE[5] && typeof carRender === 'function') { carRender(); return; }
   if (n === 8 && CUSTOM_STATE[8] && typeof gRender === 'function') { gRender(); return; }
+  if (CUSTOM_STATE[n] && document.querySelector('.ct-screen[data-screen="' + n + '"]')) _paintTask(n);
 }
 
 /* Every navigation repaints the target screen from state (engine.js goTo, after resetScreenState):
@@ -630,11 +709,12 @@ function applyExecutionState(st, screenOverride) {
 
 /* Pending answers are saved as they are made, not only on the next screen change (O-2 for this
    engine): a pick, a keystroke or a select change arms the debounced save. Bubble phase on
-   document, so the element's own inline handler has already updated quizState. */
+   document, so the element's own inline handler has already updated quizState. The class-task
+   boxes are covered too (they carry ids, but the id list would have to name all of them). */
 function initQuizFieldSaves() {
   var arm = function (e) {
     var t = e && e.target;
-    if (t && t.closest && t.closest('.quiz-screen')) scheduleResumeSave();
+    if (t && t.closest && (t.closest('.quiz-screen') || t.closest('.ct-screen'))) scheduleResumeSave();
   };
   document.addEventListener('input', arm);
   document.addEventListener('change', arm);

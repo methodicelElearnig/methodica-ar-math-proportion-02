@@ -98,6 +98,10 @@ function taskCheck(sid) {
   st.done = true;
   const btn = document.getElementById(sid + '-check');
   if (btn) { btn.textContent = 'המשך'; btn.disabled = false; }
+  /* Platform layer (70-platform.js): the check is committed — persist it (resume). Guarded. */
+  if (typeof onTaskChecked === 'function') {
+    try { onTaskChecked(sid); } catch (e) { console.error('[resume] onTaskChecked', e); }
+  }
 }
 
 /* rows: [{label, suffix}] — suffix is the unit word, which the deck puts to
