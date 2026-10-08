@@ -16,11 +16,24 @@ is specific to this unit and what was decided. Branch `vadimr/feat/reporting-res
 | `d4c1f40` | issue report; fixed the form staying visible under the thanks message |
 | `3a136a8` | resume of the class task; the resume path verified |
 | `300f13e` | `_test/` harness: 1,336 checks, 16 / 16 mutations |
+| `c8bebba` | tooling, docs, `?v=20261008b` — **package `deployments/2026-10-08`, uploaded by the owner** |
+| `74ccab9` | content URL confirmed; the upload checked: 109 / 109 files byte-identical on the CDN |
+| — | **metadata sent to Kata and the live run — §6** |
+| `2773ad0` | **image resize** (owner's go-ahead "if it preserves quality"), `?v=20261008c` |
 
-Not done in optimization (owner's decision pending): the character PNGs (~1024 px tall, 0.6–1.3 MB
-each) and 07's `expo-*` pictures (1.7–1.8 MB) could be resized to about twice their display size —
-roughly 8–10 MB of the unit's 27 MB. The fonts were already one subset variable woff2; the assets
-were already hoisted, with no duplicates (md5).
+**Image resize.** Every raster image was measured at the largest size it is displayed at (canvas
+pixels, every screen, every carousel / guided step, both companions, every zoom view) and kept at
+≥ 2.5× that; only files ≥ 25 % above it were resized (Lanczos, new names): `expo-print.jpg`
+1865×2476 → 565×750, `character-squashed-yellow` 1064×633 → 715×425, `character-victory-yellow`
+418×1024 → 328×804 — −1.43 MB. Screens showing them, captured at device-pixel-ratio 2 before /
+after: mean change 2–2.7 / 255, at most 17 of 3.6 M pixels flagged visible (edges). Lossless PNG
+re-compression gains nothing (already optimal). Not resized: everything else is shown at or near
+its stored size — the `expo-intro` / `expo-end` backgrounds (1.8 MB each) fill the canvas from
+1400×933, and smaller files would need lossy re-encoding.
+**Found:** the `calculator` and `measuring` stills, both colours (3.7 MB), are listed in
+`unit.js CHARACTER_ASSETS` but no screen asks for those poses — dead weight in every package
+(owner's decision). The fonts were already one subset variable woff2; the assets were already
+hoisted, with no duplicates (md5).
 
 ## 1. The layer
 
@@ -101,10 +114,56 @@ leaving the page (`KNOWN-ISSUE-dismissal-state-write.md`), the iframe applets' i
 - `package-allowlist.ps1` — this unit also ships each component's **`applets/`** (proportion-01
   hoisted its applets, so its allowlist had only `assets/`).
 - `build-package.ps1` → `../../deployments/<date>/`, `verify-package.ps1`.
-- **Nothing has been sent to Kata, uploaded, or run live for this unit yet.** The order, each step
-  with the owner's go-ahead: confirm the content URL → `send-metadata.ps1 -Preflight` →
-  `-DryRun` → live send → `retrieve-metadata.ps1 -FailOnDrift` → upload the package → live run
-  (guide §12) → rotate the token used.
+- **Kata, 2026-10-08** (the owner's go-ahead for each step; logs git-ignored in this folder):
+  `-Preflight` → `absent=8 exists=0` (key accepted); `-DryRun` → `created=32 updated=1 failed=0`,
+  the seven `hostedContentRef` = `…/720/math/proportion/02/<component>/index.html` (the URLs the
+  upload check covered); **live → 32 × HTTP 201** (1 unit, 7 components, 24 items) and **03's
+  `recommendedAfterFail` → 02 linked (HTTP 200)**, `failed=0`; `retrieve-metadata.ps1 -FailOnDrift`
+  → 1 / 7 / 24, `warnings=0`, and an independent comparison of `metadata-from/` with `metadata/`:
+  53 / 53 equal (ids, items, question ids, routing). Components are created as `draft` — not
+  published (`-Publish` is one-way and was not run).
+
+## 6a. Live Kata run — 2026-10-08
+
+`_test/live-kata.js`, headless Chrome, the **uploaded** package on the live CDN against live Kata.
+Launch links from Kata's launcher for two pseudonymous learners, `resetState:true`, kept inside the
+process — **no token entered the transcript**. Observed: the statement bodies the page actually
+POSTed to Kata, Kata's status on every statement and state request, `stateLastResult720()`, the
+state document read back. **295 / 295.**
+
+| Comp. | Path (registration) | Component `completed` | Also verified live |
+|---|---|---|---|
+| 01 | A pass (`9249bbf1`) | `true / 1` | reload on the carousel → state read 200, landed on s5, verdicts restored, nothing re-sent |
+| 02 | A pass (`0d1c55c1`) | `true / 1` | reload on s14 |
+| 02 | B fail (`566ccd63`) | `false / 0` | below the 3-of-4 bar |
+| 03 | A pass (`5e65965f`) | `true / 1` | reload on s19 (the second half of item 001) |
+| 03 | B fail (`5ebe3727`) | `false / 0` **on s23** | the gate ends the component; 005 / 006 never opened |
+| 04 | A (`8280285b`) | `true`, no score | reload on s30 (class task) |
+| 05 | A (`6b044691`) | `true / 1` | reload on s39 |
+| 06 | A pass (`08bf6236`) | `true / 1` | reload on s47 |
+| 06 | B fail (`28c1df6f`) | `false / 0` | below 4 of 5 |
+| 07 | A pass (`536a9581`) | `true / 1` | reload on s55; "סיימתי" ends it |
+
+**Everywhere:** preflight (`XAPI_DISABLED` false, `XAPI_USING_G` true, `DEV_NAV` false,
+`METADATA.id === XAPI_COMP_ID`, registration present, first screen); first state read `404
+absent`; every object id sent is in the catalogue, no unit-level statement, every declared
+question answered, every item reached completed exactly once; exactly one component `completed`
+with the expected result; the button disabled and `location.pathname` unchanged; Kata's document
+holds `done` and the verdict; **D-8:** after a reload still on the end screen, disabled, a forced
+second click sends no `completed`; **every statement request and every state write 2xx**; no page
+or console error.
+
+**Not covered live:** the issue report into the shared sheet (covered with the POST stubbed); the
+save on leaving the page; Kata's routing between components; the LRS side (the reporting token
+cannot read statements back).
+
+**Data left in Kata:** `VADIM-P02-A` — all seven registrations finished (pass); `VADIM-P02-B` —
+02, 03, 06 finished (fail). The links reset (`resetState:true`) on the next run. **Token:** the
+links carry the test learners' reporting token; there is no self-service rotation (guide §12) —
+ask the Kata team to rotate it.
+
+**The image resize (`2773ad0`) is a NEW package** — upload it before anyone else tests; the live
+run above covered `c8bebba`'s package. The resize touches no reporting or resume code.
 
 ## 7. Open
 
@@ -112,5 +171,8 @@ leaving the page (`KNOWN-ISSUE-dismissal-state-write.md`), the iframe applets' i
    text, or the bar.
 2. **02 below its bar:** reported `success:false`, but the metadata routes nowhere
    (`recommendedAfterFail: []`).
-3. **Image resize** (§0).
+3. ~~Image resize~~ — done (`2773ad0`); upload the new package.
 4. ~~Content URL~~ — confirmed 2026-10-08.
+5. The unused `calculator` / `measuring` stills (3.7 MB) — remove? (§0)
+6. Publish the seven components in Kata (`send-metadata.ps1 -Publish`, one-way) when the open
+   content items are settled.
