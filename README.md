@@ -32,13 +32,29 @@ that print the folder name to use. It was not inferred.
   `script.js` (CONFIGURATION ONLY — `PART_CONFIG` and the component slug), `assets/img/` (only
   the images its own screens reference), `applets/` (only the applet pages its screens embed),
   and `index_dev.html`, a dev bar that iframes the component's `index.html`.
-- `unit-js/` — the shared behaviour layer, ONE copy — see `unit-js/README.md`.
-- `unit-css/styles.css` — the one stylesheet (core + motion + the unit's own, in link order).
+- `unit-js/` — the shared behaviour layer, ONE copy, including the platform layer
+  (`10-identity.js` … `90-boot.js`) — see `unit-js/README.md`.
+- `unit-css/styles.css` — the one stylesheet.
 - `unit-assets/` — fonts (Assistant, local), the two companion characters' stills and clips,
   shared by every component.
+- `metadata/` — the catalogue records (unit + one per component); every reported id comes from here.
+- `_test/` — the harness (real Chrome; never packaged) — see `_test/README.md`.
+- `docs-and-tools/` — the unit record `REPORTING-RESUME.md`, the Kata metadata tools and the
+  packaging scripts. Never packaged.
 
-Not yet in this repo: `metadata/` (unit + per-component json), the reporting/resume layer
-(`10-identity.js` … `90-boot.js`) and `_test/` — the ratio-04 family guide
-(`ADDING-REPORTING-AND-RESUME.md`) is the recipe when the platform integration is scheduled.
+## The platform owns routing
+
+The unit reports to Kata (xAPI), carries the "מצאתם בעיה?" issue report and resumes each
+component where the learner left it. In production a component never moves to another: its last
+click reports the component and disables the button, and the platform launches the next one.
+Local walks between components: `?dev=1` (the dev bars add it). Design, decisions and what is
+still open: `docs-and-tools/REPORTING-RESUME.md`.
+
+## Packaging
+
+`pwsh -File docs-and-tools/build-package.ps1` writes `../../deployments/<date>/` from the
+allowlist (`package-allowlist.ps1`: `metadata/`, `unit-js/`, `unit-css/`, `unit-assets/`, and per
+component `index.html`, `script.js`, `assets/`, `applets/`) and verifies it. Nothing at the root
+ships.
 
 `file://` will not do cross-component hops — serve it (`python3 -m http.server`).
