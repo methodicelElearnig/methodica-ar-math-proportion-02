@@ -22,6 +22,7 @@ is specific to this unit and what was decided. Branch `vadimr/feat/reporting-res
 | `2773ad0` | **image resize** (owner's go-ahead "if it preserves quality"), `?v=20261008c` |
 | `791bfe2` | **the unused `calculator` / `measuring` stills removed** (owner's go-ahead, −3.7 MB), `?v=20261008d` |
 | `fef19f7` | **package `deployments/2026-10-08b` uploaded by the owner — verified 105 / 105 byte-identical on the CDN**; the seven components **published** in Kata by the owner (`send-metadata.ps1 -Status`: published=7, draft=0) |
+| `9f6c06c` (PR #2, merged `c52c1fb`) | **the two unused green clips removed** (−2.1 MB), `?v=20261008e` — **package `deployments/2026-10-08c` (103 files) uploaded by the owner, verified 103 / 103 byte-identical on the CDN** |
 
 **Image resize.** Every raster image was measured at the largest size it is displayed at (canvas
 pixels, every screen, every carousel / guided step, both companions, every zoom view) and kept at
@@ -38,7 +39,7 @@ no screen, step config (`cfg.monster`) or `POSE_FALLBACK` chain asks for those p
 clip, another pose); a full walk with each companion — every screen, carousel and guided step,
 every question answered wrong twice with its hint — never requested the files. After removal: both
 companions walked, 449 requests, 0 failed; `run-all` green.
-**Removed too (owner's go-ahead, branch `vadimr/chore/remove-unused-green-clips`):** two green
+**Removed too (owner's go-ahead, PR #2):** two green
 clips, never used — `character-green-selection.mp4` (1,579,618 B; 01's s0 card plays
 `character-green-ball.mp4` in its markup and nothing asks for the `selection` pose) and
 `character-green-cube.mp4` (506,177 B; the `cube` pose is only `cube2`'s fallback, and green has
@@ -189,6 +190,10 @@ removed stills) changes no reporting, resume or issue-report code; it is uploade
 4. ~~Content URL~~ — confirmed 2026-10-08.
 5. ~~The unused `calculator` / `measuring` stills~~ — removed; ~~the two unused green clips~~ — removed.
 6. ~~Publish~~ — published by the owner 2026-10-08 (all seven).
-7. Items 1 and 2: the owner will handle them later. A metadata change after publishing (e.g. 02's
+7. Still on the CDN, unreferenced since the uploads of 2026-10-08 (optional to delete): the two
+   green clips, the three pre-resize images (`expo-print.jpg`, `character-squashed-yellow.png`,
+   `character-victory-yellow.png`) and the four removed stills (`character-calculator-*`,
+   `character-measuring-*`).
+8. Items 1 and 2: the owner will handle them later. A metadata change after publishing (e.g. 02's
    `recommendedAfterFail`) goes through `send-metadata.ps1` (upsert) and `retrieve-metadata.ps1
    -FailOnDrift`; a text change on s51 needs a `?v=` bump, a new package and an upload.
