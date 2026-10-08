@@ -15,3 +15,33 @@ window.PART_CONFIG = { start: 35, end: 44, next: "../methodica-math-proportion-0
 var XAPI_COMP_SLUG     = 'methodica-math-proportion-02-05';
 var XAPI_COMP_ID       = XAPI_ID_PREFIX + XAPI_COMP_SLUG + '/';
 var XAPI_METADATA_FILE = '../metadata/methodica-math-proportion-02-05.json';
+
+/* Screen -> [item, page in item]. 35 is the transition: no item. 002 spans three screens (א ב ג),
+   003 two; 005 is the closing "שיטות מדידה" pair, no question. */
+var SCREEN_TO_SUBCONTENT = {
+  35: null,
+  36: ['001', 1],
+  37: ['002', 1],
+  38: ['002', 2],
+  39: ['002', 3],
+  40: ['003', 1],
+  41: ['003', 2],
+  42: ['004', 1],
+  43: ['005', 1],
+  44: ['005', 2]
+};
+
+/* Screen -> the catalogue questions it answers. */
+var XAPI_SCREEN_QUESTIONS = {
+  36: ['q1'],
+  37: ['q1'],
+  38: ['q2'],
+  39: ['q3'],
+  40: ['q1'],
+  41: ['q2'],
+  42: ['q1']
+};
+
+/* Items carrying a code-graded question (used as a set). Nothing on screen sets a bar: the
+   component scores correct ÷ declared and succeeds. */
+var XAPI_EVAL_ITEMS = { '001': 1, '002': 1, '003': 1, '004': 1 };

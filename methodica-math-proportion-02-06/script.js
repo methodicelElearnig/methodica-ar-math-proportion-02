@@ -15,3 +15,28 @@ window.PART_CONFIG = { start: 45, end: 50, next: "../methodica-math-proportion-0
 var XAPI_COMP_SLUG     = 'methodica-math-proportion-02-06';
 var XAPI_COMP_ID       = XAPI_ID_PREFIX + XAPI_COMP_SLUG + '/';
 var XAPI_METADATA_FILE = '../metadata/methodica-math-proportion-02-06.json';
+
+/* Screen -> [item, page in item]. 45 is the transition: no item. The peak question is ONE item,
+   its five sections one screen each. */
+var SCREEN_TO_SUBCONTENT = {
+  45: null,
+  46: ['001', 1],
+  47: ['001', 2],
+  48: ['001', 3],
+  49: ['001', 4],
+  50: ['001', 5]
+};
+
+/* Screen -> the catalogue questions it answers. */
+var XAPI_SCREEN_QUESTIONS = {
+  46: ['q1'],
+  47: ['q2'],
+  48: ['q3'],
+  49: ['q4'],
+  50: ['q5']
+};
+
+var XAPI_EVAL_ITEMS = { '001': 1 };
+
+/* s45 promises "יש בה 5 סעיפים. עליכם להצליח ב-4 לפחות": the five section screens, need 4. */
+var XAPI_GATE = { of: 'screens', need: 4 };

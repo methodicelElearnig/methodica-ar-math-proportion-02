@@ -320,6 +320,10 @@ function carRender() {
   }
   if (cfg.monster && typeof setCharacter === 'function') setCharacter('car-char', cfg.monster);
   if (typeof decorateBubbles === 'function') decorateBubbles(sec);
+  /* Platform layer (70-platform.js): mirror the state for resume. Guarded: runs without it. */
+  if (typeof onCarChanged === 'function') {
+    try { onCarChanged(); } catch (e) { console.error('[resume] onCarChanged', e); }
+  }
 }
 
 function carWire() {
@@ -439,6 +443,10 @@ function carNext() {
     }
     carState.answered[i] = ok ? 'ok' : 'no';
     carRender();
+    /* Platform layer: the step's one answer is committed — report it (item 002) and persist. */
+    if (typeof onCarAnswered === 'function') {
+      try { onCarAnswered(i, ok); } catch (e) { console.error('[xAPI] onCarAnswered', e); }
+    }
     return;
   }
   if (carState.step < CAR_STEPS) { carState.step++; carRender(); }

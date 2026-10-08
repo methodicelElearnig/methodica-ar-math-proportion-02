@@ -132,36 +132,84 @@ function onQuizHint(screen) {
 }
 
 /* ═══════════════════ The hand-built screens ═══════════════════
-   Screens built outside the quiz engine keep their own DOM logic and call:
-     onCustomPick(screen, patch)      a pending choice: remembered and saved, never reported
-     onCustomAnswered(screen, patch)  a committed answer: remembered, reported when the screen maps
-                                      to a catalogue question, flushed
-   Both ignore calls made while a painter replays a handler (resumeIsPainting) — the painters
-   restore these screens by calling the screens' own handlers with the saved choice.
-   ⚑ CUSTOM_KEYS: screen -> { correct(state) -> bool, text(state) -> string, last(state) -> bool }.
-   Filled per screen when that screen is wired (Phase 3); an unlisted screen reports nothing. */
+   Two screens of component 01 ask catalogue questions outside the quiz engine, each ONE screen
+   that packs several deck slides as steps, with its whole state in one plain object:
+     s5  the carousel  (carousel.js carState: step, answered, picked, placed) — item 002; its four
+         graded steps (4, 6, 9, 10), in order, are q1-q4. One attempt each: every answer is last.
+     s8  the guided flow (guided.js gState: step, picked) — item 004; its two question steps, in
+         order, are q1, q2. The answer is revealed by the first click: that click is the answer.
+   The screens call the hooks below; every hook ignores calls made while a painter replays the
+   screen (resumeIsPainting). The state objects are mirrored into CUSTOM_STATE[screen] for the
+   payload and copied back by applyResumeVars; the screens render from them (carEnter / gEnter on
+   every goTo), which is their painter. */
 var CUSTOM_STATE = {};
-var CUSTOM_KEYS = {};
 
-function onCustomPick(screen, patch) {
-  if (resumeIsPainting()) return;
-  CUSTOM_STATE[screen] = Object.assign(CUSTOM_STATE[screen] || {}, patch);
+function _clone(o) { return JSON.parse(JSON.stringify(o || {})); }
+
+function _carGradedSteps() {
+  return (typeof CAR !== 'undefined') ? CAR.map(function (c, k) { return c.grade ? k + 1 : 0; }).filter(Boolean) : [];
+}
+function _carAnswerText(i) {
+  try {
+    var g = CAR[i - 1].grade;
+    if (g.kind === 'drag') {
+      var p = carState.placed[i] || {};
+      return (g.slots || [1, 2, 3]).map(function (s) { return p[String(s)] || '—'; }).join(' | ');
+    }
+    return (carState.picked[i] || []).map(function (k) { return _txt(g.opts[k]); }).join(', ');
+  } catch (e) { return ''; }
+}
+/* carousel.js carRender(), at its end — every change of step, pick or placement. */
+function onCarChanged() {
+  if (resumeIsPainting() || !inPart(5)) return;
+  CUSTOM_STATE[5] = { step: carState.step, answered: _clone(carState.answered),
+                      picked: _clone(carState.picked), placed: _clone(carState.placed) };
   scheduleResumeSave();
 }
-
-function onCustomAnswered(screen, patch) {
+/* carousel.js carNext(), right after carState.answered[i] is set — the commitment. */
+function onCarAnswered(i, ok) {
   if (resumeIsPainting()) return;
-  var s = CUSTOM_STATE[screen] = Object.assign(CUSTOM_STATE[screen] || {}, patch, { done: true });
-  var item = _itemFor(screen);
-  var keys = _qKeysFor(screen);
-  var k = CUSTOM_KEYS[screen];
-  if (item && keys.length && k) {
-    var correct = !!k.correct(s);
-    var last = k.last ? !!k.last(s) : true;
-    var text = k.text ? k.text(s) : '';
-    keys.forEach(function (q) { xapiAnswered(item, q, correct, last, text); });
-  }
+  onCarChanged();
+  var item = _itemFor(5), keys = _qKeysFor(5), k = _carGradedSteps().indexOf(i);
+  if (item && k !== -1 && keys[k]) xapiAnswered(item, keys[k], !!ok, true, _carAnswerText(i));
   flushResumeSave();
+}
+
+function _guidedQSteps() {
+  return (typeof GUIDED !== 'undefined') ? GUIDED.map(function (c, k) { return c.opts ? k + 1 : 0; }).filter(Boolean) : [];
+}
+/* guided.js gRender(), at its end. */
+function onGuidedChanged() {
+  if (resumeIsPainting() || !inPart(8)) return;
+  CUSTOM_STATE[8] = { step: gState.step, picked: _clone(gState.picked) };
+  scheduleResumeSave();
+}
+/* guided.js, on the FIRST pick of a question step (the reveal) — the commitment. */
+function onGuidedAnswered(i, k) {
+  if (resumeIsPainting()) return;
+  onGuidedChanged();
+  var cfg = GUIDED[i - 1];
+  var item = _itemFor(8), keys = _qKeysFor(8), n = _guidedQSteps().indexOf(i);
+  if (item && cfg && n !== -1 && keys[n]) xapiAnswered(item, keys[n], k === cfg.correct, true, _txt(cfg.opts[k]));
+  flushResumeSave();
+}
+
+/* Back into the screens' own objects (applyResumeVars). Mutated in place: carousel.js and
+   guided.js hold them as const. */
+function _restoreCustomScreens() {
+  var c = CUSTOM_STATE[5];
+  if (c && typeof carState !== 'undefined') {
+    carState.step = c.step || 1;
+    carState.answered = _clone(c.answered);
+    carState.picked = _clone(c.picked);
+    carState.placed = _clone(c.placed);
+    carState.held = {};
+  }
+  var g = CUSTOM_STATE[8];
+  if (g && typeof gState !== 'undefined') {
+    gState.step = g.step || 1;
+    gState.picked = _clone(g.picked);
+  }
 }
 
 /* ═══════════════════ Scores, gates and results ═══════════════════
@@ -325,13 +373,25 @@ function partGateBlocks(from, to) {
 }
 
 /* ArrowLeft goes forward only where the screen's own forward button would (engine.js): a quiz
-   screen once answered; any other screen while its continue button is enabled.
-   ⚑ The hand-built screens refine this when they are wired. A local walkthrough keeps free
-   navigation. */
+   screen once answered; the carousel and the guided flow only from their LAST step (their button
+   steps inside the screen before that, and a graded step's button is צדקתי? — skipping it would
+   close the item unanswered); a class-task screen with an answer key once checked (its button
+   checks first, then moves on); any other screen while its continue button is enabled. A local
+   walkthrough keeps free navigation. */
 function keyboardForwardAllowed() {
   if (DEV_NAV) return true;
   var n = currentScreen;
   if (quizState[n]) return !!quizState[n].done;
+  if (n === 5 && typeof carState !== 'undefined' && typeof CAR !== 'undefined') {
+    var cg = CAR[carState.step - 1] && CAR[carState.step - 1].grade;
+    return carState.step === CAR.length && (!cg || !!carState.answered[carState.step]);
+  }
+  if (n === 8 && typeof gState !== 'undefined' && typeof GUIDED !== 'undefined') {
+    var gc = GUIDED[gState.step - 1];
+    return gState.step === GUIDED.length && (!gc || !gc.opts || gState.picked[gState.step] !== undefined);
+  }
+  var sid = 's' + n;
+  if (typeof TASK_KEYS !== 'undefined' && TASK_KEYS[sid]) return !!(TASKS[sid] && TASKS[sid].done);
   var btn = document.querySelector('.screen[data-screen="' + n + '"] .btn-continue');
   return !(btn && btn.disabled);
 }
@@ -389,6 +449,7 @@ function applyResumeVars(st) {
   Object.keys(cs).forEach(function (key) {
     if (inPart(Number(key))) CUSTOM_STATE[key] = JSON.parse(JSON.stringify(cs[key]));
   });
+  _restoreCustomScreens();
 }
 
 /* Values that live only in the DOM (§8.9). ⚑ None yet — the class task's boxes join here when
@@ -511,12 +572,13 @@ function paintValue(n, q, st) {
   check.disabled = quizCheckBlocked(q, st, ready);
 }
 
-/* The hand-built screens: replay the screen's own handler with the saved choice, so the painted
-   screen is exactly what the live click produced; onCustom* ignore the replay (resumeIsPainting).
-   ⚑ One branch per hand-built screen, added when that screen is wired. */
+/* The hand-built screens render from their own state objects, so their painter is their render:
+   idempotent, it draws exactly what the live clicks drew (answered steps locked with their
+   feedback, pending picks and placements in place), and the hooks ignore it (resumeIsPainting).
+   ⚑ The class task (component 04) joins here in the resume phase. */
 function paintCustom(n) {
-  var s = CUSTOM_STATE[n];
-  if (!s) return;
+  if (n === 5 && CUSTOM_STATE[5] && typeof carRender === 'function') { carRender(); return; }
+  if (n === 8 && CUSTOM_STATE[8] && typeof gRender === 'function') { gRender(); return; }
 }
 
 /* Every navigation repaints the target screen from state (engine.js goTo, after resetScreenState):

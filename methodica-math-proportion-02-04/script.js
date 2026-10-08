@@ -15,3 +15,21 @@ window.PART_CONFIG = { start: 27, end: 34, next: "../methodica-math-proportion-0
 var XAPI_COMP_SLUG     = 'methodica-math-proportion-02-04';
 var XAPI_COMP_ID       = XAPI_ID_PREFIX + XAPI_COMP_SLUG + '/';
 var XAPI_METADATA_FILE = '../metadata/methodica-math-proportion-02-04.json';
+
+/* Screen -> [item, page in item]. 27 is the transition: no item. The class task is one catalogue
+   item over its seven screens. */
+var SCREEN_TO_SUBCONTENT = {
+  27: null,
+  28: ['001', 1],
+  29: ['001', 2],
+  30: ['001', 3],
+  31: ['001', 4],
+  32: ['001', 5],
+  33: ['001', 6],
+  34: ['001', 7]
+};
+
+/* The class task declares no catalogue question: it is checked on screen against the deck's keys
+   (classtask.js) but never 'answered', and the component reports success with no score (§6.4). */
+var XAPI_SCREEN_QUESTIONS = {};
+var XAPI_EVAL_ITEMS = {};
