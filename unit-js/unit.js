@@ -12,7 +12,10 @@ const TOTAL_SCREENS = 60;   /* deck 3-86 — the whole script */
 
 const CHARACTER_IDS = ['character-yellow', 'character-green'];
 const DEFAULT_CHARACTER = 'character-yellow';
-const CHARACTER_STORAGE_KEY = 'proportion02_selectedCharacter';
+/* Equals UI_CHARACTER_KEY in 40-resume.js (namespaced per unit, QA D-6). The key this unit used
+   before the platform layer is read once and moved (getStoredCharacter). */
+const CHARACTER_STORAGE_KEY = 'methodica_math_proportion_02_selectedCharacter';
+const LEGACY_CHARACTER_KEY = 'proportion02_selectedCharacter';
 
 /* The producer's picked set, carried over from the previous build (Elad,
    27.09.26 — "ready and picked"). Pose coverage is ASYMMETRIC: yellow has a
@@ -75,7 +78,12 @@ window.lomdaState = window.lomdaState || { selectedCharacter: null };
 
 function getStoredCharacter() {
   try {
-    const v = localStorage.getItem(CHARACTER_STORAGE_KEY);
+    let v = localStorage.getItem(CHARACTER_STORAGE_KEY);
+    if (!v) {
+      const old = localStorage.getItem(LEGACY_CHARACTER_KEY);
+      if (CHARACTER_IDS.includes(old)) { localStorage.setItem(CHARACTER_STORAGE_KEY, old); v = old; }
+      localStorage.removeItem(LEGACY_CHARACTER_KEY);
+    }
     return CHARACTER_IDS.includes(v) ? v : null;
   } catch (e) { return null; }
 }
@@ -155,8 +163,14 @@ function selectOption(cardEl) {
   });
   cardEl.classList.add('selected');
   cardEl.setAttribute('aria-checked', 'true');
-  window.lomdaState.selectedCharacter = cardEl.dataset.value;
-  try { localStorage.setItem(CHARACTER_STORAGE_KEY, cardEl.dataset.value); } catch (e) {}
+  /* Through the platform layer when it is loaded: the choice lands in this component's state
+     document as well as the localStorage mirror the later components adopt it from (40-resume.js
+     setUnitCharacter / adoptUnitCharacter). */
+  if (typeof setUnitCharacter === 'function') setUnitCharacter(cardEl.dataset.value);
+  else {
+    window.lomdaState.selectedCharacter = cardEl.dataset.value;
+    try { localStorage.setItem(CHARACTER_STORAGE_KEY, cardEl.dataset.value); } catch (e) {}
+  }
   const btn = document.getElementById('s0-continue');
   if (btn) btn.disabled = false;
 }

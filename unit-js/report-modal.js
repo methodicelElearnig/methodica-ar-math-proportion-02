@@ -1,9 +1,10 @@
 /* =====================================================================
    720-core — report flag + modal (shared; vendored per unit).
-   The APPROVED block from the delivered units — copy the matching markup
-   from shared/720-core/chrome/chrome-snippets.html into index.html and the
-   flag pngs land in assets/img via sync-core.sh. Unit id derives from the
-   unit folder name; override REPORT_UNIT_ID only for split part builds.
+   Copied from methodica-math-ratio-04 (c295b15 / f7c52ed). Until then this unit carried the same
+   code inline at the bottom of unit.js, which posted a hard-coded unit slug, a component slug
+   matched off the folder name, an EMPTY item and the raw screen number as the page. Identity now
+   comes from window.METADATA (unit + component slugs) and SCREEN_TO_SUBCONTENT (item + page) —
+   see below. The markup (one global .flag-btn, the two dialogs) is unchanged in every index.html.
    ===================================================================== */
 
 'use strict';
@@ -31,12 +32,35 @@ function backToReportForm() {
   setTimeout(function () { var el = document.getElementById('report-type'); if (el) el.focus(); }, 40);
 }
 
+/* ONE Google Form serves every 720 unit (decision 13.08.26) — the endpoint and the entry ids
+   below must never change here. What tells the units apart in the shared sheet is the two slugs. */
 var REPORT_FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSfFq5XFtH1pPpLgV5RWT4m3NanYPW5GKremqTvkp6zKjEGqcw/formResponse';
-var REPORT_UNIT_ID = (location.pathname.match(/(methodica-[a-z0-9-]+?)(?:-0\d)?\//) || [,'unknown-unit'])[1];
+
+/* Identity comes from window.METADATA (loaded by the platform layer), as in every integrated
+   unit — ADDING-REPORTING-AND-RESUME.md §7.2. The folder path is only the fallback for a page
+   that runs without metadata. (The vendored version matched the folder against another unit's
+   component pattern, so this unit always posted "…-xx" as its component.) */
+function _reportShort(u) { return String(u || '').replace(/\/+$/, '').split('/').pop(); }
+function _reportPathSlug() {
+  var p = location.pathname.replace(/\/index(_dev)?\.html.*$/, '').replace(/\/+$/, '');
+  return (p.split('/').pop() || '').toLowerCase();
+}
+function reportUnitId() {
+  var m = window.METADATA;
+  if (m && m.learningUnitId) return _reportShort(m.learningUnitId);
+  return _reportPathSlug().replace(/-0\d$/, '') || 'unknown-unit';
+}
 function reportComponentId() {
-  if (!window.PART_CONFIG) return REPORT_UNIT_ID + '-master';
-  var m = location.pathname.match(new RegExp(REPORT_UNIT_ID + '-(0\\d)/'));
-  return REPORT_UNIT_ID + '-' + (m ? m[1] : 'xx');
+  var m = window.METADATA;
+  if (m && m.id) return _reportShort(m.id);
+  return _reportPathSlug() || 'unknown-component';
+}
+/* The learner's exact place, from the same map the xAPI layer uses — so a report and a statement
+   always name the same item. Unmapped screen: empty item, raw screen number as the page. */
+function reportItemAndPage() {
+  var map = (typeof SCREEN_TO_SUBCONTENT !== 'undefined') ? SCREEN_TO_SUBCONTENT[currentScreen] : null;
+  if (!map) return { item: '', page: String(currentScreen) };
+  return { item: reportComponentId() + '-' + map[0], page: String(map[1]) };
 }
 
 function submitReport() {
@@ -56,10 +80,11 @@ function submitReport() {
   body.append('entry.2066097581_hour', now.getHours());
   body.append('entry.301404029_day', now.getDate());
   body.append('entry.2066097581_minute', now.getMinutes());
-  body.append('entry.1933069481', REPORT_UNIT_ID);
+  var where = reportItemAndPage();
+  body.append('entry.1933069481', reportUnitId());
   body.append('entry.2070680092', reportComponentId());
-  body.append('entry.1555704258', '');
-  body.append('entry.1671046914', String(currentScreen));
+  body.append('entry.1555704258', where.item);
+  body.append('entry.1671046914', where.page);
   body.append('entry.1179822443', typeSel.options[typeSel.selectedIndex].text);
   body.append('entry.806447525', textVal);
   fetch(REPORT_FORM_ACTION, { method: 'POST', mode: 'no-cors', body: body })
@@ -84,8 +109,11 @@ function resetReportForm() {
     .forEach(function (el) { el.removeAttribute('hidden'); });
 }
 (function wireReport() {
-  // by CLASS, not id — some units clone the flag into every screen
-  document.querySelectorAll('.flag-btn').forEach(function (b) { b.addEventListener('click', openReportModal); });
+  /* Delegation on document, never per element (§7.4). This unit has one global flag per
+     component today, but a per-element bind is exactly what leaves a second flag dead. */
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.closest && e.target.closest('.flag-btn')) openReportModal();
+  });
   var ta = document.getElementById('report-text');
   var counter = document.getElementById('report-char-count');
   if (ta && counter) ta.addEventListener('input', function () { counter.textContent = ta.value.length + ' / 250'; });
