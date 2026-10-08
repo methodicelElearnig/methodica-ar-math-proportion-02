@@ -20,7 +20,7 @@ is specific to this unit and what was decided. Branch `vadimr/feat/reporting-res
 | `74ccab9` | content URL confirmed; the upload checked: 109 / 109 files byte-identical on the CDN |
 | — | **metadata sent to Kata and the live run — §6** |
 | `2773ad0` | **image resize** (owner's go-ahead "if it preserves quality"), `?v=20261008c` |
-| *(next)* | **the unused `calculator` / `measuring` stills removed** (owner's go-ahead, −3.7 MB), `?v=20261008d` |
+| `791bfe2` | **the unused `calculator` / `measuring` stills removed** (owner's go-ahead, −3.7 MB), `?v=20261008d` |
 
 **Image resize.** Every raster image was measured at the largest size it is displayed at (canvas
 pixels, every screen, every carousel / guided step, both companions, every zoom view) and kept at
