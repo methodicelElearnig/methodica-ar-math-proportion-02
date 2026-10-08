@@ -19,11 +19,13 @@ const LEGACY_CHARACTER_KEY = 'proportion02_selectedCharacter';
 
 /* The producer's picked set, carried over from the previous build (Elad,
    27.09.26 — "ready and picked"). Pose coverage is ASYMMETRIC: yellow has a
-   reading clip and green does not; green has a cube clip and yellow does not.
+   reading clip and green does not; green has the cube2 clip and yellow does not.
    POSE_FALLBACK below resolves that rather than showing the wrong monster.
    2026-10-08: the `calculator` and `measuring` stills (both colours, 3.7 MB) are gone — no screen,
    step config or fallback chain ever asked for those poses, and a full walk with each companion
-   never requested the files (`calc` is the clip, a different pose). */
+   never requested the files (`calc` is the clip, a different pose). Likewise green's `selection`
+   clip (01's s0 card plays character-green-ball.mp4 in its markup; nothing asks for the pose) and
+   green's `cube` clip (`cube` is only cube2's fallback, and green has its own cube2). */
 const CHARACTER_ASSETS = {
   'character-yellow': {
     selection: '../unit-assets/video/character-yellow-selection.mp4',
@@ -40,13 +42,11 @@ const CHARACTER_ASSETS = {
     climbing:  '../unit-assets/video/character-yellow-climbing.mp4',
   },
   'character-green': {
-    selection: '../unit-assets/video/character-green-selection.mp4',
     standing:  '../unit-assets/img/character-green.png',
     squashed:  '../unit-assets/img/character-squashed-green.png',
     victory:   '../unit-assets/img/character-victory-green.png',
     magnifier: '../unit-assets/img/character-magnifier-green.png',
     duo:       '../unit-assets/video/character-green-duo.mp4',
-    cube:      '../unit-assets/video/character-green-cube.mp4',
     spinning:  '../unit-assets/video/character-green-spinning.mp4',
     breakdance:'../unit-assets/video/character-green-breakdance.mp4',
     climbing:  '../unit-assets/video/character-green-climbing.mp4',

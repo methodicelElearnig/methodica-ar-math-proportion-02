@@ -38,10 +38,13 @@ no screen, step config (`cfg.monster`) or `POSE_FALLBACK` chain asks for those p
 clip, another pose); a full walk with each companion — every screen, carousel and guided step,
 every question answered wrong twice with its hint — never requested the files. After removal: both
 companions walked, 449 requests, 0 failed; `run-all` green.
-**Found, not removed (owner's decision):** two green clips are never used either —
-`character-green-selection.mp4` (1.58 MB; 01's s0 card plays `character-green-ball.mp4` in its
-markup and nothing asks for the `selection` pose) and `character-green-cube.mp4` (the `cube` pose
-is only a fallback of `cube2`, and green has its own `cube2`). The fonts were already one subset variable woff2; the assets were already
+**Removed too (owner's go-ahead, branch `vadimr/chore/remove-unused-green-clips`):** two green
+clips, never used — `character-green-selection.mp4` (1,579,618 B; 01's s0 card plays
+`character-green-ball.mp4` in its markup and nothing asks for the `selection` pose) and
+`character-green-cube.mp4` (506,177 B; the `cube` pose is only `cube2`'s fallback, and green has
+its own `cube2`). Same three checks; the runtime walk waited for each screen's media and requested
+all 15 other clips, `cube2` included, never these two. After removal: both companions, 449
+requests, 0 failed; `run-all` green. `?v=20261008e`. The fonts were already one subset variable woff2; the assets were already
 hoisted, with no duplicates (md5).
 
 ## 1. The layer
@@ -184,7 +187,7 @@ removed stills) changes no reporting, resume or issue-report code; it is uploade
    (`recommendedAfterFail: []`).
 3. ~~Image resize~~ — done (`2773ad0`); upload the new package.
 4. ~~Content URL~~ — confirmed 2026-10-08.
-5. ~~The unused `calculator` / `measuring` stills~~ — removed. The two unused green clips (§0) — remove?
+5. ~~The unused `calculator` / `measuring` stills~~ — removed; ~~the two unused green clips~~ — removed.
 6. ~~Publish~~ — published by the owner 2026-10-08 (all seven).
 7. Items 1 and 2: the owner will handle them later. A metadata change after publishing (e.g. 02's
    `recommendedAfterFail`) goes through `send-metadata.ps1` (upsert) and `retrieve-metadata.ps1
