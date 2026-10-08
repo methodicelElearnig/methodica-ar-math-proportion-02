@@ -1620,6 +1620,11 @@
 .report-modal-overlay { position: absolute; inset: 0; z-index: 200; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; direction: rtl; }
 
 .report-modal-overlay[hidden] { display: none; }
+/* showReportThanks() hides the form's parts with `hidden`, but .report-field and .report-actions
+   set display:flex, which beats the attribute — the type, text and buttons stayed on screen under
+   "תודה! הדיווח נשלח" (guide §9, "[hidden] losing to display:flex"; present since the unit was
+   built). */
+#report-modal [hidden] { display: none; }
 
 .report-modal-box { width: 520px; background: #fff; border-radius: 16px; padding: 36px 36px 28px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.35); display: flex; flex-direction: column; gap: 18px; direction: rtl; }
 

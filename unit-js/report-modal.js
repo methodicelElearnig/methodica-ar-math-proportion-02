@@ -1,10 +1,10 @@
 /* =====================================================================
    720-core — report flag + modal (shared; vendored per unit).
-   Copied from methodica-math-ratio-04 (c295b15 / f7c52ed). Until then this unit carried the same
-   code inline at the bottom of unit.js, which posted a hard-coded unit slug, a component slug
-   matched off the folder name, an EMPTY item and the raw screen number as the page. Identity now
-   comes from window.METADATA (unit + component slugs) and SCREEN_TO_SUBCONTENT (item + page) —
-   see below. The markup (one global .flag-btn, the two dialogs) is unchanged in every index.html.
+   Copied from methodica-math-proportion-01 (itself ratio-04 c295b15 / f7c52ed). The vendored
+   version this replaces derived the unit slug from the folder path, posted an EMPTY item and the
+   raw screen number as the page, and bound the flag per element. Identity now comes from
+   window.METADATA (unit + component slugs) and SCREEN_TO_SUBCONTENT (item + page) — see below.
+   The markup (one global .flag-btn, the two dialogs) is unchanged in every index.html.
    ===================================================================== */
 
 'use strict';
