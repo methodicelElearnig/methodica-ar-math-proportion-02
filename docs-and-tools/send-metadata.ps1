@@ -111,7 +111,7 @@ if ($Status -or $Publish) { $LogFile = Join-Path $PSScriptRoot 'publish-metadata
 # one, for every component of this unit.
 #
 # Take this from the unit's own DEPLOY.md deploy target. No trailing slash.
-$ContentBaseUrl = 'https://lomdot.education.gov.il/metodica/720/math/proportion/02'   # methodica-math-proportion-02 (2026-10-08) — the family convention (proportion-01, ratio-01/04/05/06); ⚠️ NOT YET CONFIRMED with the owner — confirm before any live run; the package must be uploaded here
+$ContentBaseUrl = 'https://lomdot.education.gov.il/metodica/720/math/proportion/02'   # methodica-math-proportion-02 (2026-10-08) — the family convention (proportion-01, ratio-01/04/05/06); confirmed with the owner 2026-10-08; the package is uploaded here
 # Title language key: wraps a string title into the API object, e.g.
 #   "מדידת מסה" -> { "Hebrew": "מדידת מסה" }. Change only for non-Hebrew content.
 $TitleLangKey = 'Hebrew'

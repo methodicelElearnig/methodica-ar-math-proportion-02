@@ -96,7 +96,7 @@ leaving the page (`KNOWN-ISSUE-dismissal-state-write.md`), the iframe applets' i
 ## 6. Catalogue, package, live run
 
 - `send-metadata.ps1` / `retrieve-metadata.ps1` / `SEND-METADATA.md` from proportion-01, retargeted:
-  `$ContentBaseUrl = …/720/math/proportion/02` (**family convention, not yet confirmed**),
+  `$ContentBaseUrl = …/720/math/proportion/02` (family convention, **confirmed by the owner 2026-10-08**; package uploaded there the same day),
   `$IdBase = …/720active/math/proportion/02`. `kata-api-key.txt` is git-ignored and never shipped.
 - `package-allowlist.ps1` — this unit also ships each component's **`applets/`** (proportion-01
   hoisted its applets, so its allowlist had only `assets/`).
@@ -113,4 +113,4 @@ leaving the page (`KNOWN-ISSUE-dismissal-state-write.md`), the iframe applets' i
 2. **02 below its bar:** reported `success:false`, but the metadata routes nowhere
    (`recommendedAfterFail: []`).
 3. **Image resize** (§0).
-4. **Content URL** `…/720/math/proportion/02` to be confirmed before the first send.
+4. ~~Content URL~~ — confirmed 2026-10-08.

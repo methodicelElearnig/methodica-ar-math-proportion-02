@@ -1,7 +1,7 @@
 > **methodica-math-proportion-02 (2026-10-08):** copied unchanged from methodica-math-proportion-01
 > (itself from methodica-math-ratio-04; the notes below are theirs). Only the unit constants differ:
 > `ContentBaseUrl` = `https://lomdot.education.gov.il/metodica/720/math/proportion/02` — the family
-> convention, **not yet confirmed with the owner** — and retrieve `IdBase` =
+> convention, **confirmed by the owner 2026-10-08** — and retrieve `IdBase` =
 > `…/720active/math/proportion/02` (= `XAPI_ID_PREFIX`). Unit key `methodica-math-proportion-02` (bare
 > slug); 7 components, 24 items, 38 questions. One `recommendedAfterFail` link, **03 → 02**, which
 > matches 03's own gate (s17 "ענו נכון על 3 … כדי להתקדם" — the component ends on s23 below it);
