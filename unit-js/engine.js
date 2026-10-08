@@ -12,12 +12,16 @@
 
 let currentScreen = 0;
 /* The screen this app should open on: its part's first screen, or its LAST when
-   the next component sent the learner back. Plain units open on 0. */
+   the next component sent the learner back. Plain units open on 0.
+   With the platform layer ?screen=last is honoured only under DEV_NAV (10-identity.js): only
+   goToPrevPart() writes it, and the layer runs that under DEV_NAV alone (the platform owns
+   routing, guide §8.12). */
 function firstScreen() {
   const p = window.PART_CONFIG;
   if (!p) return 0;
   const want = new URLSearchParams(window.location.search).get('screen');
-  return want === 'last' ? p.end : p.start;
+  const devOk = typeof DEV_NAV === 'undefined' || DEV_NAV;
+  return (want === 'last' && devOk) ? p.end : p.start;
 }
 
 /* ---------- Canvas scaling (1280×710) ---------- */
@@ -51,12 +55,27 @@ function goToPrevPart() {
 
 /* ---------- Navigation ---------- */
 function goTo(n) {
+  /* A pass gate promised on screen can end the component on its own screen instead of moving on
+     (70-platform.js partGateBlocks, guide §6.4). Every forward path — the button, ArrowLeft, the
+     dev bar — comes through here, which is why it sits in goTo. */
+  if (typeof partGateBlocks === 'function') {
+    try { if (partGateBlocks(currentScreen, n)) return; } catch (e) { console.error('[xAPI] gate', e); }
+  }
   /* Part mode (5-component delivery architecture, per approved units):
      window.PART_CONFIG = { start, end, next | (routeByScore + nextPass/nextFail) }.
-     Navigating past the part's last screen routes to the next part app. */
+     Navigating past the part's last screen routes to the next part app.
+     With the platform layer loaded (70-platform.js), leaving the component is partExit()'s call:
+     it reports the component 'completed' and moves nowhere unless DEV_NAV. Without it, the
+     vendored behaviour — hop to the neighbour — is unchanged. */
   if (window.PART_CONFIG) {
-    if (n > window.PART_CONFIG.end) { goToNextPart(); return; }
-    if (n < window.PART_CONFIG.start) { goToPrevPart(); return; }
+    if (n > window.PART_CONFIG.end) {
+      if (typeof partExit === 'function') partExit(+1); else goToNextPart();
+      return;
+    }
+    if (n < window.PART_CONFIG.start) {
+      if (typeof partExit === 'function') partExit(-1); else goToPrevPart();
+      return;
+    }
   }
   if (n < 0 || n >= TOTAL_SCREENS) return;
   /* 07.09 — a retired screen number (43, folded into 42) must not blank the
@@ -84,6 +103,14 @@ function goTo(n) {
   if (window.Motion) Motion.reveal(target);
   currentScreen = n;
   resetScreenState(n);
+  /* Platform layer (70-platform.js / 20-xapi.js / 40-resume.js), in this order and after the
+     paint: repaint the screen from state (resume §8.4a — every navigation, not only a restore),
+     open/close the catalogue item, then arm the debounced save. Each guarded and logged: a
+     reporting fault must never stop navigation, and an empty catch would hide a stale-cache
+     ReferenceError. */
+  if (typeof repaintScreen === 'function') { try { repaintScreen(n); } catch (e) { console.error('[resume] repaint', e); } }
+  if (typeof xapiOnScreen === 'function') { try { xapiOnScreen(n); } catch (e) { console.error('[xAPI] onScreen', e); } }
+  if (typeof scheduleResumeSave === 'function') { try { scheduleResumeSave(); } catch (e) { console.error('[resume] save', e); } }
   if (typeof decorateBubbles === 'function') decorateBubbles(target);
   // keep the DEV harness in sync when navigation happens INSIDE the lomda
   // (buttons / keyboard), not only via the DEV bar
@@ -92,9 +119,17 @@ function goTo(n) {
   }
 }
 
+/* Forward by keyboard is gated like the screen's own forward button (ported from
+   proportion-01 / ratio-04): unguarded, ArrowLeft walked past unanswered questions, and with
+   reporting on it closed the catalogue item with a non-final result that the ledger then keeps
+   for good. The platform layer decides (keyboardForwardAllowed in 70-platform.js); without it the
+   vendored free navigation is unchanged, and a local walkthrough (DEV_NAV) keeps it too. */
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') goTo(currentScreen + 1);  // RTL: left = forward
-  if (e.key === 'ArrowRight') goTo(currentScreen - 1);
+  /* arrows inside an answer box / select / the report textarea move the caret, not the screen */
+  const inField = e.target && e.target.closest && e.target.closest('input, textarea, select, [contenteditable="true"]');
+  const fwdOk = typeof keyboardForwardAllowed !== 'function' || keyboardForwardAllowed();
+  if (e.key === 'ArrowLeft' && !inField && fwdOk) goTo(currentScreen + 1);  // RTL: left = forward
+  if (e.key === 'ArrowRight' && !inField) goTo(currentScreen - 1);
   if (e.key === 'Escape' && typeof quizCloseHint === 'function') quizCloseHint();
 });
 
@@ -140,8 +175,12 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ---------- Init ---------- */
+/* ---------- Init ----------
+   With the platform layer, 90-boot.js runs the boot (partBoot() in 70-platform.js: build the
+   question screens, scale, land) and then bootXAPI() — in that order, so a restore replays onto
+   built screens. Without it, the vendored init below runs as before. */
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof partBoot === 'function') return;
   if (typeof quizBuildScreens === 'function') quizBuildScreens();
   scaleApp();
   /* 09.09 — this used to be a hard goTo(0). Once goTo() started hopping to the

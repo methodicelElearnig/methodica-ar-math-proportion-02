@@ -1,0 +1,210 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/",
+  "title": "בואו נלמד משהו חדש",
+  "learningUnitId": "methodica-math-proportion-02",
+  "componentPurpose": "instruction",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 3,
+  "masteryLevel": null,
+  "order": 1,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": [
+    "process-thinking"
+  ],
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 18,
+  "createdAt": "2026-10-06T00:00:00.000Z",
+  "updatedAt": "2026-10-06T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-001/",
+      "title": "תמונה מעוותת בסטורי",
+      "informationToBot": "מטרת הפריט: פתיח מוטיבציוני שמעורר את הצורך בשמירה על יחס קבוע ובשוויון בין יחסים (פרופורציה). מה התלמיד אמור להבין/לתרגל: כדי שתמונה לא תתעוות כשמשנים את גודלה, צריך לשמור על יחס קבוע בין הרוחב לגובה, המתאים לממדי המסך (למשל 9 : 16 למסך טלפון). פרופורציה היא שוויון בין יחסים, ובעזרתה אפשר למצוא נתון רביעי חסר. כיווני חשיבה ואסטרטגיות: הלומד בוחר דמות מלווה, רואה תמונה שנמתחה באופן לא פרופורציונלי, מזהה מה השתבש, ונחשף לשאלה כיצד למצוא את הרוחב המתאים לגובה נתון (24 ס\"מ) כך שהיחס יישמר. טעויות נפוצות: הנחה שאפשר להגדיל מידה אחת בלבד (\"בערך\") בלי לשמור על היחס בין שתי המידות. מידע נוסף: חמישה מסכים: בחירת דמות מלווה (בחירה בלבד, לא מוערכת), תמונה מעוותת, הסבר על יחס קבוע, דוגמה מספרית והגדרת הפרופורציה. אין שאלה מוערכת. צילום מסך: לא צורף.",
+      "contentType": "motivational",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-002/",
+      "title": "המרת גרמים לכוסות מדידה — העוגה של אביבית",
+      "informationToBot": "מטרת הפריט: הקניית כתיבת משוואת פרופורציה ופתרונה בהקשר של המרת גרמים לכוסות מדידה במתכון אפייה. מה התלמיד אמור להבין/לתרגל: בונים טבלת פרופורציה מיחס המרה ידוע (1 כוס קמח = 140 גרם) ומכמות נתונה במתכון (280 גרם), מסמנים נעלם (x), וכותבים משוואה שבה סדר היחס זהה בשני האגפים (כוסות במונה וגרמים במכנה, או להפך). פותרים בעזרת גורם הרחבה או כפל במכנה המשותף. כיווני חשיבה ואסטרטגיות: קרוסלה של 12 שלבים: הצגת הבעיה, השלמת הטבלה בגרירה, בחירת משוואות מתאימות (שתי תשובות נכונות), ובסוף חזרה על התהליך עבור סוכר (300 גרם, 1 כוס = 200 גרם) ופתרון y = 1.5 בכפל במכנה המשותף. טעויות נפוצות: היפוך סדר המונה והמכנה בין שני האגפים (כוסות/גרמים באגף אחד וגרמים/כוסות באגף השני); בחירת תשובה אחת בלבד בשאלה שיש בה שתי משוואות נכונות; הצבת הנעלם בתא הלא נכון בטבלה. מידע נוסף: ארבעה שלבים מוערכים מתוך 12: שתי שאלות גרירה לתוך טבלת הפרופורציה (קמח וסוכר), שאלת בחירה מרובה ושאלת בחירה יחידה. אין סרטון; ההקנייה טקסטואלית ולכן mediaFormat הוא text. צילום מסך: לא צורף.",
+      "contentType": "instruction",
+      "mediaFormat": "text",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-002/q1",
+          "questionType": "matching",
+          "questionText": "השלימו את טבלת הפרופורציה על ידי גרירה. 1 כוס קמח לבן = 140 גרם; לפי המתכון צריך 280 גרם קמח. x - כמות כוסות הקמח הדרושות לאביבית.",
+          "answers": {
+            "source": [
+              "280",
+              "140",
+              "x"
+            ],
+            "target": [
+              "מספר כוסות — המתכון של אביבית",
+              "כמות בגרמים — יחס ידוע",
+              "כמות בגרמים — המתכון של אביבית"
+            ]
+          },
+          "correctAnswers": [
+            {
+              "source": "x",
+              "target": "מספר כוסות — המתכון של אביבית"
+            },
+            {
+              "source": "140",
+              "target": "כמות בגרמים — יחס ידוע"
+            },
+            {
+              "source": "280",
+              "target": "כמות בגרמים — המתכון של אביבית"
+            }
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-002/q2",
+          "questionType": "choice",
+          "questionText": "בהינתן טבלת הפרופורציה המלאה (1 כוס = 140 גרם; x כוסות = 280 גרם), מה משוואת הפרופורציה המתאימה? בחרו בכל התשובות המתאימות.",
+          "answers": [
+            "x/140 = 1/280",
+            "1/140 = x/280",
+            "1/140 = 280/x",
+            "280/x = 140/1"
+          ],
+          "correctAnswers": [
+            "1/140 = x/280",
+            "280/x = 140/1"
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-002/q3",
+          "questionType": "matching",
+          "questionText": "השלימו את טבלת הפרופורציה ע\"י גרירת המספרים למקום הנכון. במתכון כתוב שצריך 300 גרם סוכר; 1 כוס סוכר = 200 גרם. y - כמות כוסות הסוכר הדרושות לאביבית.",
+          "answers": {
+            "source": [
+              "300",
+              "200",
+              "1"
+            ],
+            "target": [
+              "מספר כוסות סוכר — יחס ידוע",
+              "כמות סוכר בגרמים — יחס ידוע",
+              "כמות סוכר בגרמים — המתכון של אביבית"
+            ]
+          },
+          "correctAnswers": [
+            {
+              "source": "1",
+              "target": "מספר כוסות סוכר — יחס ידוע"
+            },
+            {
+              "source": "200",
+              "target": "כמות סוכר בגרמים — יחס ידוע"
+            },
+            {
+              "source": "300",
+              "target": "כמות סוכר בגרמים — המתכון של אביבית"
+            }
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-002/q4",
+          "questionType": "choice",
+          "questionText": "היעזרו בטבלת הפרופורציה ובחרו במשוואת הפרופורציה המתאימה.",
+          "answers": [
+            "1/200 = y/300",
+            "y/200 = 1/300",
+            "1/200 = 300/y"
+          ],
+          "correctAnswers": [
+            "1/200 = y/300"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-003/",
+      "title": "טבלת פרופורציה",
+      "informationToBot": "מטרת הפריט: סרטון הסבר קצר על ארגון נתוני הבעיה בטבלת פרופורציה. מה התלמיד אמור להבין/לתרגל: טבלת פרופורציה מסדרת את שני היחסים זה מול זה (ידוע מול מבוקש) ומאפשרת לכתוב ממנה את משוואת הפרופורציה ולמצוא את הנעלם. כיווני חשיבה ואסטרטגיות: הלומד צופה בסרטון ומתבונן באופן הצבת הנתונים בטבלה והעברתם למשוואה. טעויות נפוצות: הצבת נתונים בעמודות/שורות שאינן מתאימות זו לזו (למשל כוסות מול גרמים בסדר מתחלף). מידע נוסף: מסך סרטון בלבד (הטמעת YouTube), בלי שאלה מוערכת. צילום מסך: לא צורף.",
+      "contentType": "instruction",
+      "mediaFormat": "video",
+      "questions": []
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-004/",
+      "title": "נפתור יחד: דגם מכונית יוקרה",
+      "informationToBot": "מטרת הפריט: פתרון מודרך שלב אחר שלב של מציאת נעלם בפרופורציה בהקשר של הגדלת דגם. מה התלמיד אמור להבין/לתרגל: כדי שדגם מוגדל ייראה כמו המקורי, יש לשמור על פרופורציה בין גובה לאורך: גובה מקורי 4 ס\"מ, אורך 16 ס\"מ, אורך מוגדל 80 ס\"מ. מצמצמים את היחס 4/16 ל-1/4, מסמנים x לגובה המוגדל, כותבים x/80 = 1/4 וכופלים במכנה המשותף: x = 20. כיווני חשיבה ואסטרטגיות: שבעה שלבים: ארגון הנתונים בטבלה, חישוב והצמצום של היחס המקורי, סימון הנעלם, כתיבת המשוואה, פתרון וניסוח תשובה מילולית מלאה. הלומד משיב בשני שלבים יחד עם הדמות. טעויות נפוצות: כתיבת יחס הפוך (80/x במקום x/80) באגף אחד בלבד; אי-צמצום היחס; השמטת ניסוח התשובה הסופית. מידע נוסף: שתי נקודות מענה (בחירת היחס המצומצם ובחירת היחס של הדגם המוגדל); הלומד עונה יחד עם הדמות ולכן הפריט מסווג כטקסט. התשובה נחשפת עם הבחירה, בלי משוב שלילי. צילום מסך: לא צורף.",
+      "contentType": "solved-exercise",
+      "mediaFormat": "text",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-004/q1",
+          "questionType": "choice",
+          "questionText": "גובה הדגם המקורי הוא 4 ס\"מ ואורכו 16 ס\"מ. מה היחס המצומצם בין הגובה לאורך של הדגם המקורי?",
+          "answers": [
+            "1/12",
+            "4/1",
+            "1/4"
+          ],
+          "correctAnswers": [
+            "1/4"
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-004/q2",
+          "questionType": "choice",
+          "questionText": "היחס בין גובה הדגם המוגדל (x) לאורכו (80 ס\"מ) הוא:",
+          "answers": [
+            "80/x",
+            "x/80"
+          ],
+          "correctAnswers": [
+            "x/80"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-005/",
+      "title": "שאלת חימום: מציאת x בפרופורציה",
+      "informationToBot": "מטרת הפריט: חימום קל: כתיבה ופתרון פרופורציה פשוטה עם נעלם אחד. מה התלמיד אמור להבין/לתרגל: היחס בין 10 ל-x שווה ליחס בין 6 ל-15: כותבים 10/x = 6/15, כופלים במכנה המשותף 15x ומקבלים 6x = 150, כלומר x = 25. כיווני חשיבה ואסטרטגיות: לתרגם את המשפט המילולי למשוואת פרופורציה ולפתור בכפל במכנה המשותף. טעויות נפוצות: היפוך היחס (x/10 = 6/15) או כתיבת שני היחסים בסדר שונה; טעות חישוב בכפל בהצלבה. מידע נוסף: שאלה 1 מתוך 2 בחימום. שדה קלט מספרי, שני ניסיונות, רמז אחרי טעות ראשונה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-005/q1",
+          "questionType": "numeric",
+          "questionText": "היחס בין 10 ל-x שווה ליחס בין 6 ל-15. מצאו את x.",
+          "answers": [],
+          "correctAnswers": [
+            25
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-006/",
+      "title": "שאלת חימום: מחיר פופקורן לפי משקל",
+      "informationToBot": "מטרת הפריט: חימום קל: שימוש בפרופורציה לחישוב מחיר בהינתן מחיר לפי משקל. מה התלמיד אמור להבין/לתרגל: מחיר קבוע לפי משקל (11 ₪ ל-100 גרם) מאפשר לכתוב x/300 = 11/100 ולמצוא x = 33, או לזהות שהמשקל גדל פי 3 ולכן גם המחיר. כיווני חשיבה ואסטרטגיות: לארגן את הנתונים בטבלת פרופורציה, לזהות את גורם ההרחבה (פי 3) ולהכפיל את המחיר. טעויות נפוצות: חיבור 11 ו-200 במקום שמירה על יחס; הצבת המחיר והמשקל בסדר לא עקבי בין האגפים. מידע נוסף: שאלה 2 מתוך 2 בחימום. שדה קלט מספרי, שני ניסיונות, רמז אחרי טעות ראשונה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-006/q1",
+          "questionType": "numeric",
+          "questionText": "במזנון הקולנוע מוכרים פופקורן בתפזורת במחיר קבוע לפי משקל. על השלט כתוב \"המחיר לפי משקל: 11 ₪ ל-100 גרם פופקורן\". שירה ורז מילאו שקית פופקורן במשקל 300 גרם. כמה עליהם לשלם (בש\"ח)?",
+          "answers": [],
+          "correctAnswers": [
+            33
+          ]
+        }
+      ]
+    }
+  ]
+}

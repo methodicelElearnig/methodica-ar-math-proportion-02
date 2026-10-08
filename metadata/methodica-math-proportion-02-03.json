@@ -1,0 +1,158 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/",
+  "title": "זמן תרגול 2",
+  "learningUnitId": "methodica-math-proportion-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [
+    "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-02/"
+  ],
+  "isRequired": false,
+  "relativeDifficulty": 2,
+  "masteryLevel": null,
+  "order": 3,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": [
+    "algorithmic-thinking"
+  ],
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 16,
+  "createdAt": "2026-10-06T00:00:00.000Z",
+  "updatedAt": "2026-10-06T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-001/",
+      "title": "בניית פרופורציה ופתרונה",
+      "informationToBot": "מטרת הפריט: תרגול בסיסי: תרגום יחס מילולי למשוואת פרופורציה ופתרונה, בשני סעיפים. מה התלמיד אמור להבין/לתרגל: היחס בין x ל-27 שווה ליחס בין 6 ל-9 ולכן x/27 = 6/9. כופלים במכנה המשותף (27) ומקבלים x = 6 · 3 = 18. כיווני חשיבה ואסטרטגיות: סעיף א׳: לתרגם כל יחס לשבר ולהקפיד על סדר זהה במונה ובמכנה בשני האגפים. סעיף ב׳: לפתור בכפל במכנה המשותף או בזיהוי גורם ההרחבה. טעויות נפוצות: החלפת הסדר בין המונה למכנה באחד האגפים (למשל 27/x = 6/9). מידע נוסף: מסך הקדמה לרכיב (4 שאלות; נדרש להצליח ב-7 שאלות ומעלה בין שני רכיבי התרגול). סעיף א׳ בחירה, סעיף ב׳ שדה קלט מספרי; שני ניסיונות ורמז אחרי טעות. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-001/q1",
+          "questionType": "choice",
+          "questionText": "היחס בין x ל-27 שווה ליחס בין 6 ל-9. א. סמנו את הפרופורציה (שוויון היחסים) המתאימה:",
+          "answers": [
+            "x/9 = 27/6",
+            "27/x = 6/9",
+            "x/27 = 6/9",
+            "x/6 = 9/27"
+          ],
+          "correctAnswers": [
+            "x/27 = 6/9"
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-001/q2",
+          "questionType": "numeric",
+          "questionText": "היחס בין x ל-27 שווה ליחס בין 6 ל-9. מצאנו שהפרופורציה המתאימה היא x/27 = 6/9. ב. מצאו את x.",
+          "answers": [],
+          "correctAnswers": [
+            18
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-002/",
+      "title": "משחק מחשב — מטבעות זהב ומשימות",
+      "informationToBot": "מטרת הפריט: תרגול בסיסי: כתיבת פרופורציה מהקשר מילולי ופתרונה בשני סעיפים. מה התלמיד אמור להבין/לתרגל: 3 משימות מזכות ב-120 מטבעות, ולכן 3/120 = x/400; כופלים במכנה המשותף (1200) ומקבלים 3 · 400 = 120x ואז x = 10 משימות. כיווני חשיבה ואסטרטגיות: סעיף א׳: להשלים את המכנה החסר בפרופורציה לפי הטבלה (משימות/מטבעות). סעיף ב׳: לפתור את המשוואה שנמצאה. טעויות נפוצות: הצבת 400 במונה (כך שהיחס מתהפך); בלבול בין כמות המשימות לכמות המטבעות. מידע נוסף: סעיף א׳ השלמת מכנה בשבר (קלט מספרי), סעיף ב׳ קלט מספרי; שני ניסיונות ורמז אחרי טעות. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-002/q1",
+          "questionType": "numeric",
+          "questionText": "במשחק מחשב, שחקן צובר 120 מטבעות זהב וירטואליים על כל 3 משימות שהוא משלים. איתי שיחק אחר הצהריים וראה שנצברו לזכותו 400 מטבעות, אבל לא זכר כמה משימות סיים בהצלחה. נסמן: x - כמות המשימות שאיתי סיים. א. השלימו את הפרופורציה (שוויון היחסים): 3/120 = x/__ (הזינו את המכנה).",
+          "answers": [],
+          "correctAnswers": [
+            400
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-002/q2",
+          "questionType": "numeric",
+          "questionText": "מצאנו שהפרופורציה בין כמות המשימות שסיים לכמות מטבעות הזהב היא 3/120 = x/400. ב. כמה משימות איתי השלים במשחק אחר הצהריים?",
+          "answers": [],
+          "correctAnswers": [
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-003/",
+      "title": "ריצוף מבצר — שיש ודשא",
+      "informationToBot": "מטרת הפריט: תרגול בסיסי: שמירה על יחס קבוע בין שני סוגי בלוקים, בעזרת יישומון ריצוף. מה התלמיד אמור להבין/לתרגל: יחס של 2 בלוקי שיש על כל 5 בלוקי דשא: 2/5 = x/30, ולכן x = 2 · 6 = 12 בלוקי שיש. כיווני חשיבה ואסטרטגיות: לכתוב פרופורציה בין שיש לדשא, לזהות את גורם ההרחבה (30 : 5 = 6) ולהכפיל. טעויות נפוצות: חיבור 2 ל-25 (הפרש) במקום הכפלה; כתיבת הפרופורציה עם דשא במונה באגף אחד ושיש במונה באגף השני. מידע נוסף: כולל יישומון ריצוף. שדה קלט מספרי, שני ניסיונות, רמז אחרי טעות. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-003/q1",
+          "questionType": "numeric",
+          "questionText": "במשחק מחשב, אתם עובדים על ריצוף הכניסה למבצר שלכם. כדי ליצור דוגמה של בלוקים מעוצבים אתם משתמשים ביחס קבוע של 2 בלוקים של שיש על כל 5 בלוקים של דשא. אם השתמשתם ב-30 בלוקים של דשא, כמה בלוקים של שיש אתם צריכים כדי לשמור על יחס של 2:5?",
+          "answers": [],
+          "correctAnswers": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-004/",
+      "title": "פלייליסט שירים",
+      "informationToBot": "מטרת הפריט: תרגול בסיסי: פרופורציה בין מספר שירים לזמן השמעה. מה התלמיד אמור להבין/לתרגל: 5 שירים נמשכים 15 דקות; פלייליסט של 60 דקות מכיל x שירים: 5/15 = x/60 ולכן x = 5 · 4 = 20. כיווני חשיבה ואסטרטגיות: לסדר טבלת פרופורציה (כמות שירים מול זמן), לזהות גורם הרחבה פי 4 ולהכפיל. טעויות נפוצות: חלוקה של 60 ב-15 בלבד (4) בלי הכפלה ב-5; ערבוב בין סדר השירים והדקות באגפים. מידע נוסף: שדה קלט מספרי, שני ניסיונות, רמז עם טבלת פרופורציה אחרי טעות ראשונה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-004/q1",
+          "questionType": "numeric",
+          "questionText": "אורי מכין פלייליסט של שירים אהובים לשמיעה בזמן הליכה. הוא שם לב שכל 5 שירים בפלייליסט אורכים יחד בדיוק 15 דקות של השמעה. אורי רוצה להכין פלייליסט שיימשך 60 דקות (שעה אחת). אם קצב ההשמעה נשאר זהה, כמה שירים צריכים להיות בפלייליסט?",
+          "answers": [],
+          "correctAnswers": [
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-005/",
+      "title": "הזמנת חולצות לטיול השנתי",
+      "informationToBot": "מטרת הפריט: תרגול סטנדרטי ב׳: שימוש בפרופורציה לחישוב מחיר של הזמנה גדולה. מה התלמיד אמור להבין/לתרגל: 25 חולצות ב-550 ₪; 175 חולצות עולות x: 25/175 = 550/x. מצמצמים את היחס ל-1/7 ומקבלים x = 3850 ₪. כיווני חשיבה ואסטרטגיות: לזהות שמספר החולצות גדל פי 7 ולכן גם המחיר גדל פי 7, או לכתוב פרופורציה ולפתור. טעויות נפוצות: הצבת הנעלם במונה כשהכמויות מונחות במכנה, וחישוב הפוך; טעות בכפל 550 · 7. מידע נוסף: מסך מעבר לפני הפריט (חזרה ל-2 תרגילים ברמת קושי גבוהה יותר). שדה קלט מספרי, שני ניסיונות, רמז אחרי טעות. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-005/q1",
+          "questionType": "numeric",
+          "questionText": "לקראת הטיול השנתי, שכבת ח' מזמינה חולצות מודפסות לכל תלמידות ותלמידי השכבה. בית דפוס מקומי נתן להם הצעת מחיר: 25 חולצות ב-550 ₪. בשכבה 175 תלמידים. כמה שקלים תעלה ההזמנה כולה?",
+          "answers": [],
+          "correctAnswers": [
+            3850
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-006/",
+      "title": "מתכון רוטב לסלט",
+      "informationToBot": "מטרת הפריט: תרגול סטנדרטי ב׳: הגדלת מתכון בשמירה על יחס בין כל המרכיבים. מה התלמיד אמור להבין/לתרגל: היחס בין 150 מ\"ל ל-100 מ\"ל הוא 1.5, ולכן מכפילים כל מרכיב ב-1.5: שמן זית 60 → 90 מ\"ל, חומץ בלסמי 30 → 45 מ\"ל, רוטב סויה 10 → 15 מ\"ל. כיווני חשיבה ואסטרטגיות: לחשב פעם אחת את גורם ההגדלה (150 : 100) ולהחיל אותו על כל מרכיב בנפרד. טעויות נפוצות: הוספת 50 מ\"ל לכל מרכיב (הפרש); החלת גורם הגדלה על מרכיב אחד בלבד. מידע נוסף: שלוש תיבות קלט באותו סעיף (שמן זית, חומץ בלסמי, רוטב סויה). שני ניסיונות, רמז אחרי טעות. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-03/methodica-math-proportion-02-03-006/q1",
+          "questionType": "fill-in",
+          "questionText": "להכנת רוטב לסלט יש לערבב את המרכיבים עבור 100 מ\"ל רוטב: שמן זית 60 מ\"ל, חומץ בלסמי 30 מ\"ל, רוטב סויה 10 מ\"ל. השלימו: כדי להכין כמות של 150 מ\"ל רוטב לסלט, יש לערבב:",
+          "answers": [],
+          "correctAnswers": [
+            "90 מ\"ל שמן זית, 45 מ\"ל חומץ בלסמי, 15 מ\"ל רוטב סויה"
+          ]
+        }
+      ]
+    }
+  ]
+}

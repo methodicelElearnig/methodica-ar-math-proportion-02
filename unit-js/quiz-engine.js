@@ -264,13 +264,13 @@ function quizSelect(screen, el) {
     el.classList.toggle('selected');
     el.setAttribute('aria-checked', el.classList.contains('selected'));
     st.selectedSet = [...opts].filter(o => o.classList.contains('selected')).map(o => o.dataset.id);
-    document.getElementById(`q${screen}-check`).disabled = st.selectedSet.length === 0;
+    document.getElementById(`q${screen}-check`).disabled = quizCheckBlocked(q, st, st.selectedSet.length > 0);
   } else {
     opts.forEach(o => { o.classList.remove('selected'); o.setAttribute('aria-checked', 'false'); });
     el.classList.add('selected');
     el.setAttribute('aria-checked', 'true');
     st.selected = el.dataset.id;
-    document.getElementById(`q${screen}-check`).disabled = false;
+    document.getElementById(`q${screen}-check`).disabled = quizCheckBlocked(q, st, true);
   }
 }
 
@@ -281,7 +281,7 @@ function quizDualChange(screen) {
   const sels = [...document.querySelectorAll(`#q${screen} .year-select`)];
   sels.forEach(s => s.classList.remove('wrong'));
   st.selectedSet = sels.map(s => s.value);
-  document.getElementById(`q${screen}-check`).disabled = st.selectedSet.some(v => !v);
+  document.getElementById(`q${screen}-check`).disabled = quizCheckBlocked(quizQ(screen), st, !st.selectedSet.some(v => !v));
 }
 
 function quizInputChange(screen) {
@@ -295,7 +295,7 @@ function quizInputChange(screen) {
   const inputs = [...document.querySelectorAll(`#q${screen} .vi-input`)];
   inputs.forEach(i => i.classList.remove('wrong'));
   st.selectedSet = inputs.map(i => i.value.trim());
-  document.getElementById(`q${screen}-check`).disabled = st.selectedSet.some(v => !v);
+  document.getElementById(`q${screen}-check`).disabled = quizCheckBlocked(quizQ(screen), st, !st.selectedSet.some(v => !v));
 }
 
 /* 16.09, producer (screen 49): the longest option ran under the chevron, and
@@ -332,7 +332,7 @@ function quizDropdownChange(screen) {
   const sels = [...document.querySelectorAll(`#q${screen} .dd-select`)];
   sels.forEach(s => s.classList.remove('wrong', 'correct'));
   st.selectedSet = sels.map(s => s.value);
-  document.getElementById(`q${screen}-check`).disabled = st.selectedSet.some(v => !v);
+  document.getElementById(`q${screen}-check`).disabled = quizCheckBlocked(quizQ(screen), st, !st.selectedSet.some(v => !v));
 }
 
 function quizStatementPick(screen, row, el) {
@@ -345,10 +345,31 @@ function quizStatementPick(screen, row, el) {
   el.classList.add('selected');
   st.selectedSet = [...document.querySelectorAll(`#q${screen} .stmt-row`)].map(r =>
     r.querySelector('.stmt-pill.selected')?.dataset.val || '');
-  document.getElementById(`q${screen}-check`).disabled = st.selectedSet.some(v => !v);
+  document.getElementById(`q${screen}-check`).disabled = quizCheckBlocked(quizQ(screen), st, !st.selectedSet.some(v => !v));
 }
 
 /* ---------- check / feedback ---------- */
+/* ---------- Retry gate (ADDING-REPORTING-AND-RESUME.md §8.8 rule 9, QA D-14) ----------
+   Ported from methodica-math-proportion-01 (itself ratio-04). After a NON-final wrong attempt the
+   submitted answer's signature is kept in st.lw, and "צדקתי?" stays disabled while the current
+   answer is the same one — so attempt 2 is a real second attempt, never the same wrong answer
+   twice. Cleared on a correct or final answer. st.lw is part of the resume payload
+   (70-platform.js), and every place that sets the button's `disabled` goes through
+   quizCheckBlocked — live handlers and the resume painters alike. Equivalence follows the grading
+   (quizIsCorrect): typed values compare as trimmed strings, a multi-select set ignores order, and
+   the dual-select pair is graded unordered, so its signature is sorted too. */
+function quizQ(screen) { return QUESTIONS.find(x => x.screen === screen); }
+function quizSig(q, st) {
+  if (q.type === 'single') return st.selected || '';
+  if (q.type === 'multi') return [...(st.selectedSet || [])].sort().join('|');
+  if (q.type === 'dual-select') return JSON.stringify([...(st.selectedSet || [])].sort());
+  return JSON.stringify(st.selectedSet || []);
+}
+function quizCheckBlocked(q, st, ready) {
+  if (!ready) return true;
+  return !!(st && st.lw && q && quizSig(q, st) === st.lw);
+}
+
 function quizIsCorrect(q, st) {
   if (q.type === 'single') return st.selected === q.correct;
   if (q.type === 'multi') {
@@ -429,13 +450,20 @@ function quizCheck(screen) {
   const correct = quizIsCorrect(q, st);
 
   st.wasCorrect = correct;
+  /* Platform layer (70-platform.js): report this submit — BEFORE any marking, while the learner's
+     pick is still on the state (a retry clears it). Guarded: the core runs without the layer. */
+  if (typeof onQuizAnswered === 'function') {
+    try { onQuizAnswered(screen, q, st, correct); } catch (e) { console.error('[xAPI] onQuizAnswered', e); }
+  }
   if (correct) {
+    st.lw = null;
     const hintBtn = document.getElementById(`q${screen}-hint`);
     if (hintBtn) hintBtn.style.display = 'none';
     quizMarkOutcome(screen, q, true);
     quizShowFeedback(screen, 'correct', q.fb.correct);
     quizFinish(screen);
   } else if (st.attempts >= q.maxAttempts) {
+    st.lw = null;
     const hintBtn = document.getElementById(`q${screen}-hint`);
     if (hintBtn) hintBtn.style.display = 'none';
     quizMarkOutcome(screen, q, false);
@@ -451,12 +479,17 @@ function quizCheck(screen) {
     if (q.type === 'value-input') quizAnswerToggleAdd(screen, q);
     quizFinish(screen);
   } else {
+    st.lw = quizSig(q, st);                 // Retry gate — BEFORE quizMarkRetry clears the pick
     quizMarkRetry(screen, q);
     quizShowFeedback(screen, 'wrong', { title: q.fb.retry, body: '' });
-    if (q.hintPolicy === 'after-wrong') {
-      document.getElementById(`q${screen}-hint`).style.visibility = 'visible';
-    }
+    const hb = document.getElementById(`q${screen}-hint`);
+    if (q.hintPolicy === 'after-wrong' && hb) hb.style.visibility = 'visible';
     document.getElementById(`q${screen}-check`).disabled = true; // until a new selection
+  }
+  /* Platform layer: the answer is committed on every path above (verdict, done, lw) — persist it
+     synchronously, after the LAST commitment and exactly once (§8.3, D-13). */
+  if (typeof onQuizCommitted === 'function') {
+    try { onQuizCommitted(screen); } catch (e) { console.error('[resume] onQuizCommitted', e); }
   }
 }
 
@@ -696,6 +729,11 @@ function answerToggleAdd(box, getInputs, st) {
     getInputs().forEach((inp, i) => paint(inp, i, showMine));
     btn.dataset.mode = showMine ? 'answer' : 'solution';
     btn.textContent = showMine ? ANSWER_TOGGLE_LABELS.toSolution : ANSWER_TOGGLE_LABELS.toAnswer;
+    /* which of the two is on screen — resumed with it (§8.10: displayed values, the learner's own
+       answer and the mode travel together; userInputs/answerKey are re-derived from selectedSet).
+       Never reported: the toggle is not an answer. */
+    st.tgl = btn.dataset.mode;
+    if (typeof scheduleResumeSave === 'function') { try { scheduleResumeSave(); } catch (e) {} }
   };
   box.appendChild(btn);
   /* opens on the solution view (template default) */
@@ -747,7 +785,7 @@ function quizFinish(screen) {
   check.textContent = 'שנמשיך?';
   check.disabled = false;
   const hint = document.getElementById(`q${screen}-hint`);
-  hint.disabled = true;
+  if (hint) hint.disabled = true;
 }
 
 /* ---------- the scroll-affordance sprite ----------
@@ -835,6 +873,11 @@ function quizOpenHint(screen) {
      answered (quizFinish / the two branches in quizCheck), so `done` is the
      only state that still closes it off. */
   if (st.done) return;
+  /* Platform layer: requested.1 — after the guard, immediately before the hint is really shown.
+     Re-opening is allowed; the hints ledger reports it once (D-7). */
+  if (typeof onQuizHint === 'function') {
+    try { onQuizHint(screen); } catch (e) { console.error('[xAPI] onQuizHint', e); }
+  }
   const overlay = document.getElementById('quiz-hint-overlay');
   overlay.dataset.forScreen = screen;
   /* .hint-title-text, not .hint-title: the title element now holds the bulb

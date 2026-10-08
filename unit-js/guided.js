@@ -161,10 +161,22 @@ function gRender() {
     window.parent.postMessage({ type: 'DEV_SCREEN', screen: 8, step: gState.step }, '*');
   }
   if (typeof decorateBubbles === 'function') decorateBubbles(sec);
+  /* Platform layer (70-platform.js): mirror the state for resume. Guarded: runs without it. */
+  if (typeof onGuidedChanged === 'function') {
+    try { onGuidedChanged(); } catch (e) { console.error('[resume] onGuidedChanged', e); }
+  }
 
   /* the approved default reveals ON THE CLICK — no צדקתי?, no ✗ on a miss */
   sec.querySelectorAll('.gc-opt').forEach(b => {
-    b.onclick = () => { gState.picked[i] = +b.dataset.k; gRender(); };
+    b.onclick = () => {
+      const first = gState.picked[i] === undefined;
+      gState.picked[i] = +b.dataset.k;
+      gRender();
+      /* Platform layer: the FIRST pick is the answer (the reveal) — report it (item 004). */
+      if (first && typeof onGuidedAnswered === 'function') {
+        try { onGuidedAnswered(i, +b.dataset.k); } catch (e) { console.error('[xAPI] onGuidedAnswered', e); }
+      }
+    };
     b.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); b.onclick(); } };
   });
   sec.querySelector('#g-next').onclick = () => {
