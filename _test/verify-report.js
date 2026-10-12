@@ -153,6 +153,9 @@ comps.forEach((c) => {
   const g = ctx.XAPI_GATE;
   if (promise) ok(c + ' XAPI_GATE.need = the promise on s' + P.start + ' (' + promise[1] + ')', g && g.need === Number(promise[1]), g && g.need);
   else ok(c + ' no promise on screen -> no gate', !g);
+  /* "יש בה N סעיפים" must count the component's own question screens (07 said 5 over six, fixed 2026-10-12) */
+  const sections = /יש בה\s*(\d+)\s*סעיפים/.exec(text);
+  if (sections) ok(c + ' s' + P.start + ' "' + sections[1] + ' סעיפים" = the question screens', Number(sections[1]) === Object.keys(sq).length, Object.keys(sq).length);
   if (g && g.at != null) ok(c + ' the gate screen is a mapped quiz screen in range', g.at >= P.start && g.at <= P.end && quizScreens.includes(g.at));
 });
 

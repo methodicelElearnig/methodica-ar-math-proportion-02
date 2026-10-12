@@ -866,7 +866,8 @@ const QUESTIONS = [
 
   /* ═══ component 07 — שאלת שיא ב (deck 80-85).  Slide 78 announces "5 סעיפים"
      but the deck carries SIX (א-ו, slides 80-85); the stepper follows the real
-     slides. Flagged to the producer. ═══ */
+     slides. Flagged to the producer; 2026-10-12 the team decided 6 sections, 4 to pass —
+     s51's text now says 6. ═══ */
 
   { /* deck 80 — section א */
     screen: 53, type: 'value-input', label: '',
