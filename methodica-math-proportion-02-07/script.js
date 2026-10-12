@@ -42,8 +42,7 @@ var XAPI_SCREEN_QUESTIONS = {
 
 var XAPI_EVAL_ITEMS = { '001': 1 };
 
-/* ⚠️ OPEN (asked 2026-10-08): s51 promises "יש בה 5 סעיפים. עליכם להצליח ב-4 לפחות", but the
-   peak question has SIX sections — the screens (א-ו) and the metadata (q1-q6) agree on six. The
-   gate below takes the promised number (4) over the six screens until the text or the bar is
-   decided. */
+/* s51 promises "יש בה 6 סעיפים. עליכם להצליח ב-4 לפחות": the six section screens, need 4.
+   (Until 2026-10-12 the text said 5 sections — the screens (א-ו) and the metadata (q1-q6) always
+   had six; decided by the team: 4 of 6, the text fixed.) */
 var XAPI_GATE = { of: 'screens', need: 4 };

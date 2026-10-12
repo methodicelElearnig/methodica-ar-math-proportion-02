@@ -91,7 +91,7 @@ own screens. Transitions, the character pick (s0) and 07's closing picture (s59)
 | 04 | 001 = s28–34 (class task) | none | success, no score (§6.4) |
 | 05 | 001 s36 · 002 s37–39 · 003 s40–41 · 004 s42 · 005 s43–44 | none | correct ÷ declared, success |
 | 06 | 001 = s46–50 (q1–q5) | s45 "5 סעיפים · 4 לפחות" → screens, need 4 | |
-| 07 | 001 = s52–58 (q1–q6) | s51 says "5 סעיפים · 4 לפחות" — **there are six** | need 4 over six — **open** |
+| 07 | 001 = s52–58 (q1–q6) | s51 "6 סעיפים · 4 לפחות" → screens, need 4 | (the text said 5 until 2026-10-12 — fixed, team's decision) |
 
 Video: screen 6's YouTube is a static `youtube-nocookie` iframe with no IFrame API — D-1 (the
 `forigin` token leak) cannot happen, and there is no `played` / `paused` to report. No `<video>`
@@ -182,8 +182,8 @@ removed stills) changes no reporting, resume or issue-report code; it is uploade
 
 ## 7. Open
 
-1. **07's gate:** the screen promises "5 סעיפים · 4 לפחות", the question has six sections. Fix the
-   text, or the bar.
+1. ~~**07's gate**~~ — fixed 2026-10-12 (team's decision): s51 now says "6 סעיפים · 4 לפחות", the
+   gate was already 4 of the six sections.
 2. **02 below its bar:** reported `success:false`, but the metadata routes nowhere
    (`recommendedAfterFail: []`).
 3. ~~Image resize~~ — done (`2773ad0`); upload the new package.

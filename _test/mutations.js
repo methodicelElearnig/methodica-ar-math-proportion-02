@@ -43,6 +43,8 @@ const M = [
     '#report-modal [hidden] { display: none; }', ''],
   ['the issue report loses the item', 'issue-report.js', 'unit-js/report-modal.js',
     "return { item: reportComponentId() + '-' + map[0], page: String(map[1]) };", "return { item: '', page: String(map[1]) };"],
+  ['the intro promises a section count the component does not have (07, fixed 2026-10-12)', 'verify-report.js', UNIT + '-07/index.html',
+    'יש בה 6 סעיפים', 'יש בה 5 סעיפים'],
   ['the hint reported on every open (D-7 dedupe off)', 'resume.js', 'unit-js/20-xapi.js',
     'if (XAPI_HINTS_SENT[_k]) return;', '',
     /* the ledger still dedupes across reloads — remove it too, as the bug was */
