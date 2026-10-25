@@ -2542,11 +2542,10 @@ h3,
    centred, so any shared width gives both the same height. */
 .s2-char img { width: 190px; height: auto; display: block; }
 
-/* ══ S3 / S5 (deck slides 6, 10): VideoWatchAndContinue.
-   The frame is built; the film is not in the supplied assets (slides 7-8 and
-   11-12 are its storyboard). `data-pending` draws the empty stage so the gap is
-   visible rather than silently absent — replace with a <video> and the
-   watch-gate returns. ══ */
+/* ══ VideoWatchAndContinue frame — this unit's one is s6 (deck slide 20), a
+   YouTube iframe mounted by unit.js videoGateEnter; המשך waits for its END.
+   `data-pending` (unused here) draws an empty stage for a film not yet
+   supplied. ══ */
 
 
 .video-frame { width: 760px; height: 400px; border-radius: 16px; background: #EEF0F4; position: relative; }

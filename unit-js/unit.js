@@ -195,9 +195,133 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+/* ─── VideoWatchAndContinue (s6) ───────────────────────────────
+   Content team, monday 02-01-003 (2026-10): המשך stays locked until the
+   video has played to its END. The video is YouTube, so ENDED comes from the
+   IFrame Player API.
+   - Guide §6.9.1 (D-1): the iframe is built HERE and YT.Player attaches to
+     the finished element with no videoId / host / playerVars. When the API
+     builds the iframe it appends `forigin` from location.href — the launch
+     URL, which carries the Bearer token.
+   - Guide §6.9.3: the gate is STATE — CUSTOM_STATE[n].watched, written by
+     70-platform.js onVideoWatched and flushed on ENDED, so a reload, Back from
+     the next screen or a resume never asks for the video again.
+   - Never trap a learner: when the API cannot load, the player reports an
+     error, or it is not ready within VIDEO_READY_MS, המשך opens for this page
+     load (not saved — it was not watched).
+   played / paused go out through xapiYouTubeState (20-xapi.js) against the
+   screen's item (SCREEN_TO_SUBCONTENT). */
+const VIDEO_READY_MS = 15000;
+const _videoPlayers = {};   // screen -> { player, ready, timer }
+const _videoOpenNow = {};   // screen -> true: open on this page load (ended, or cannot play)
+let _ytApiState = null;     // null | 'loading' | 'ready' | 'failed'
+const _ytApiWaiters = [];
+
+function _ytEmbedSrc(videoId) {
+  const p = ['enablejsapi=1', 'rel=0', 'modestbranding=1', 'playsinline=1', 'hl=he'];
+  /* file:// has the origin "null", and YouTube refuses it (error 153) */
+  if (/^https?:$/.test(window.location.protocol)) p.push('origin=' + encodeURIComponent(window.location.origin));
+  return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId) + '?' + p.join('&');
+}
+
+/* The slot becomes the iframe; it keeps its id and data-yt-video. Idempotent. */
+function _ytMount(slot) {
+  if (slot.tagName === 'IFRAME') return slot;
+  const f = document.createElement('iframe');
+  f.id = slot.id;
+  f.title = slot.dataset.title || '';
+  f.dataset.ytVideo = slot.dataset.ytVideo;
+  f.src = _ytEmbedSrc(slot.dataset.ytVideo);
+  f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+  f.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+  f.allowFullscreen = true;
+  slot.parentNode.replaceChild(f, slot);
+  return f;
+}
+
+/* Loads the IFrame API once; cb(true) when YT.Player exists, cb(false) when the script failed. */
+function _ytLoadApi(cb) {
+  if (window.YT && window.YT.Player) { cb(true); return; }
+  if (_ytApiState === 'failed') { cb(false); return; }
+  _ytApiWaiters.push(cb);
+  if (_ytApiState === 'loading') return;
+  _ytApiState = 'loading';
+  const settle = (ok) => { _ytApiState = ok ? 'ready' : 'failed'; _ytApiWaiters.splice(0).forEach((w) => w(ok)); };
+  const prev = window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady = function () {
+    if (typeof prev === 'function') { try { prev(); } catch (e) {} }
+    settle(true);
+  };
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  tag.onerror = () => settle(false);
+  document.head.appendChild(tag);
+}
+
+function _videoItem(n) {
+  const m = (typeof SCREEN_TO_SUBCONTENT !== 'undefined') ? SCREEN_TO_SUBCONTENT[n] : null;
+  return m ? m[0] : null;
+}
+
+function videoWatched(n) {
+  return !!(_videoOpenNow[n] || (typeof CUSTOM_STATE !== 'undefined' && CUSTOM_STATE[n] && CUSTOM_STATE[n].watched));
+}
+
+/* The painter: המשך follows the state. Also 70-platform.js paintCustom. */
+function videoGatePaint(n) {
+  const btn = document.querySelector('#s' + n + ' .btn-continue');
+  if (btn) btn.disabled = !videoWatched(n);
+}
+
+/* watched = the video reached its END (saved); otherwise the player cannot play (this load only). */
+function _videoOpen(n, watched) {
+  const rec = _videoPlayers[n];
+  if (rec) clearTimeout(rec.timer);
+  if (watched && typeof onVideoWatched === 'function') {
+    try { onVideoWatched(n); } catch (e) { console.error('[resume] video watched', e); }
+  }
+  _videoOpenNow[n] = true;
+  videoGatePaint(n);
+}
+
+function videoGateEnter(n) {
+  const slot = document.querySelector('#s' + n + ' [data-yt-video]');
+  if (!slot) return;
+  videoGatePaint(n);
+  if (_videoPlayers[n]) return;
+  const frame = _ytMount(slot);
+  const rec = _videoPlayers[n] = { player: null, ready: false, timer: 0 };
+  rec.timer = setTimeout(() => {
+    if (!rec.ready) { console.warn('[video] s' + n + ' player not ready — המשך opened'); _videoOpen(n, false); }
+  }, VIDEO_READY_MS);
+  _ytLoadApi((ok) => {
+    if (!ok) { console.warn('[video] IFrame API did not load — המשך opened on s' + n); _videoOpen(n, false); return; }
+    const item = _videoItem(n);
+    rec.player = new YT.Player(frame, {
+      events: {
+        onReady() { rec.ready = true; clearTimeout(rec.timer); },
+        onStateChange(e) {
+          try { if (typeof xapiYouTubeState === 'function') xapiYouTubeState(e, item); } catch (err) {}
+          if (e.data === YT.PlayerState.ENDED) _videoOpen(n, true);
+        },
+        onError() { rec.ready = true; console.warn('[video] s' + n + ' player error — המשך opened'); _videoOpen(n, false); },
+      },
+    });
+  });
+}
+
+/* Leaving a video screen pauses its player: a real pause, which closes an open 'played' (§6.9.2). */
+function videoGateLeave(to) {
+  Object.keys(_videoPlayers).forEach((k) => {
+    const p = _videoPlayers[k].player;
+    if (Number(k) !== to && p && typeof p.pauseVideo === 'function') { try { p.pauseVideo(); } catch (e) {} }
+  });
+}
+
 /* ─── per-screen entry ─────────────────────────────────────── */
 function resetScreenState(n) {
   if (typeof quizResetScreenState === 'function') quizResetScreenState(n);
+  videoGateLeave(n);
   switch (n) {
     case 0: s0Enter(); break;
     case 1: setCharacter('s1-char', 'standing'); break;   /* deck image3 is 221x211 — the normal pose */
@@ -208,6 +332,7 @@ function resetScreenState(n) {
     case 3: setCharacter('s3-char', 'standing'); break;
     case 4: setCharacter('s4-char', 'squashed'); break;   /* deck image9 IS character-squashed-*.png */
     case 5: carEnter(); break;                      /* the 12-step carousel */
+    case 6: videoGateEnter(6); break;               /* VideoWatchAndContinue */
     case 7: setCharacterMedia('s7-char', 'duo'); break;
     case 8: gEnter(); break;                        /* the 7-step guided flow */
     case 9: setCharacterMedia('s9-char', 'reading'); break;

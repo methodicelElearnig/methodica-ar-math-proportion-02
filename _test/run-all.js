@@ -5,7 +5,7 @@
 const path = require('path');
 const { spawnSync } = require('child_process');
 const root = path.resolve(process.argv[2] || path.join(__dirname, '..'));
-const SUITES = ['verify-report.js', 'smoke.js', 'walk-404.js', 'statement-flow.js', 'issue-report.js', 'resume.js', 'layout.js'];
+const SUITES = ['verify-report.js', 'smoke.js', 'walk-404.js', 'statement-flow.js', 'issue-report.js', 'resume.js', 'layout.js', 'video-gate.js'];
 let red = [];
 for (const s of SUITES) {
   const t0 = Date.now();

@@ -365,16 +365,22 @@ function restoreEndedButton() {
    unit that caught a decorative autoplay/loop/muted clip of the companion character — not
    content — which was wired and reporting.
 
-   ⚠️ In this unit every <video> is exactly that: the companion character's transition clips
-   (unit-assets/video/character-orange-*.mp4, autoplay/muted, built by unit.js). None carries
-   data-xapi-report, so the allowlist keeps them silent — which is the whole point of it. An
-   unfiltered querySelectorAll('video') would be actively reporting decoration.
+   ⚠️ In this unit every <video> is exactly that: the companion character's clips
+   (unit-assets/video/character-yellow-* / character-green-*.mp4, autoplay/muted/loop, built by
+   unit.js, and the two s0 cards). None carries data-xapi-report, so the allowlist keeps them
+   silent — which is the whole point of it. An unfiltered querySelectorAll('video') would be
+   actively reporting decoration. The unit's one content video is s6's YouTube iframe, which is
+   not a <video>: it reports through xapiYouTubeState below.
    It was not quiet reporting either: an element that is playing emits a pause event followed by a
    play whenever .load() or a src swap happens, i.e. a fabricated paused/played pair on every
    entry to the screen, including on back-navigation and on resume.
    Only elements carrying data-xapi-report are wired now, its value being the item suffix (e.g.
-   data-xapi-report="003"). No element in this unit carries it, so video
-   reporting is off in practice — the mechanism stays ready for real content video.
+   data-xapi-report="003"). No <video> in this unit carries it — the mechanism stays ready.
+   ── A state machine, not a latch (guide §6.9.2; scale-01's version) ──
+   The old body kept a pausedOnce latch: 'played' went out only after a 'paused', so the first
+   'played' of every viewing was swallowed (MOE, mass-measure-01, 17.09.26). One flag — "a
+   'played' is open" — makes an orphan 'paused' impossible. NEVER opt in a `loop` video: every
+   iteration would report a 'played'.
    ── objectId: the ITEM, not the question (15.09.26) ──
    Reported by the test team: these statements went out against the PART. Carrying xapiQ() was
    never enough. The library builds object.id from sttmContext.objectId, else from a questionId
@@ -393,8 +399,52 @@ function xapiWireVideos(){
     if (v.__xapiWired) return; v.__xapiWired = true;
     var item = v.getAttribute('data-xapi-report');
     var ctx  = { objectId: xapiItemId(item) };   // the ITEM this video belongs to
-    var pausedOnce = false;
-    v.addEventListener('pause', function(){ if (v.ended || v.currentTime === 0) return; pausedOnce = true; try { sendStatement720('paused', 'question', null, Object.assign({ time: v.currentTime }, ctx)); } catch (e) {} });
-    v.addEventListener('play',  function(){ if (!pausedOnce) return; try { sendStatement720('played', 'question', null, Object.assign({ time: v.currentTime }, ctx)); } catch (e) {} });
+    var playing   = false;  // a 'played' is open, not yet closed by a 'paused'
+    var reloading = false;  // a load()/src swap is in flight: its 'pause' is not the learner
+    function send(verb) {
+      try { sendStatement720(verb, 'question', null, Object.assign({ time: v.currentTime }, ctx)); } catch (e) {}
+    }
+    v.addEventListener('emptied', function(){ reloading = true; });
+    v.addEventListener('play', function(){
+      reloading = false;
+      if (playing) return;                           // already open: nothing started
+      playing = true;
+      send('played');
+    });
+    v.addEventListener('pause', function(){
+      if (!playing) return;                          // nothing open -> an orphan is impossible
+      playing = false;
+      if (v.ended) return;                           // end of clip, not a learner pause
+      if (reloading || v.readyState === 0) return;   // load()/src swap, not a learner pause
+      send('paused');
+    });
+    /* Some engines fire 'ended' without a preceding 'pause'. Close the state either way. */
+    v.addEventListener('ended', function(){ playing = false; });
   });
+}
+
+/* played/paused for a YouTube iframe (s6, unit.js videoGateEnter's onStateChange) — guide §6.9.2.
+   One flag per PLAYER: __xapiPlaying = "a 'played' is open". 'played' only while it is off,
+   'paused' only while it is on, so the first 'played' of every viewing is sent, an orphan 'paused'
+   is impossible, and a seek (BUFFERING -> PLAYING while playing) stays silent. ENDED resets the
+   flag and reports nothing: a replay sends 'played' again, and a synthetic 'paused' at the end
+   would report a learner action that did not happen. objectId = the ITEM (see above). */
+function xapiYouTubeState(e, item) {
+  if (!window.XAPI_USING_G || typeof sendStatement720 !== 'function') return;
+  if (!item) { console.warn('[xAPI] youtube state with no item suffix -- not reporting'); return; }
+  var p = e && e.target;
+  if (!p) return;
+  var t = (typeof p.getCurrentTime === 'function') ? p.getCurrentTime() : undefined;
+  var ctx = { time: t, objectId: xapiItemId(item) };
+  if (e.data === YT.PlayerState.PLAYING) {
+    if (p.__xapiPlaying) return;
+    p.__xapiPlaying = true;
+    try { sendStatement720('played', 'question', null, ctx); } catch (_) {}
+  } else if (e.data === YT.PlayerState.PAUSED) {
+    if (!p.__xapiPlaying) return;
+    p.__xapiPlaying = false;
+    try { sendStatement720('paused', 'question', null, ctx); } catch (_) {}
+  } else if (e.data === YT.PlayerState.ENDED) {
+    p.__xapiPlaying = false;
+  }
 }

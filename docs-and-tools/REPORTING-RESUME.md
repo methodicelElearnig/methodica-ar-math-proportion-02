@@ -23,6 +23,7 @@ is specific to this unit and what was decided. Branch `vadimr/feat/reporting-res
 | `791bfe2` | **the unused `calculator` / `measuring` stills removed** (owner's go-ahead, −3.7 MB), `?v=20261008d` |
 | `fef19f7` | **package `deployments/2026-10-08b` uploaded by the owner — verified 105 / 105 byte-identical on the CDN**; the seven components **published** in Kata by the owner (`send-metadata.ps1 -Status`: published=7, draft=0) |
 | `9f6c06c` (PR #2, merged `c52c1fb`) | **the two unused green clips removed** (−2.1 MB), `?v=20261008e` — **package `deployments/2026-10-08c` (103 files) uploaded by the owner, verified 103 / 103 byte-identical on the CDN** |
+| `vadimr/fix/s6-video-gate` (2026-10-25) | **s6 video: המשך locked until the END** (content team, monday 02-01-003) **and `played` / `paused` reported** against item 003 (guide §6.9); the `<video>` latch replaced by the state machine; `?v=20261025a`; `_test/video-gate.js` — package `deployments/2026-10-25` |
 
 **Image resize.** Every raster image was measured at the largest size it is displayed at (canvas
 pixels, every screen, every carousel / guided step, both companions, every zoom view) and kept at
@@ -93,9 +94,18 @@ own screens. Transitions, the character pick (s0) and 07's closing picture (s59)
 | 06 | 001 = s46–50 (q1–q5) | s45 "5 סעיפים · 4 לפחות" → screens, need 4 | |
 | 07 | 001 = s52–58 (q1–q6) | s51 "6 סעיפים · 4 לפחות" → screens, need 4 | (the text said 5 until 2026-10-12 — fixed, team's decision) |
 
-Video: screen 6's YouTube is a static `youtube-nocookie` iframe with no IFrame API — D-1 (the
-`forigin` token leak) cannot happen, and there is no `played` / `paused` to report. No `<video>`
-opts in (`data-xapi-report`); the character clips are decoration.
+Video (since 2026-10-25): screen 6's YouTube (item 003) is VideoWatchAndContinue — המשך, and
+ArrowLeft, stay locked until the video reaches its END (content team, monday 02-01-003). `unit.js`
+builds the `youtube-nocookie` iframe itself (`enablejsapi=1`, `origin`, nothing from the launch
+URL) and attaches `YT.Player` with events only, so D-1 (the `forigin` token leak, §6.9.1) cannot
+happen. `played` / `paused` go out through `xapiYouTubeState` (§6.9.2: one flag per player, the
+first `played` sent, no orphan `paused`, seeks silent, ENDED reports nothing; objectId = item 003);
+leaving s6 pauses the player. The gate is state (§6.9.3): `CUSTOM_STATE[6] = { watched: true }`,
+flushed on ENDED, so a reload, Back from s7 or a resume never asks again. Never trapped: if the
+IFrame API fails to load, the player errors, or it is not ready within 15 s, המשך opens for that
+page load (not saved). No `<video>` opts in (`data-xapi-report`); the character clips are decoration.
+Checked with the real player (headless Chrome, 2026-10-25): locked → ENDED → open and saved;
+`played@0 · paused@2 · played@50` on 003; 33 YouTube requests, none carrying the launch query.
 
 ## 3. Issue report
 
