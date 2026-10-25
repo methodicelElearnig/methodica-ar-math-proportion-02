@@ -5,8 +5,8 @@
 <meta http-equiv="Cache-Control" content="no-store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>פרופורציה — מציאת המספר X החסר (יעד 2.2)</title>
-<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261014a">
-  <link rel="stylesheet" href="../unit-css/styles.css?v=20261014a">
+<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261025a">
+  <link rel="stylesheet" href="../unit-css/styles.css?v=20261025a">
 </head>
 <body data-subject-theme="math">
 <!-- Resume boot cover (unit-js/40-resume.js dropBootCover): hides the first frame until it is
@@ -175,21 +175,21 @@
 
 <!-- ══ S6 — deck slide 20 · Video. Slides 20-21 are both pages of the video
      SCRIPT (תסריט סרטון – White Board – טבלת פרופורציה), so they are one
-     screen, not two. FLAG-PRODUCER: the clip is not yet produced. ══ -->
+     screen, not two. VideoWatchAndContinue: המשך stays locked until the video
+     has played to its END (content team, monday 02-01-003, 2026-10). ══ -->
   <section class="screen" data-screen="6" id="s6">
     <div class="transition-content ts-content">
       <h1 class="ts-title">טבלת פרופורציה</h1>
       <!-- deck slides 20-21 are the VIDEO SCRIPT. The produced clip arrived
-           04.10.26 as a YouTube link (QGF81fTZDGE); the pending placeholder it
-           replaces is gone. Embed lifted from percent-08 S3 (approved). -->
+           04.10.26 as a YouTube link (QGF81fTZDGE). The slot is replaced by
+           the iframe on the first visit (unit.js videoGateEnter): built by us,
+           never by the YouTube API, so the launch URL never reaches Google
+           (guide §6.9.1). -->
       <div class="video-frame" data-reveal="2" data-reveal-fade>
-        <iframe src="https://www.youtube-nocookie.com/embed/QGF81fTZDGE?rel=0&amp;modestbranding=1&amp;hl=he"
-          title="טבלת פרופורציה" loading="lazy" allowfullscreen
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <div id="s6-yt" data-yt-video="QGF81fTZDGE" data-title="טבלת פרופורציה"></div>
       </div>
     </div>
-    <button class="btn-continue" onclick="advanceScreen()">המשך</button>
+    <button class="btn-continue" onclick="advanceScreen()" disabled>המשך</button>
     <button class="btn-back" onclick="goTo(5)">חזרה</button>
   </section>
 
@@ -332,23 +332,23 @@
        720-core engine and this unit's screens, the glue (70-platform.js), and 90-boot.js LAST in
        its own tag (guide §3). One ?v= on every code reference, identical in all seven components
        (§3.4). -->
-  <script src="../unit-js/10-identity.js?v=20261014a"></script>
-  <script src="../unit-js/20-xapi.js?v=20261014a"></script>
-  <script src="../unit-js/40-resume.js?v=20261014a"></script>
-  <script src="../unit-js/50-loader.js?v=20261014a"></script>
-  <script src="script.js?v=20261014a"></script>
-  <script src="../unit-js/motion.js?v=20261014a"></script>
-  <script src="../unit-js/quiz-engine.js?v=20261014a"></script>
-  <script src="../unit-js/applet-dino.js?v=20261014a"></script>
-  <script src="../unit-js/classtask.js?v=20261014a"></script>
-  <script src="../unit-js/questions.js?v=20261014a"></script>
-  <script src="../unit-js/carousel.js?v=20261014a"></script>
-  <script src="../unit-js/guided.js?v=20261014a"></script>
-  <script src="../unit-js/unit.js?v=20261014a"></script>
-  <script src="../unit-js/report-modal.js?v=20261014a"></script>
-  <script src="../unit-js/engine.js?v=20261014a"></script>
-  <script src="../unit-js/70-platform.js?v=20261014a"></script>
-  <script src="../unit-js/90-boot.js?v=20261014a"></script>
+  <script src="../unit-js/10-identity.js?v=20261025a"></script>
+  <script src="../unit-js/20-xapi.js?v=20261025a"></script>
+  <script src="../unit-js/40-resume.js?v=20261025a"></script>
+  <script src="../unit-js/50-loader.js?v=20261025a"></script>
+  <script src="script.js?v=20261025a"></script>
+  <script src="../unit-js/motion.js?v=20261025a"></script>
+  <script src="../unit-js/quiz-engine.js?v=20261025a"></script>
+  <script src="../unit-js/applet-dino.js?v=20261025a"></script>
+  <script src="../unit-js/classtask.js?v=20261025a"></script>
+  <script src="../unit-js/questions.js?v=20261025a"></script>
+  <script src="../unit-js/carousel.js?v=20261025a"></script>
+  <script src="../unit-js/guided.js?v=20261025a"></script>
+  <script src="../unit-js/unit.js?v=20261025a"></script>
+  <script src="../unit-js/report-modal.js?v=20261025a"></script>
+  <script src="../unit-js/engine.js?v=20261025a"></script>
+  <script src="../unit-js/70-platform.js?v=20261025a"></script>
+  <script src="../unit-js/90-boot.js?v=20261025a"></script>
 </div>
 </div>
 </body>

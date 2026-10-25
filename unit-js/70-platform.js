@@ -11,8 +11,8 @@
      - scores, pass gates and the component result, from XAPI_Q_RESULTS (§6.4)
      - the end of the component — the platform owns routing (§8.12)
      - the resume hooks and the painters for the two question types this unit asks
-   This unit's hand-built screens (component 01: the carousel s5 and the guided practice s8;
-   component 02: the dino applet s13; component 04: the class task s28-s34) report and resume
+   This unit's hand-built screens (component 01: the carousel s5, the watch-gated video s6 and the
+   guided practice s8; component 02: the dino applet s13; component 04: the class task s28-s34) report and resume
    through CUSTOM_KEYS / paintCustom below — see the ⚑ seams.
    quizState / QUESTIONS / TOTAL_SCREENS are top-level in the shared global lexical scope, so this
    shared file reaches them directly. inPart(n) is quiz-engine.js's own (declaring it again here
@@ -32,6 +32,7 @@
      repaintScreen(n)           engine.js goTo(), after resetScreenState — every navigation (§8.4a)
      onQuizAnswered / onQuizCommitted / onQuizHint   quiz-engine.js call sites
      onCustomAnswered / onCustomPick                 the hand-built screens' call sites
+     onVideoWatched(n)          unit.js — a watch-gated video reached its END (§6.9.3)
      partBoot()                 90-boot.js — builds the question screens and lands the part
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -191,6 +192,16 @@ function onGuidedAnswered(i, k) {
   var cfg = GUIDED[i - 1];
   var item = _itemFor(8), keys = _qKeysFor(8), n = _guidedQSteps().indexOf(i);
   if (item && cfg && n !== -1 && keys[n]) xapiAnswered(item, keys[n], k === cfg.correct, true, _txt(cfg.opts[k]));
+  flushResumeSave();
+}
+
+/* ── component 01 · s6, the video (unit.js VideoWatchAndContinue) ──
+   Asks no question; its המשך waits for the video's END. The gate is state (§6.9.3):
+   CUSTOM_STATE[6] = { watched: true }, flushed the moment it is earned, so a reload, Back from s7
+   or a resume never asks for the video again. unit.js videoGatePaint draws המשך from it. */
+function onVideoWatched(n) {
+  if (resumeIsPainting() || !inPart(n)) return;
+  CUSTOM_STATE[n] = { watched: true };
   flushResumeSave();
 }
 
@@ -657,6 +668,7 @@ function paintValue(n, q, st) {
 function paintCustom(n) {
   if (n === 5 && CUSTOM_STATE[5] && typeof carRender === 'function') { carRender(); return; }
   if (n === 8 && CUSTOM_STATE[8] && typeof gRender === 'function') { gRender(); return; }
+  if (typeof videoGatePaint === 'function' && document.querySelector('#s' + n + ' [data-yt-video]')) { videoGatePaint(n); return; }
   if (CUSTOM_STATE[n] && document.querySelector('.ct-screen[data-screen="' + n + '"]')) _paintTask(n);
 }
 

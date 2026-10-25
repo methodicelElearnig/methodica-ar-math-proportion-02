@@ -49,6 +49,12 @@ const M = [
     'if (XAPI_HINTS_SENT[_k]) return;', '',
     /* the ledger still dedupes across reloads — remove it too, as the bug was */
     ['unit-js/40-resume.js', 'if (alreadySent(ledger, key)) return true;', '']],
+  ['the s6 video gate never entered (monday 02-01-003)', 'video-gate.js', 'unit-js/unit.js',
+    '    case 6: videoGateEnter(6); break;', ''],
+  ['the s6 player reports no played / paused (§6.9.2)', 'video-gate.js', 'unit-js/unit.js',
+    "try { if (typeof xapiYouTubeState === 'function') xapiYouTubeState(e, item); } catch (err) {}", ''],
+  ['the watch gate not saved — the video asked again after a reload (§6.9.3)', 'video-gate.js', 'unit-js/70-platform.js',
+    'CUSTOM_STATE[n] = { watched: true };', ''],
 ];
 
 function copyTree(from, to) {
