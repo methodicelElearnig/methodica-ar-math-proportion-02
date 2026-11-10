@@ -142,33 +142,7 @@
       "informationToBot": "מטרת הפריט: פתרון מודרך שלב אחר שלב של מציאת נעלם בפרופורציה בהקשר של הגדלת דגם. מה התלמיד אמור להבין/לתרגל: כדי שדגם מוגדל ייראה כמו המקורי, יש לשמור על פרופורציה בין גובה לאורך: גובה מקורי 4 ס\"מ, אורך 16 ס\"מ, אורך מוגדל 80 ס\"מ. מצמצמים את היחס 4/16 ל-1/4, מסמנים x לגובה המוגדל, כותבים x/80 = 1/4 וכופלים במכנה המשותף: x = 20. כיווני חשיבה ואסטרטגיות: שבעה שלבים: ארגון הנתונים בטבלה, חישוב והצמצום של היחס המקורי, סימון הנעלם, כתיבת המשוואה, פתרון וניסוח תשובה מילולית מלאה. הלומד משיב בשני שלבים יחד עם הדמות. טעויות נפוצות: כתיבת יחס הפוך (80/x במקום x/80) באגף אחד בלבד; אי-צמצום היחס; השמטת ניסוח התשובה הסופית. מידע נוסף: שתי נקודות מענה (בחירת היחס המצומצם ובחירת היחס של הדגם המוגדל); הלומד עונה יחד עם הדמות ולכן הפריט מסווג כטקסט. התשובה נחשפת עם הבחירה, בלי משוב שלילי. צילום מסך: לא צורף.",
       "contentType": "solved-exercise",
       "mediaFormat": "text",
-      "questions": [
-        {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-004/q1",
-          "questionType": "choice",
-          "questionText": "גובה הדגם המקורי הוא 4 ס\"מ ואורכו 16 ס\"מ. מה היחס המצומצם בין הגובה לאורך של הדגם המקורי?",
-          "answers": [
-            "1/12",
-            "4/1",
-            "1/4"
-          ],
-          "correctAnswers": [
-            "1/4"
-          ]
-        },
-        {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-004/q2",
-          "questionType": "choice",
-          "questionText": "היחס בין גובה הדגם המוגדל (x) לאורכו (80 ס\"מ) הוא:",
-          "answers": [
-            "80/x",
-            "x/80"
-          ],
-          "correctAnswers": [
-            "x/80"
-          ]
-        }
-      ]
+      "questions": []
     },
     {
       "id": "https://lomdot.education.gov.il/metodica/720active/math/proportion/02/methodica-math-proportion-02-01/methodica-math-proportion-02-01-005/",
