@@ -5,8 +5,17 @@
 <meta http-equiv="Cache-Control" content="no-store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>פרופורציה — מציאת המספר X החסר (יעד 2.2)</title>
-<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261025a">
-  <link rel="stylesheet" href="../unit-css/styles.css?v=20261025a">
+<!-- The shared xAPI library is fetched by unit-js/50-loader.js at the END of the body, i.e. after
+     the parser has already queued every image below; measured live (mass-measure-01), its request
+     did not go out until the last image had finished, which put the resume restore 20-45 s behind
+     a slow line (2026-11-03). Preloading it from the head puts it FIRST in the queue. The href must
+     equal what 50-loader.js builds (no ?v=, no crossorigin) or the browser fetches it twice;
+     the library letter here changes together with LIB720 there (the harness asserts it). -->
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapiwrapper.min.js">
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapi-720-l.js">
+<link rel="preconnect" href="https://kata.cet.ac.il">
+<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261114">
+  <link rel="stylesheet" href="../unit-css/styles.css?v=20261114">
 </head>
 <body data-subject-theme="math">
 <!-- Resume boot cover (unit-js/40-resume.js dropBootCover): hides the first frame until it is
@@ -16,6 +25,11 @@
 <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#e9e9ee"></div>
 <script>
 (function () {
+  /* A Kata launch (registration in the query) may have a document to restore: raise the flag HERE,
+     before any script is fetched. bootXAPI raises it too, but from the last script tag, which on a cold
+     cache arrives after the 800 ms below — the cover dropped before the flag existed (2026-11-03).
+     Without a registration (local, dev) the 800 ms behaviour is unchanged. */
+  if (/[?&]registration=/.test(location.search)) window.__resumeInFlight = true;
   var t0 = Date.now();
   function tick() {
     var c = document.getElementById('boot-cover');
@@ -170,23 +184,23 @@
        720-core engine and this unit's screens, the glue (70-platform.js), and 90-boot.js LAST in
        its own tag (guide §3). One ?v= on every code reference, identical in all seven components
        (§3.4). -->
-  <script src="../unit-js/10-identity.js?v=20261025a"></script>
-  <script src="../unit-js/20-xapi.js?v=20261025a"></script>
-  <script src="../unit-js/40-resume.js?v=20261025a"></script>
-  <script src="../unit-js/50-loader.js?v=20261025a"></script>
-  <script src="script.js?v=20261025a"></script>
-  <script src="../unit-js/motion.js?v=20261025a"></script>
-  <script src="../unit-js/quiz-engine.js?v=20261025a"></script>
-  <script src="../unit-js/applet-dino.js?v=20261025a"></script>
-  <script src="../unit-js/classtask.js?v=20261025a"></script>
-  <script src="../unit-js/questions.js?v=20261025a"></script>
-  <script src="../unit-js/carousel.js?v=20261025a"></script>
-  <script src="../unit-js/guided.js?v=20261025a"></script>
-  <script src="../unit-js/unit.js?v=20261025a"></script>
-  <script src="../unit-js/report-modal.js?v=20261025a"></script>
-  <script src="../unit-js/engine.js?v=20261025a"></script>
-  <script src="../unit-js/70-platform.js?v=20261025a"></script>
-  <script src="../unit-js/90-boot.js?v=20261025a"></script>
+  <script src="../unit-js/10-identity.js?v=20261114"></script>
+  <script src="../unit-js/20-xapi.js?v=20261114"></script>
+  <script src="../unit-js/40-resume.js?v=20261114"></script>
+  <script src="../unit-js/50-loader.js?v=20261114"></script>
+  <script src="script.js?v=20261114"></script>
+  <script src="../unit-js/motion.js?v=20261114"></script>
+  <script src="../unit-js/quiz-engine.js?v=20261114"></script>
+  <script src="../unit-js/applet-dino.js?v=20261114"></script>
+  <script src="../unit-js/classtask.js?v=20261114"></script>
+  <script src="../unit-js/questions.js?v=20261114"></script>
+  <script src="../unit-js/carousel.js?v=20261114"></script>
+  <script src="../unit-js/guided.js?v=20261114"></script>
+  <script src="../unit-js/unit.js?v=20261114"></script>
+  <script src="../unit-js/report-modal.js?v=20261114"></script>
+  <script src="../unit-js/engine.js?v=20261114"></script>
+  <script src="../unit-js/70-platform.js?v=20261114"></script>
+  <script src="../unit-js/90-boot.js?v=20261114"></script>
 </div>
 </div>
 </body>

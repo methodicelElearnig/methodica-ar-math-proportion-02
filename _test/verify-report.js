@@ -52,7 +52,7 @@ ok('one ?v= value everywhere', versions.size === 1, [...versions].join(','));
 const loader = rd('unit-js/50-loader.js');
 const lib = /var LIB720 = CDN \+ \(RESUME_ENABLED \? '(xapi-720-(\w)\.js)'/.exec(loader);
 const gate = /XAPI_USING_G = \/xapi-720-\[(\w+)\]\\\.js\/\.test\(LIB720\)/.exec(loader);
-ok('library letter is -k', lib && lib[2] === 'k', lib && lib[1]);
+ok('library letter is -l (2026-11-14, fix R §2.10: the leave save)', lib && lib[2] === 'l', lib && lib[1]);
 ok('the letter is inside the XAPI_USING_G regex', lib && gate && gate[1].includes(lib[2]), gate && gate[1]);
 
 /* ── names and parsing ── */
