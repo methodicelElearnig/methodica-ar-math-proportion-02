@@ -5,8 +5,17 @@
 <meta http-equiv="Cache-Control" content="no-store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>פרופורציה — מציאת המספר X החסר (יעד 2.2)</title>
-<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261025a">
-  <link rel="stylesheet" href="../unit-css/styles.css?v=20261025a">
+<!-- The shared xAPI library is fetched by unit-js/50-loader.js at the END of the body, i.e. after
+     the parser has already queued every image below; measured live (mass-measure-01), its request
+     did not go out until the last image had finished, which put the resume restore 20-45 s behind
+     a slow line (2026-11-03). Preloading it from the head puts it FIRST in the queue. The href must
+     equal what 50-loader.js builds (no ?v=, no crossorigin) or the browser fetches it twice;
+     the library letter here changes together with LIB720 there (the harness asserts it). -->
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapiwrapper.min.js">
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapi-720-l.js">
+<link rel="preconnect" href="https://kata.cet.ac.il">
+<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261114b">
+  <link rel="stylesheet" href="../unit-css/styles.css?v=20261114b">
 </head>
 <body data-subject-theme="math">
 <!-- Resume boot cover (unit-js/40-resume.js dropBootCover): hides the first frame until it is
@@ -16,6 +25,11 @@
 <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#e9e9ee"></div>
 <script>
 (function () {
+  /* A Kata launch (registration in the query) may have a document to restore: raise the flag HERE,
+     before any script is fetched. bootXAPI raises it too, but from the last script tag, which on a cold
+     cache arrives after the 800 ms below — the cover dropped before the flag existed (2026-11-03).
+     Without a registration (local, dev) the 800 ms behaviour is unchanged. */
+  if (/[?&]registration=/.test(location.search)) window.__resumeInFlight = true;
   var t0 = Date.now();
   function tick() {
     var c = document.getElementById('boot-cover');
@@ -64,7 +78,7 @@
       <h1 class="ct-title">משימת כיתה</h1>
       <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
       <p class="ct-sub"><strong>נכיר את הסרגל</strong><br>התבוננו בסרגל שלכם.<br>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.<br>כל שנתה גדולה מייצגת <strong>1 סנטימטר</strong>.<br>כל שנתה קטנה מייצגת <strong>1 מילימטר</strong>.</p>
-      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
+      <img loading="lazy" class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
       <p class="ct-ask">ספרו כמה שנתות קטנות יש בין 0 ל-1 ס"מ.<br>כמה מילימטרים יש בסנטימטר אחד?</p>
       <div class="viq-rows task-rows"><div class="viq-row task-row">
         <input id="s28-in-0" class="viq-input-box task-input" type="text" aria-label="מספר המילימטרים בסנטימטר" oninput="taskOnInput('s28')">
@@ -72,7 +86,7 @@
     </div>
     <div class="character-widget s28-char-wrap" data-reveal="2" data-reveal-fade>
       <div class="speech-bubble">רגע, יש פה מלא קווים קטנים...<br>בואו נספור!</div>
-      <img id="s28-char" alt="דמות מלווה מתבוננת בזכוכית מגדלת">
+      <img loading="lazy" id="s28-char" alt="דמות מלווה מתבוננת בזכוכית מגדלת">
     </div>
     <button class="btn-continue" id="s28-check" disabled onclick="taskCheck('s28')">המשך</button>
     <button class="btn-back" onclick="goTo(27)">חזרה</button>
@@ -83,7 +97,7 @@
       <h1 class="ct-title">משימת כיתה</h1>
       <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
       <p class="ct-sub"><strong>נכיר את הסרגל</strong><br>התבוננו בסרגל שלכם.<br>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.<br>כל שנתה גדולה מייצגת <strong>1 סנטימטר</strong>.<br>כל שנתה קטנה מייצגת <strong>1 מילימטר</strong>.</p>
-      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
+      <img loading="lazy" class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
       <p class="ct-ask">מהו היחס בין מספר הסנטימטרים למספר המילימטרים שמייצגים את אותו האורך?</p>
       <div class="viq-rows task-rows"><div class="viq-row task-row ct-ratio-row">
         <input id="s29-in-0" class="viq-input-box task-input" type="text" aria-label="מספר הסנטימטרים" oninput="taskOnInput('s29')">
@@ -100,7 +114,7 @@
       <h1 class="ct-title">משימת כיתה</h1>
       <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
       <p class="ct-sub"><strong>נכיר את הסרגל</strong><br>התבוננו בסרגל שלכם.<br>הקווים שעל הסרגל נקראים <strong>שנתות</strong>.<br>כל שנתה גדולה מייצגת <strong>1 סנטימטר</strong>.<br>כל שנתה קטנה מייצגת <strong>1 מילימטר</strong>.</p>
-      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
+      <img loading="lazy" class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
       <p class="ct-ask">אם אורך של חפץ מסוים הוא 450 מ"מ, מה יהיה אורכו בסנטימטרים?</p>
       <div class="viq-rows task-rows"><div class="viq-row task-row">
         <input id="s30-in-0" class="viq-input-box task-input" type="text" aria-label="האורך בסנטימטרים" oninput="taskOnInput('s30')">
@@ -115,7 +129,7 @@
       <h1 class="ct-title">משימת כיתה</h1>
       <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
       <p class="ct-sub"><strong>התבוננו בסרגל בחלק של האינצ'ים</strong><br>יתכן שהוא מופיע בצידו השני של הסרגל או כקו מקביל לקו הסנטימטרים (ראו תמונה).</p>
-      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם קו סנטימטרים וקו אינצ'ים">
+      <img loading="lazy" class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם קו סנטימטרים וקו אינצ'ים">
       <p class="ct-ask">שרטטו במחברתכם קטע באורך 5 אינצ'ים.<br>מדדו את אורך הקטע בסנטימטרים –<br>דייקו ככל הניתן.</p>
       <div class="viq-rows task-rows"><div class="viq-row task-row">
         <span class="viq-row-label">5 אינצ'ים שווים ל-</span>
@@ -123,7 +137,7 @@
         <span class="viq-row-label">סנטימטרים.</span></div></div>
     </div>
     <div class="character-widget s31-char-wrap" data-reveal="2" data-reveal-fade>
-      <img id="s31-char" alt="דמות מלווה">
+      <img loading="lazy" id="s31-char" alt="דמות מלווה">
     </div>
     <button class="btn-continue" id="s31-check" disabled onclick="taskCheck('s31')">המשך</button>
     <button class="btn-back" onclick="goTo(30)">חזרה</button>
@@ -134,7 +148,7 @@
       <h1 class="ct-title">משימת כיתה</h1>
       <p class="ct-brief"><strong>מצאו חבר או חברה הנמצאים באותו שלב בלמידה. לא מצאתם? תוכלו לבצע את המשימה לבד.</strong><br><strong>העזרים הדרושים: סרגל, כלי כתיבה ודף משבצות.</strong></p>
       <p class="ct-sub"><strong>התבוננו בסרגל בחלק של האינצ'ים</strong><br>יתכן שהוא מופיע בצידו השני של הסרגל או כקו מקביל לקו הסנטימטרים (ראו תמונה).</p>
-      <img class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
+      <img loading="lazy" class="ct-ruler" src="assets/img/ruler.png" alt="סרגל עם שנתות סנטימטרים ומילימטרים">
       <p class="ct-ask">השלימו את הפרופורציה הבאה:</p>
       <div class="ct-prop" dir="ltr">
         <span class="fraction vi-frac"><span class="frac-top"><span dir="rtl">5 אינצ'ים</span></span>
@@ -161,8 +175,8 @@
     </div>
     <figure class="ct-phonefig">
       <span class="ct-phone">
-        <img class="ct-screenpic" src="assets/img/ct-screen.png" alt="יד מחזיקה טלפון">
-        <img class="ct-screen-char" src="assets/img/ct-screen2.png" alt="הדמות המלווה נראית כלואה בתוך המסך">
+        <img loading="lazy" class="ct-screenpic" src="assets/img/ct-screen.png" alt="יד מחזיקה טלפון">
+        <img loading="lazy" class="ct-screen-char" src="assets/img/ct-screen2.png" alt="הדמות המלווה נראית כלואה בתוך המסך">
         <svg class="ct-diag" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           <defs><marker id="ct-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
             <path d="M0,0 L6,3 L0,6 Z" fill="#29A3E0"/></marker></defs>
@@ -195,7 +209,7 @@
       <!-- deck 58: "הדמות והבועה מופיעה רק אחרי ההקלדה" — held until both boxes are filled -->
       <div class="character-widget s34-char-wrap is-hidden" id="s34-cheer">
         <div class="speech-bubble">יופי של עבודה!</div>
-        <img id="s34-char" alt="דמות מלווה">
+        <img loading="lazy" id="s34-char" alt="דמות מלווה">
       </div>
     </div>
     <button class="btn-continue" id="s34-check" disabled onclick="taskCheck('s34')">אפשר להמשיך</button>
@@ -312,23 +326,23 @@
        720-core engine and this unit's screens, the glue (70-platform.js), and 90-boot.js LAST in
        its own tag (guide §3). One ?v= on every code reference, identical in all seven components
        (§3.4). -->
-  <script src="../unit-js/10-identity.js?v=20261025a"></script>
-  <script src="../unit-js/20-xapi.js?v=20261025a"></script>
-  <script src="../unit-js/40-resume.js?v=20261025a"></script>
-  <script src="../unit-js/50-loader.js?v=20261025a"></script>
-  <script src="script.js?v=20261025a"></script>
-  <script src="../unit-js/motion.js?v=20261025a"></script>
-  <script src="../unit-js/quiz-engine.js?v=20261025a"></script>
-  <script src="../unit-js/applet-dino.js?v=20261025a"></script>
-  <script src="../unit-js/classtask.js?v=20261025a"></script>
-  <script src="../unit-js/questions.js?v=20261025a"></script>
-  <script src="../unit-js/carousel.js?v=20261025a"></script>
-  <script src="../unit-js/guided.js?v=20261025a"></script>
-  <script src="../unit-js/unit.js?v=20261025a"></script>
-  <script src="../unit-js/report-modal.js?v=20261025a"></script>
-  <script src="../unit-js/engine.js?v=20261025a"></script>
-  <script src="../unit-js/70-platform.js?v=20261025a"></script>
-  <script src="../unit-js/90-boot.js?v=20261025a"></script>
+  <script src="../unit-js/10-identity.js?v=20261114b"></script>
+  <script src="../unit-js/20-xapi.js?v=20261114b"></script>
+  <script src="../unit-js/40-resume.js?v=20261114b"></script>
+  <script src="../unit-js/50-loader.js?v=20261114b"></script>
+  <script src="script.js?v=20261114b"></script>
+  <script src="../unit-js/motion.js?v=20261114b"></script>
+  <script src="../unit-js/quiz-engine.js?v=20261114b"></script>
+  <script src="../unit-js/applet-dino.js?v=20261114b"></script>
+  <script src="../unit-js/classtask.js?v=20261114b"></script>
+  <script src="../unit-js/questions.js?v=20261114b"></script>
+  <script src="../unit-js/carousel.js?v=20261114b"></script>
+  <script src="../unit-js/guided.js?v=20261114b"></script>
+  <script src="../unit-js/unit.js?v=20261114b"></script>
+  <script src="../unit-js/report-modal.js?v=20261114b"></script>
+  <script src="../unit-js/engine.js?v=20261114b"></script>
+  <script src="../unit-js/70-platform.js?v=20261114b"></script>
+  <script src="../unit-js/90-boot.js?v=20261114b"></script>
 </div>
 </div>
 </body>

@@ -156,7 +156,9 @@ const { ok, report } = checker('resume');
     ok('C guided step + pick restored', g0 === g1 && (await page.evaluate(() => currentScreen)) === 8, g0 + ' vs ' + g1);
     ok('C guided answered step repainted (revealed, המשך open)', await page.evaluate(() => !!document.querySelector('#s8 .gc-opt.correct') && !document.getElementById('g-next').disabled));
     const L = await log(page);
-    ['-002/q1', '-002/q2', '-002/q3', '-002/q4', '-004/q1'].forEach((k) => ok('C ' + k + ' reported once', ansFor(L, k).length === 1, ansFor(L, k).length));
+    ['-002/q1', '-002/q2', '-002/q3', '-002/q4'].forEach((k) => ok('C ' + k + ' reported once', ansFor(L, k).length === 1, ansFor(L, k).length));
+    /* 2026-11-14: the guided exercise (004) reports nothing (GUIDED-ITEMS-REPORT group A); the pick is still restored above */
+    ['-004/q1', '-004/q2'].forEach((k) => ok('C ' + k + ' (guided) never reported', ansFor(L, k).length === 0, ansFor(L, k).length));
     ok('C 002/q2 (step 6) reported wrong', ansFor(L, '-002/q2')[0] && ansFor(L, '-002/q2')[0].result.success === false);
     ok('C item 002 completed once', count(L, (x) => x.verb === 'completed' && x.objectId && x.objectId.endsWith('-01-002/')) === 1);
     await ctx.close();
