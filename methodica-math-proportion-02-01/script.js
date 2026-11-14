@@ -36,13 +36,17 @@ var SCREEN_TO_SUBCONTENT = {
 
 /* Screen -> the catalogue questions it answers (metadata questions[].questionId, last segment).
    s5: the carousel's graded steps 4, 6, 9, 10 in order are q1-q4 (70-platform.js onCarAnswered);
-   s8: the guided flow's two question steps are q1, q2 (onGuidedAnswered). */
+   s8, the guided exercise (item 004 "נפתור יחד", steps 3 and 5), reports nothing since 2026-11-14:
+   unit owner's rule of 10.11 (QA/2026-11-10-guided-items/GUIDED-ITEMS-REPORT.md, group A; as ratio-05
+   a572ab3 and ratio-04 f46ec27). Kata declares no question on 01-004; the picks are still kept and
+   saved for resume (onGuidedChanged → flushResumeSave), onGuidedAnswered finds no key and sends nothing. */
 var XAPI_SCREEN_QUESTIONS = {
   5: ['q1', 'q2', 'q3', 'q4'],
-  8: ['q1', 'q2'],
   10: ['q1'],
   11: ['q1']
 };
 
-/* Items carrying a code-graded question (used as a set). 001 and 003 have none. */
-var XAPI_EVAL_ITEMS = { '002': 1, '004': 1, '005': 1, '006': 1 };
+/* Items carrying a code-graded question (used as a set). 001 and 003 have none; 004, the guided
+   exercise, is out since 2026-11-14 (see above): its 'completed' carries no result, and part 01
+   scores on the six catalogue questions (002 q1-q4, 005 q1, 006 q1) instead of eight. */
+var XAPI_EVAL_ITEMS = { '002': 1, '005': 1, '006': 1 };
