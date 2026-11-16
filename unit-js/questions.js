@@ -868,7 +868,7 @@ const QUESTIONS = [
     content: `<img class="expo-shot expo-shot--print" data-no-zoom src="assets/img/expo-print-565.jpg" alt="ملصقات مطبوعة">`,
     /* 30.09 — deck page 84 puts "שתי ההצעות" third and "لا يمكن التحديد" last */
     options: [
-      { id: 'p1', html: 'مطبعة 1' }, { id: 'p2', html: 'طباعة 2' },
+      { id: 'p1', html: 'مطبعة 1' }, { id: 'p2', html: 'مطبعة 2' },
       { id: 'same', html: 'العرضان مُجديان بنفس القدر' }, { id: 'idk', html: 'لا يمكن التحديد' },
     ],
     correct: 'p2',
