@@ -1,6 +1,6 @@
 'use strict';
 /* ═══════════════════════════════════════════════════════════════════
-   Applet — "יישומון: עיצוב דינוזאור למשחק"  (deck slide 35)
+   Applet — "تطبيق مصغّر: تصميم ديناصور للعبة"  (deck slide 35)
 
    The slide carries a production callout ("הפקה- שילוב ישומון") over a
    reference render, i.e. a build instruction, not learner copy. Rebuilt
@@ -22,44 +22,37 @@ function dinoAppletHTML() {
   return `
   <div class="applet-embed applet-inline">
     <button class="applet-zoom-btn" type="button" data-applet-toggle="open"
-      aria-label="הגדלת היישומון למסך מלא"><svg width="21" height="21" viewBox="0 0 21 21" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="2"/><line x1="13.5" y1="13.5" x2="19" y2="19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+      aria-label="تكبير التطبيق إلى شاشة كاملة"><svg width="21" height="21" viewBox="0 0 21 21" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="2"/><line x1="13.5" y1="13.5" x2="19" y2="19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
     <button class="applet-zoom-btn applet-close-btn" type="button" data-applet-toggle="close"
-      aria-label="סגירת מסך מלא"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><line x1="2" y1="2" x2="13" y2="13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><line x1="13" y1="2" x2="2" y2="13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      aria-label="إغلاق الشاشة الكاملة"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><line x1="2" y1="2" x2="13" y2="13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><line x1="13" y1="2" x2="2" y2="13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
   <div class="dino" id="dino">
-    <p class="dino-title">יישומון: עיצוב דינוזאור למשחק</p>
-    <p class="dino-sub">מצב מקורי: גובה <strong>12</strong> ס"מ, רוחב <strong>9</strong> ס"מ. שנו את הערכים כדי לשמור על היחס</p>
+    <p class="dino-title">تطبيق مصغّر: تصميم ديناصور للعبة</p>
+    <p class="dino-sub">الوضع الأصلي: ارتفاع <strong>12</strong> سم، عرض <strong>9</strong> سم. غيّروا القيم للحفاظ على النسبة</p>
     <div class="dino-body">
       <div class="dino-plot">
-        <svg viewBox="0 0 340 312" role="img" aria-label="תרשים ממדי הדינוזאור">
+        <svg viewBox="0 0 340 312" role="img" aria-label="مخطط أبعاد الديناصور">
           <g id="dino-grid"></g>
           <line class="dino-axis" x1="48" y1="260" x2="330" y2="260"/>
           <line class="dino-axis" x1="48" y1="260" x2="48" y2="10"/>
           <rect id="dino-rect" class="dino-rect" x="40" y="0" width="0" height="0"/>
-          <text id="dino-tag" class="dino-tag" x="0" y="0">דינוזאור</text>
+          <text id="dino-tag" class="dino-tag" x="0" y="0">ديناصور</text>
           <g id="dino-ticks"></g>
-          <text class="dino-axis-label" x="330" y="300" text-anchor="end">רוחב (ס"מ)</text>
-          <text class="dino-axis-label" x="50" y="14" text-anchor="start">גובה (ס"מ)</text>
+          <text class="dino-axis-label" x="330" y="300" text-anchor="end">العرض (سم)</text>
+          <text class="dino-axis-label" x="50" y="14" text-anchor="start">الارتفاع (سم)</text>
         </svg>
       </div>
       <div class="dino-side">
-        <label class="dino-ctl">
-          <span>גובה (ס"מ):</span>
-          <input type="range" id="dino-h" min="1" max="${DINO_MAX}" step="1" value="${DINO_START.h}"
-                 aria-label="גובה הדינוזאור בסנטימטרים">
+        <label class="dino-ctl"><span>الارتفاع (سم):</span><input type="range" id="dino-h" min="1" max="${DINO_MAX}" step="1" value="${DINO_START.h}"
+                 aria-label="ارتفاع الديناصور بالسنتيمترات">
           <output id="dino-h-out">${DINO_START.h}</output>
         </label>
-        <label class="dino-ctl">
-          <span>רוחב (ס"מ):</span>
-          <input type="range" id="dino-w" min="1" max="${DINO_MAX}" step="1" value="${DINO_START.w}"
-                 aria-label="רוחב הדינוזאור בסנטימטרים">
+        <label class="dino-ctl"><span>العرض (سم):</span><input type="range" id="dino-w" min="1" max="${DINO_MAX}" step="1" value="${DINO_START.w}"
+                 aria-label="عرض الديناصور بالسنتيمترات">
           <output id="dino-w-out">${DINO_START.w}</output>
         </label>
-        <div class="dino-readouts">
-          <span class="dino-pill">גובה: <strong id="dino-h-pill">12</strong> ס"מ</span>
-          <span class="dino-pill">רוחב: <strong id="dino-w-pill">9</strong> ס"מ</span>
-        </div>
+        <div class="dino-readouts"><span class="dino-pill">الارتفاع: <strong id="dino-h-pill">12</strong> سم</span> <span class="dino-pill">العرض: <strong id="dino-w-pill">9</strong> سم</span></div>
         <div class="dino-ratio">
-          <p>היחס בין גובה הדמות לרוחב הדמות:</p>
+          <p>النسبة بين ارتفاع الشكل وعرض الشكل:</p>
           <span class="fraction fr-inline">
             <span class="frac-top" id="dino-fr-top">12</span>
             <span class="frac-bottom" id="dino-fr-bot">9</span>

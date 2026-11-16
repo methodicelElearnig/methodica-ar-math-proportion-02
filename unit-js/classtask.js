@@ -19,7 +19,7 @@ function taskOnInput(sid) {
 
 /* ── Answer keys, read off the deck (תסריט) pages 52-58 ──────────────────────
    Producer 04.10: "לאורך כל מסכי המשימה, צריך כרטיסיות משוב - תשובה נכונה /
-   התשובה אינה נכונה - התשובה הנכונה מוצגת. ולהציג את התשובה הנכונה כמו
+   الإجابة غير صحيحة - الإجابة الصحيحة معروضة. ולהציג את התשובה הנכונה כמו
    שמופיעה בתסריט."  The task used to have no key at all — the button simply
    opened once every box held something.
    s33 has no input, and s34 measures the learner's OWN screen (deck 58: the
@@ -55,7 +55,7 @@ function taskShowFeedback(sid, ok) {
   box.className = 'quiz-feedbox ' + (ok ? 'is-correct' : 'is-wrong');
   box.style.transform = '';
   if (typeof quizFeedboxDrag === 'function') quizFeedboxDrag(box);
-  const title = ok ? 'תשובה נכונה' : 'התשובה אינה נכונה - התשובה הנכונה מוצגת.';
+  const title = ok ? 'إجابة صحيحة' : 'الإجابة غير صحيحة - الإجابة الصحيحة معروضة.';
   box.innerHTML = `<div class="scq-fb-title">${title}</div>`;
 }
 
@@ -97,7 +97,7 @@ function taskCheck(sid) {
   }
   st.done = true;
   const btn = document.getElementById(sid + '-check');
-  if (btn) { btn.textContent = 'המשך'; btn.disabled = false; }
+  if (btn) { btn.textContent = 'متابعة'; btn.disabled = false; }
   /* Platform layer (70-platform.js): the check is committed — persist it (resume). Guarded. */
   if (typeof onTaskChecked === 'function') {
     try { onTaskChecked(sid); } catch (e) { console.error('[resume] onTaskChecked', e); }

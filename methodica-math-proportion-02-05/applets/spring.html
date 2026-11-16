@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>הדמיית פרופורציה: קפיץ ומשקולות</title>
+    <title>محاكاة تناسب: زنبرك وأثقال</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -227,35 +227,42 @@
         .btn-reset { background-color: #95a5a6; color: white; margin-top: auto;}
         .btn-reset:hover { background-color: #7f8c8d; }
 
+    
+        /* ═══ Arabic version: Calibri for Arabic glyphs + digits ═══ */
+        @font-face {
+          font-family: 'Calibri Arabic';
+          src: local('Calibri');
+          font-weight: 100 599;
+          unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+        @font-face {
+          font-family: 'Calibri Arabic';
+          src: local('Calibri Bold'), local('Calibri-Bold');
+          font-weight: 600 1000;
+          unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+        body, body * { font-family: 'Calibri Arabic', 'Assistant', 'Segoe UI', Arial, sans-serif !important; }
+
     </style>
 </head>
 <body>
 
-    <h1>הדמיית קפיץ ופרופורציה</h1>
-    <p class="subtitle">הוסיפו משקולות וראו כיצד הקפיץ מתארך ביחס ישר למסה.</p>
+    <h1>محاكاة النابض والتناسب</h1>
+    <p class="subtitle">أضيفوا أثقالاً وشاهدوا كيف يتمدد النابض بتناسب طردي مع الكتلة.</p>
 
     <div class="main-container">
         
         <div class="control-zone">
             <div class="controls">
-                <button class="btn-add" id="add-weight" onclick="addWeight()">הוסיפו משקולת (+50 גרם)</button>
-                <button class="btn-remove" id="remove-weight" onclick="removeWeight()" disabled>הסירו משקולת (-50 גרם)</button>
-                <button class="btn-reset" onclick="resetSim()">איפוס הניסוי</button>
+                <button class="btn-add" id="add-weight" onclick="addWeight()">أضيفوا ثقلًا (+50 غرام)</button>
+                <button class="btn-remove" id="remove-weight" onclick="removeWeight()" disabled>أزيلوا ثقلًا (‎-50 غرام)</button>
+                <button class="btn-reset" onclick="resetSim()">إعادة ضبط التجربة</button>
             </div>
 
             <div class="stats">
-                <div class="stat-item">
-                    <span class="stat-label">מספר משקולות:</span>
-                    <span class="stat-value" id="weight-count">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">מסה כוללת (גרם):</span>
-                    <span class="stat-value" id="total-mass">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">התארכות (ס"מ):</span>
-                    <span class="stat-value" id="elongation">0.0</span>
-                </div>
+                <div class="stat-item"><span class="stat-label">عدد الأثقال:</span> <span class="stat-value" id="weight-count">0</span></div>
+                <div class="stat-item"><span class="stat-label">الكتلة الإجمالية (غرام):</span> <span class="stat-value" id="total-mass">0</span></div>
+                <div class="stat-item"><span class="stat-label">الاستطالة (سم):</span> <span class="stat-value" id="elongation">0.0</span></div>
             </div>
         </div>
 
@@ -266,7 +273,7 @@
 
             <!-- קו מנוחה -->
             <div class="rest-line"></div>
-            <div class="rest-label">אורך התחלתי (ללא עומס)</div>
+            <div class="rest-label">الطول الابتدائي (بدون حمل)</div>
 
             <!-- מד התארכות ויזואלי -->
             <div class="elongation-indicator" id="elongation-indicator">
@@ -293,7 +300,7 @@
         const K_FACTOR = 0.05;          // קבוע הקפיץ בהדמיה (ס"מ לכל גרם)
                                        // התארכות = מסה * K_FACTOR (מסה בגרם, התארכות בס"מ)
         
-        const CM_TO_PX = 12;           // מקדם המרה מ"ס"מ" ויזואלי לפיקסלים במסך (הוקטן מ-15 ל-12 כדי למנוע גלישה)
+        const CM_TO_PX = 12;           // מקדם המרה מ"سم" ויזואלי לפיקסלים במסך (הוקטן מ-15 ל-12 כדי למנוע גלישה)
         const MAX_WEIGHTS = 7;         // מותאם לגובה הסל (כדי שלא יגלשו החוצה)
 
         // משתני מצב
@@ -391,7 +398,7 @@
                 indicator.style.display = 'flex';
                 indicator.style.top = (springTopPx + restLengthPx) + 'px';
                 indicator.style.height = (elongation * CM_TO_PX) + 'px';
-                label.innerText = elongation.toFixed(1) + ' ס"מ';
+                label.innerText = elongation.toFixed(1) + ' سم';
             } else {
                 indicator.style.display = 'none';
             }
@@ -409,7 +416,7 @@
                 const weightDiv = document.createElement('div');
                 weightDiv.className = 'weight';
                 weightDiv.id = `weight-${currentWeights}`;
-                weightDiv.innerText = `${MASS_PER_WEIGHT_G} ג'`;
+                weightDiv.innerText = `${MASS_PER_WEIGHT_G} غ`;
                 
                 // אנימציית כניסה קלה
                 weightDiv.style.transform = 'translateY(-20px)';

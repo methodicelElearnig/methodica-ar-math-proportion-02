@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>משימת ריצוף במיינקרפט - פרופורציה</title>
+    <title>مهمة التبليط في ماينكرافت - تناسب</title>
     <link rel="stylesheet" href="../../unit-assets/fonts/fonts.css">
     <style>
         /* 06.10, producer: "text in the app is small make it bigger. also make
@@ -173,35 +173,51 @@
             border-color: #6cff70;
             text-shadow: 1px 1px 0 #000;
         }
+    
+        /* ═══ Arabic version: Calibri for Arabic glyphs + digits ═══ */
+        @font-face {
+          font-family: 'Calibri Arabic';
+          src: local('Calibri');
+          font-weight: 100 599;
+          unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+        @font-face {
+          font-family: 'Calibri Arabic';
+          src: local('Calibri Bold'), local('Calibri-Bold');
+          font-weight: 600 1000;
+          unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+        body, body * { font-family: 'Calibri Arabic', 'Assistant', 'Segoe UI', Arial, sans-serif !important; }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>משימת ריצוף: יחס 2:5</h1>
-    <p>עליכם להגיע ל-<strong>30 בלוקים של דשא</strong> ולשמור על פרופורציה של <strong>2 בלוקים של שיש לכל 5 בלוקים של דשא</strong>.</p>
+    <h1>مهمة التبليط: نسبة 2:5</h1>
+    <p>عليكم الوصول إلى <strong>30 بلوكًا من العشب</strong> والحفاظ على تناسب <strong>2 بلوك من الرخام لكل 5 بلوكات من العشب</strong>.</p>
 
     <div class="controls">
         <div class="tile-group">
-            <h3>בלוק דשא</h3>
+            <h3>بلوك عشب</h3>
             <div>
                 <button class="btn-plus" onclick="changeTile('grass', 1)">+</button>
                 <button class="btn-minus" onclick="changeTile('grass', -1)">-</button>
             </div>
-            <p>כמות: <span id="grassCount">5</span></p>
+            <p>الكمية: <span id="grassCount">5</span></p>
         </div>
 
         <div class="tile-group">
-            <h3>בלוק שיש</h3>
+            <h3>بلوك رخام</h3>
             <div>
                 <button class="btn-plus" onclick="changeTile('lapis', 1)">+</button>
                 <button class="btn-minus" onclick="changeTile('lapis', -1)">-</button>
             </div>
-            <p>כמות: <span id="lapisCount">2</span></p>
+            <p>الكمية: <span id="lapisCount">2</span></p>
         </div>
     </div>
 
-    <div id="statusMessage" class="status">היחס בין בלוקי השיש לבלוקי הדשא הוא 2:5</div>
+    <div id="statusMessage" class="status">النسبة بين كتل الرخام وكتل العشب هي 2:5</div>
 
     <div class="grid" id="gridContainer"></div>
 </div>
@@ -230,7 +246,7 @@
             for(let i = 0; i < bCount; i++) {
                 let div = document.createElement('div');
                 div.className = 'block lapis';
-                div.innerText = 'שיש';
+                div.innerText = 'رخام';
                 rowDiv.appendChild(div);
             }
             remLapis -= bCount;
@@ -240,7 +256,7 @@
             for(let i = 0; i < gCount; i++) {
                 let div = document.createElement('div');
                 div.className = 'block grass';
-                div.innerText = 'דשא';
+                div.innerText = 'عشب';
                 rowDiv.appendChild(div);
             }
             remGrass -= gCount;
@@ -262,15 +278,15 @@
         msg.className = 'status';
 
         if (grass === 0 && lapis === 0) {
-            msg.innerText = "הלוח ריק";
+            msg.innerText = "اللوح فارغ";
             return;
         }
 
         if (grass === 30 && lapis === 12) {
-            msg.innerText = "⭐ כל הכבוד! פיצחתם את המשימה: היחס בין בלוקי השיש לבלוקי הדשא הוא 12:30 (בדיוק 2:5)!";
+            msg.innerText = "⭐ أحسنتم! لقد حللتم المهمة: النسبة بين بلوكات الرخام وبلوكات العشب هي 12:30 (بالضبط 2:5)!";
             msg.classList.add('success');
         } else {
-            msg.innerText = `היחס בין בלוקי השיש לבלוקי הדשא הוא ${lapis}:${grass}`;
+            msg.innerText = `النسبة بين كتل الرخام وكتل العشب هي ${lapis}:${grass}`;
         }
     }
 

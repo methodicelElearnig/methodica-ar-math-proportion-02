@@ -11,16 +11,14 @@
    callout change.
    ═══════════════════════════════════════════════════════════════════ */
 
-const G_STORY = `<p>חברת צעצועי הרכבה החליטה לבנות דגם ענק של מכונית יוקרה.<br>
-  כדי שהדגם המוגדל ייראה כמו הדגם המקורי, עליה לשמור על פרופורציה בין הממדים של שני הדגמים.</p>
-  <p>גובה הדגם המקורי הוא 4 ס"מ, אורכו 16 ס"מ.<br>
-  החברה מעוניינת שאורך הדגם המוגדל לתצוגה יהיה 80 ס"מ.</p>`;
+const G_STORY = `<p>شركة ألعاب التركيب قررت بناء نموذج عملاق لسيارة فاخرة.<br>لكي يبدو النموذج المكبّر مثل النموذج الأصلي، عليها الحفاظ على تناسب بين أبعاد النموذجين.</p>
+  <p>ارتفاع النموذج الأصلي هو 4 سم، وطوله 16 سم.<br> تريد الشركة أن يكون طول النموذج المكبّر للعرض 80 سم.</p>`;
 /* the deck sets this at the FOOT of the framed box, under the table/photo */
-const G_ASK = `<p class="g-ask"><strong>מה צריך להיות גובה הדגם המוגדל כדי שתישמר הפרופורציה?</strong></p>`;
+const G_ASK = `<p class="g-ask"><strong>ما هو الارتفاع الذي يجب أن يكون عليه النموذج المكبّر للحفاظ على التناسب؟</strong></p>`;
 /* the bold line above both columns. Slide 23 says "רק קראו", 25-29 "רק הסתכלו
    על"; slide 24 has no such line at all. */
-const TOP_READ = 'התבוננו בתרגיל הבא. אל תפתרו אותו, רק קראו את הנתונים וחישבו האם יש לכם כיוון לפתרון.';
-const TOP_LOOK = 'התבוננו בתרגיל הבא. אל תפתרו אותו, רק הסתכלו על הנתונים וחישבו האם יש לכם כיוון לפתרון.';
+const TOP_READ = 'تأملوا في التمرين التالي. لا تحلّوه، فقط اقرأوا المعطيات وفكّروا هل لديكم اتجاه للحل.';
+const TOP_LOOK = 'تأملوا في التمرين التالي. لا تحلّوه، فقط انظروا إلى المعطيات وفكّروا هل لديكم اتجاه للحل.';
 
 const gf = (n, d) => `<span class="fraction fr-inline"><span class="frac-top">${n}</span><span class="frac-bottom">${d}</span></span>`;
 const geq = (a, b) => `<span class="car-eq" dir="ltr">${a}<span class="car-eq-op">=</span>${b}</span>`;
@@ -32,9 +30,9 @@ const geq = (a, b) => `<span class="car-eq" dir="ltr">${a}<span class="car-eq-op
    הדגם המוגדל", and step 6 (slide 28) solves x = 20. Across one continuous
    exercise X -> ? -> X -> x reads as three different quantities, so every
    table cell below uses lowercase `x`. Each changed cell is marked. */
-const G_TABLE = (cells) => `<table class="car-table"><thead><tr><th></th><th>דגם מקורי</th><th>דגם מוגדל</th></tr></thead>
-  <tbody><tr><th>גובה</th><td>${cells[0]}</td><td>${cells[1]}</td></tr>
-  <tr><th>אורך</th><td>${cells[2]}</td><td>${cells[3]}</td></tr></tbody></table>`;
+const G_TABLE = (cells) => `<table class="car-table"><thead><tr><th></th><th>نموذج أصلي</th><th>نموذج مكبّر</th></tr></thead>
+  <tbody><tr><th>ارتفاع</th><td>${cells[0]}</td><td>${cells[1]}</td></tr>
+  <tr><th>طول</th><td>${cells[2]}</td><td>${cells[3]}</td></tr></tbody></table>`;
 
 /* Layout, read off the rendered deck pages 23-29 (27.09):
      · a bold TOPLINE above both columns (every step but 2),
@@ -49,50 +47,50 @@ const GUIDED = [
        column, and the framed box carries the annotated photo. */
     topline: TOP_READ,
     frameImg: 'guided-car-side.png', dims: true,
-    monster: 'standing', bubble: 'מיד נסביר את הפתרון,<br>שלב אחר שלב' },
+    monster: 'standing', bubble: 'سنشرح الحل حالًا،<br>خطوة بخطوة' },
 
   { /* 2 · deck 24 — the only step with no topline, and the only one where the
        table sits in the CARD (it is being introduced there). */
-    card: 'לפני שנתחיל לחשב,<br>נעזר בטבלת הפרופורציה לארגון הנתונים.',
+    card: 'قبل أن نبدأ بالحساب،<br>سنستعين بجدول التناسب لتنظيم المعطيات.',
     tableInCard: true,
     /* deck slide 24 writes this cell as capital `X` — normalised to `x` */
-    table: G_TABLE(['4 ס"מ', 'x', '16 ס"מ', '80 ס"מ']) },
+    table: G_TABLE(['4 سم', 'x', '16 سم', '80 سم']) },
 
   { /* 3 · deck 25 — pick.  The deck lays the three pills out left-to-right
        1/4 · 4/1 · 1/12, i.e. RIGHT-to-left 1/12 · 4/1 · 1/4, and the נכון
        badge sits under the LEFTMOST pill (1/4) — so 1/4 is last here. */
     topline: TOP_LOOK,
     /* deck slide 25 writes this cell as `?` — normalised to `x` */
-    table: G_TABLE(['4 ס"מ', 'x', '16 ס"מ', '80 ס"מ']),
-    card: 'כדי שצורת הדגם לא תתעוות, יש לשמור על פרופורציה (שוויון יחסים) בין גובה הדגם לאורכו.',
-    q: 'מה היחס ה<strong>מצומצם</strong> בין הגובה לאורך של הדגם המקורי?',
+    table: G_TABLE(['4 سم', 'x', '16 سم', '80 سم']),
+    card: 'للحفاظ على شكل النموذج دون تشويه، يجب الحفاظ على تناسب (تساوي النسب) بين ارتفاع النموذج وطوله.',
+    q: 'ما هي النسبة <strong>المختزلة</strong> بين الارتفاع والطول للنموذج الأصلي؟',
     opts: [gf('1', '12'), gf('4', '1'), gf('1', '4')], correct: 2 },
 
   { /* 4 · deck 26 */ topline: TOP_LOOK,
     /* deck slide 26 writes this cell as capital `X` — normalised to `x` */
-    table: G_TABLE(['4 ס"מ', 'x', '16 ס"מ', '80 ס"מ']),
-    card: `לפי הנתונים, היחס בין גובה הדגם המקורי לאורכו הוא:<br>${gf('4', '16')}<br>לאחר צמצום ב-4 נקבל שהיחס המצומצם שווה ל- ${gf('1', '4')}` },
+    table: G_TABLE(['4 سم', 'x', '16 سم', '80 سم']),
+    card: `وفقًا للمعطيات، النسبة بين ارتفاع النموذج الأصلي وطوله هي:<br>${gf('4', '16')}<br>بعد الاختزال بـ 4 نحصل على أن النسبة المختزلة تساوي ${gf('1', '4')}` },
 
   { /* 5 · deck 27 — pick.  Deck order left-to-right x/80 · 80/x → right-to-left
        80/x · x/80, נכון badge under the leftmost pill (x/80). */
     topline: TOP_LOOK,
-    table: G_TABLE(['4 ס"מ', 'x', '16 ס"מ', '80 ס"מ']),
-    card: 'נסמן:<br><span dir="ltr">x</span> – גובה הדגם המוגדל.',
-    q: 'היחס בין גובה הדגם המוגדל לאורכו הוא:',
+    table: G_TABLE(['4 سم', 'x', '16 سم', '80 سم']),
+    card: 'نرمز:<br><span dir="ltr">x</span> – ارتفاع النموذج المكبّر.',
+    q: 'النسبة بين ارتفاع النموذج المكبّر وطوله هي:',
     opts: [gf('80', 'x'), gf('x', '80')], correct: 1 },
 
   { /* 6 · deck 28 */ topline: TOP_LOOK,
-    table: G_TABLE(['4 ס"מ', 'x', '16 ס"מ', '80 ס"מ']),
-    card: `נבנה את משוואת הפרופורציה – שוויון בין שני היחסים שמצאנו:<br>${geq(gf('x', '80'), gf('1', '4'))}<br>נכפול במכנה המשותף (80) ונקבל:<br><span dir="ltr">x = 20</span>` },
+    table: G_TABLE(['4 سم', 'x', '16 سم', '80 سم']),
+    card: `نبني معادلة التناسب – تساوي النسبتين اللتين وجدناهما:<br>${geq(gf('x', '80'), gf('1', '4'))}<br>نضرب بالمقام المشترك (80) ونحصل على:<br><span dir="ltr">x = 20</span>` },
 
   { /* 7 · deck 29 — the card carries the closing note AND the photo; the deck
        puts image50 in the LEFT column (x 49..289), i.e. beside the card. */
     topline: TOP_LOOK,
-    table: G_TABLE(['4 ס"מ', '<strong>20 ס"מ</strong>', '16 ס"מ', '80 ס"מ']),
-    cardTitle: 'לא לשכוח – לנסח תשובה סופית 😊',
+    table: G_TABLE(['4 سم', '<strong>20 سم</strong>', '16 سم', '80 سم']),
+    cardTitle: 'لا تنسوا – صياغة إجابة نهائية 😊',
     /* 04.10, Elad: the closing clause stays on ONE line — break before it,
        and the clause itself may not wrap. */
-    card: 'כדי שתישמר פרופורציה בין הממדים של הדגם המוגדל<br><span class="gc-oneline">והדגם המקורי, <strong>גובה הדגם המוגדל צריך להיות 20 ס"מ.</strong></span>',
+    card: 'لكي يتم الحفاظ على تناسب بين أبعاد النموذج المكبّر<br><span class="gc-oneline">والنموذج الأصلي، <strong>يجب أن يكون ارتفاع النموذج المكبّر 20 سم.</strong></span>',
     cardImg: 'guided-car-side-big.png' },
 ];
 
@@ -114,20 +112,18 @@ function gRender() {
   const steps = GUIDED.filter(c => c.opts);
   const stepIdx = steps.indexOf(cfg);
 
-  const optsHTML = () => `<div class="gc-opts" role="radiogroup" aria-label="אפשרויות תשובה">
+  const optsHTML = () => `<div class="gc-opts" role="radiogroup" aria-label="خيارات الإجابة">
     ${cfg.opts.map((o, k) => `
       <div class="gc-opt${revealed ? ' locked' : ''}${revealed && k === cfg.correct ? ' correct' : ''}${revealed && picked === k && k !== cfg.correct ? ' chosen' : ''}"
            role="radio" aria-checked="${picked === k}" tabindex="0" data-k="${k}">${o}</div>`).join('')}
   </div>`;
 
   const pic = cfg.dims
-    ? `<span class="g-figure"><img class="g-pic" src="assets/img/${cfg.frameImg}" alt="דגם מכונית הרכבה">
-         <span class="g-rule g-rule--v"></span><span class="g-rule g-rule--h"></span>
-         <span class="g-dim g-dim--h">4 ס"מ</span><span class="g-dim g-dim--w">16 ס"מ</span></span>`
-    : `<img class="g-pic" src="assets/img/${cfg.frameImg}" alt="דגם מכונית הרכבה">`;
+    ? `<span class="g-figure"><img class="g-pic" src="assets/img/${cfg.frameImg}" alt="نموذج سيارة تركيب"> <span class="g-rule g-rule--v"></span><span class="g-rule g-rule--h"></span> <span class="g-dim g-dim--h">4 سم</span><span class="g-dim g-dim--w">16 سم</span></span>`
+    : `<img class="g-pic" src="assets/img/${cfg.frameImg}" alt="نموذج سيارة تركيب">`;
 
   sec.innerHTML = `
-    <h1 class="g-title" data-reveal="1">פרופורציה – בואו נפתור תרגיל ראשון יחד</h1>
+    <h1 class="g-title" data-reveal="1">تناسب – هيا نحلّ تمرينًا أول معًا</h1>
     ${cfg.topline ? `<p class="g-topline" data-reveal="2"><strong>${cfg.topline}</strong></p>` : ''}
     <div class="g-layout${cfg.topline ? '' : ' g-layout--notop'}">
       <div class="g-right" data-reveal="3">
@@ -138,22 +134,22 @@ function gRender() {
           ${G_ASK}
         </div>
       </div>
-      ${cfg.monster ? '' : `<aside class="g-callout" data-reveal="4" aria-label="הנחיית השלב">
+      ${cfg.monster ? '' : `<aside class="g-callout" data-reveal="4" aria-label="إرشادات المرحلة">
         ${GC_BULB}
         ${cfg.cardTitle ? `<div class="gc-title">${cfg.cardTitle}</div>` : ''}
         ${cfg.card ? `<div class="gc-text">${cfg.card}</div>` : ''}
         ${cfg.tableInCard && cfg.table ? `<div class="gc-table">${cfg.table}</div>` : ''}
         ${cfg.q ? `<div class="gc-q">${cfg.q}</div>` : ''}
         ${cfg.opts ? optsHTML() : ''}
-        ${cfg.cardImg ? `<img class="gc-pic" src="assets/img/${cfg.cardImg}" alt="דגם מכונית הרכבה">` : ''}
+        ${cfg.cardImg ? `<img class="gc-pic" src="assets/img/${cfg.cardImg}" alt="نموذج سيارة تركيب">` : ''}
       </aside>`}
     </div>
     ${cfg.monster ? `<div class="character-widget" data-reveal="1" data-reveal-fade>
       <div class="speech-bubble">${cfg.bubble}</div>
-      <img id="g-char" alt="דמות מלווה">
+      <img id="g-char" alt="شخصية مرافقة">
     </div>` : ''}
-    <button class="btn-continue" id="g-next"${gate ? ' disabled' : ''}>המשך</button>
-    <button class="btn-back" id="g-prev">חזרה</button>`;
+    <button class="btn-continue" id="g-next"${gate ? ' disabled' : ''}>متابعة</button>
+    <button class="btn-back" id="g-prev">رجوع</button>`;
 
   if (cfg.monster && typeof setCharacter === 'function') setCharacter('g-char', cfg.monster);
   /* report the SLIDE, not just the screen — the DEV harness steps 8 → 8.1 → … */

@@ -4398,3 +4398,24 @@ h3,
 
 /* the dots carry no done/missed state any more, so the state colours go too */
 .car-dot.is-done { background: inherit; }
+
+/* ═══ Arabic version: Calibri for Arabic glyphs + digits ═══ */
+@font-face {
+  font-family: 'Calibri Arabic';
+  src: local('Calibri');
+  font-weight: 100 599;
+  unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: 'Calibri Arabic';
+  src: local('Calibri Bold'), local('Calibri-Bold');
+  font-weight: 600 1000;
+  unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+body, body * { font-family: 'Calibri Arabic', 'Assistant', 'Segoe UI', Arial, sans-serif !important; }
+
+/* ═══ Arabic version: quiz bar — the Arabic check label ("هل إجابتي صحيحة؟") is wider than the
+   Hebrew one, and the hint sat at a fixed left:212px (32px after a 140px check), so the gap
+   shrank to 15px. Flow both buttons so the Hebrew 32px gap holds for any label width. ═══ */
+.scq-bar { display: flex; align-items: flex-end; gap: 32px; padding-left: 40px; box-sizing: border-box; }
+.scq-bar .quiz-check, .scq-bar .quiz-hint { position: relative; left: auto; bottom: auto; flex: none; }

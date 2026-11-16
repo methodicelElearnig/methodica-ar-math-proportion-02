@@ -146,7 +146,7 @@ function setCharacterMedia(wrapId, pose, alt) {
     return;
   }
   wrap.dataset.src = src;
-  const label = alt || 'הדמות המלווה';
+  const label = alt || 'الشخصية المرافقة';
   wrap.innerHTML = /\.mp4$/.test(src)
     ? `<video class="transition-video" src="${src}" autoplay muted loop playsinline aria-label="${label}"></video>`
     : `<img class="transition-still" src="${src}" alt="${label}">`;
@@ -218,7 +218,7 @@ let _ytApiState = null;     // null | 'loading' | 'ready' | 'failed'
 const _ytApiWaiters = [];
 
 function _ytEmbedSrc(videoId) {
-  const p = ['enablejsapi=1', 'rel=0', 'modestbranding=1', 'playsinline=1', 'hl=he'];
+  const p = ['enablejsapi=1', 'rel=0', 'modestbranding=1', 'playsinline=1', 'hl=ar'];
   /* file:// has the origin "null", and YouTube refuses it (error 153) */
   if (/^https?:$/.test(window.location.protocol)) p.push('origin=' + encodeURIComponent(window.location.origin));
   return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId) + '?' + p.join('&');

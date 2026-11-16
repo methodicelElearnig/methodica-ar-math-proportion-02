@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>פרופורציה — מציאת המספר X החסר (יעד 2.2)</title>
+<title>تناسب — إيجاد العدد المجهول X (هدف 2.2)</title>
 <!-- The shared xAPI library is fetched by unit-js/50-loader.js at the END of the body, i.e. after
      the parser has already queued every image below; measured live (mass-measure-01), its request
      did not go out until the last image had finished, which put the resume restore 20-45 s behind
@@ -14,8 +14,8 @@
 <link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapiwrapper.min.js">
 <link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapi-720-l.js">
 <link rel="preconnect" href="https://kata.cet.ac.il">
-<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261114b">
-  <link rel="stylesheet" href="../unit-css/styles.css?v=20261114b">
+<link rel="stylesheet" href="../unit-assets/fonts/fonts.css?v=20261116ar4">
+  <link rel="stylesheet" href="../unit-css/styles.css?v=20261116ar4">
 </head>
 <body data-subject-theme="math">
 <!-- Resume boot cover (unit-js/40-resume.js dropBootCover): hides the first frame until it is
@@ -55,7 +55,7 @@
 
 <!-- ═══════════════════════════════════════════════════════════
        S0 — deck slide 3 · TwoOptionSelection (library template, content swapped)
-       The deck asks "איזו דמות תרצו שתלווה אתכם?" and carries NO subtitle.
+       The deck asks "أي شخصية تريدون أن ترافقكم؟" and carries NO subtitle.
        Right card = the yellow monster, left = the green one.
        First screen: no Back button. Selection enables בחרתי.
        ═══════════════════════════════════════════════════════════ -->
@@ -63,32 +63,32 @@
 
     <div class="select-content">
       <div class="select-head">
-        <h1 class="select-title">איזו דמות תרצו שתלווה אתכם?</h1>
+        <h1 class="select-title">أي شخصية تريدون أن ترافقكم؟</h1>
       </div>
 
       <!-- direction:ltr on .option-cards → first DOM child = leftmost. -->
-      <div class="option-cards" role="radiogroup" aria-label="בחרו דמות">
+      <div class="option-cards" role="radiogroup" aria-label="اختاروا شخصية">
         <div class="option-card" role="radio" aria-checked="false" tabindex="0"
-             data-value="character-green" aria-label="דמות מפלצת פרוותית ירוקה" onclick="selectOption(this)">
+             data-value="character-green" aria-label="شخصية وحش أخضر فروي" onclick="selectOption(this)">
           <div class="option-card-img">
             <video class="option-card-video" src="../unit-assets/video/character-green-ball.mp4"
                  autoplay loop muted playsinline preload="auto"
-                 aria-label="דמות מפלצת פרוותית ירוקה"></video>
+                 aria-label="شخصية وحش أخضر فروي"></video>
           </div>
         </div>
 
         <div class="option-card" role="radio" aria-checked="false" tabindex="0"
-             data-value="character-yellow" aria-label="דמות מפלצת פרוותית צהובה" onclick="selectOption(this)">
+             data-value="character-yellow" aria-label="شخصية وحش أصفر فروي" onclick="selectOption(this)">
           <div class="option-card-img">
             <video class="option-card-video" src="../unit-assets/video/character-yellow-selection.mp4"
                  autoplay loop muted playsinline preload="auto"
-                 aria-label="דמות מפלצת פרוותית צהובה"></video>
+                 aria-label="شخصية وحش أصفر فروي"></video>
           </div>
         </div>
       </div>
     </div>
 
-    <button class="btn-continue" id="s0-continue" disabled onclick="advanceScreen()">בחרתי</button>
+    <button class="btn-continue" id="s0-continue" disabled onclick="advanceScreen()">اخترت</button>
   </section>
 
 <!-- ══ S1 — deck slide 4. Deck geometry (960x540 -> 1280x720): copy across the
@@ -96,15 +96,15 @@
      companion bottom-LEFT flush to the edge (x=0 y=440 221x211) with its
      bubble ABOVE it (x=11 y=290). ══ -->
   <section class="screen" data-screen="1" id="s1">
-    <p class="hk-lead" style="top:79px">אתם מעלים תמונה לסטורי, אבל משהו נראה מוזר...</p>
+    <p class="hk-lead" style="top:79px">أنتم تنشرون صورةً على الستوري، لكن شيئًا ما يبدو غريبًا...</p>
     <img loading="lazy" class="hk-photo" style="left:241px; top:201px; width:797px; height:295px"
-         src="assets/img/hook-distorted.jpeg" alt="תמונת סלפי מעוותת — רחבה מדי ביחס לגובהה">
+         src="assets/img/hook-distorted.jpeg" alt="صورة سيلفي مشوّهة — عريضة جدًا بالنسبة لارتفاعها">
     <div class="character-widget" data-reveal="3" data-reveal-fade>
-      <div class="speech-bubble">מה השתבש בתמונה?</div>
-      <img loading="lazy" id="s1-char" alt="הדמות המלווה">
+      <div class="speech-bubble">ما الخطأ في الصورة؟</div>
+      <img loading="lazy" id="s1-char" alt="الشخصية المرافقة">
     </div>
-    <button class="btn-continue" onclick="advanceScreen()">המשך</button>
-    <button class="btn-back" onclick="goTo(0)">חזרה</button>
+    <button class="btn-continue" onclick="advanceScreen()">متابعة</button>
+    <button class="btn-back" onclick="goTo(0)">رجوع</button>
   </section>
 
 <!-- ══ S2 — deck slide 5. The SAME photo appears twice: once at its true
@@ -112,16 +112,16 @@
      lesson. The tall sliver (75x536) is the third distortion. No companion
      picture on this slide; the bubble stands alone at x=294 y=421. ══ -->
   <section class="screen" data-screen="2" id="s2">
-    <p class="hk-copy" style="left:408px; top:82px; width:796px">כדי שהתמונה לא תתעוות, צריך לשמור על יחס קבוע בין הרוחב<br>לגובה שלה, המתאים לממדי המסך.</p>
+    <p class="hk-copy" style="left:408px; top:82px; width:796px">لكي لا تتشوه الصورة، يجب الحفاظ على نسبة ثابتة بين العرض<br>والارتفاع الخاص بها، بما يتناسب مع أبعاد الشاشة.</p>
     <img loading="lazy" class="hk-photo" style="left:202px; top:82px;  width:75px;  height:536px"
-         src="assets/img/hook-tall.jpeg" alt="התמונה נמתחה לגובה">
+         src="assets/img/hook-tall.jpeg" alt="تم تمديد الصورة عموديًا">
     <img loading="lazy" class="hk-photo" style="left:312px; top:245px; width:302px; height:112px"
-         src="assets/img/hook-wide.jpeg" alt="התמונה ביחס הנכון">
+         src="assets/img/hook-wide.jpeg" alt="الصورة بالنسبة الصحيحة">
     <img loading="lazy" class="hk-photo" style="left:640px; top:245px; width:530px; height:317px"
-         src="assets/img/hook-wide.jpeg" alt="אותה תמונה, נמתחה לרוחב">
-    <div class="speech-bubble side-bubble--right s2-bubble" data-reveal="3">איזו תמונה גרועה<br>שלי</div>
-    <button class="btn-continue" onclick="advanceScreen()">המשך</button>
-    <button class="btn-back" onclick="goTo(1)">חזרה</button>
+         src="assets/img/hook-wide.jpeg" alt="نفس الصورة، ممتدة بالعرض">
+    <div class="speech-bubble side-bubble--right s2-bubble" data-reveal="3">يا لها من صورة<br>سيئة لي</div>
+    <button class="btn-continue" onclick="advanceScreen()">متابعة</button>
+    <button class="btn-back" onclick="goTo(1)">رجوع</button>
   </section>
 
 <!-- ══ S3 — deck slide 6. Photo LEFT (x=114 y=64 302x536); its height label
@@ -130,24 +130,16 @@
      the bubble to its LEFT (x=800) — the mirror of slide 4. ══ -->
   <section class="screen" data-screen="3" id="s3">
     <div class="hk-copy" style="left:78px; top:63px; width:1124px">
-      <p>לדוגמה,<br>
-         כדי שהתמונה תתאים למסך הטלפון הנייד,<br>
-         היחס בין הרוחב שלה לגובה שלה, צריך להיות <span class="ratio">9:16</span>.</p>
-      <p class="hk-gap">אם גובה התמונה המקורית הוא 24 ס"מ,<br>
-         איך נמצא את רוחב התמונה שישמור על היחס המתאים?</p>
+      <p>على سبيل المثال،<br> لكي تتناسب الصورة مع شاشة الهاتف المحمول،<br> يجب أن تكون النسبة بين عرضها وارتفاعها <span class="ratio">9:16</span>.</p>
+      <p class="hk-gap">إذا كان ارتفاع الصورة الأصلية 24 سم،<br>كيف نجد عرض الصورة الذي يحافظ على النسبة المناسبة؟</p>
     </div>
     <img loading="lazy" class="hk-photo" style="left:114px; top:64px; width:302px; height:536px"
-         src="assets/img/hook-phone.jpeg" alt="תמונת פורטרט במסך הטלפון">
-    <span class="dim-rule dim-rule--v" style="left:416px; top:64px;  height:536px"></span>
-    <span class="dim-label"          style="left:416px; top:295px">24 ס"מ</span>
-    <span class="dim-rule dim-rule--h" style="left:114px; top:614px; width:302px"></span>
-    <span class="dim-label dim-label--q" style="left:217px; top:593px">?</span>
-    <div class="character-widget character-widget--right" data-reveal="3" data-reveal-fade>
-      <div class="speech-bubble">אני תמיד עושה<br>"בערך" וזה לא יוצא<br>טוב</div>
-      <img loading="lazy" id="s3-char" alt="הדמות המלווה">
+         src="assets/img/hook-phone.jpeg" alt="صورة بورتريه على شاشة الهاتف"><span class="dim-rule dim-rule--v" style="left:416px; top:64px; height:536px"></span> <span class="dim-label" style="left:416px; top:295px">24 سم</span> <span class="dim-rule dim-rule--h" style="left:114px; top:614px; width:302px"></span> <span class="dim-label dim-label--q" style="left:217px; top:593px">?</span><div class="character-widget character-widget--right" data-reveal="3" data-reveal-fade>
+      <div class="speech-bubble">أنا دائمًا أحسب<br>"تقريبًا" والنتيجة لا تكون<br>جيدة</div>
+      <img loading="lazy" id="s3-char" alt="الشخصية المرافقة">
     </div>
-    <button class="btn-continue" onclick="advanceScreen()">המשך</button>
-    <button class="btn-back" onclick="goTo(2)">חזרה</button>
+    <button class="btn-continue" onclick="advanceScreen()">متابعة</button>
+    <button class="btn-back" onclick="goTo(2)">رجوع</button>
   </section>
 
 <!-- ══ S4 — deck slide 7. Two copy blocks at x=144, y=63 and y=255. The
@@ -159,14 +151,12 @@
      standing pose stands in. ══ -->
   <section class="screen" data-screen="4" id="s4">
     <div class="hk-copy" style="left:144px; top:63px; width:1049px">
-      <p><strong>פרופורציה</strong> היא שוויון בין יחסים.</p>
-      <p><strong>פרופורציה</strong> משמשת אותנו להשוואה בין שני מצבים.<br>
-         לדוגמה - השוואת היחס של הרוחב לאורך עבור זוג תמונות.</p>
+      <p><strong>التناسب</strong> هو تساوي النسب.</p>
+      <p><strong>تناسب</strong> نستخدمه للمقارنة بين حالتين.<br>على سبيل المثال - مقارنة نسبة العرض إلى الطول لزوج من الصور.</p>
     </div>
     <div class="hk-copy" style="left:144px; top:255px; width:1049px">
-      <p>כשידוע יחס מסוים, וידוע גם ערך אחד מיחס אחר שאמור להיות שווה לו – אפשר למצוא<br>
-         את <strong>הנתון הרביעי</strong> החסר, כך ששני היחסים יישארו שווים.</p>
-      <p>ביחידה זו נלמד כיצד לעשות זאת.</p>
+      <p>عندما تكون نسبة معيّنة معروفة، ويكون معروفًا أيضًا قيمة واحدة من نسبة أخرى يُفترض أن تكون مساوية لها – يمكن إيجاد<br> <strong>المعطى الرابع</strong> الناقص، بحيث تبقى النسبتان متساويتين.</p>
+      <p>في هذه الوحدة سنتعلم كيف نقوم بذلك.</p>
     </div>
     <!-- Slide 7's companion is NOT in the standard bottom-left widget: the deck
          places it at x=-116 y=440 in a 651x210 box, deliberately running off
@@ -176,11 +166,11 @@
          3.09 wide-to-tall, yellow 1.68), so a width-only box would make the
          yellow one nearly twice as tall. -->
     <div class="hct-character--fixed" data-reveal="2" data-reveal-fade>
-      <img loading="lazy" id="s4-char" alt="הדמות המלווה, מתוחה לרוחב">
+      <img loading="lazy" id="s4-char" alt="الشخصية المرافقة، ممدّدة بالعرض">
     </div>
-    <div class="speech-bubble side-bubble s4-bubble" data-reveal="2">איך יצאתי בתמונה?</div>
-    <button class="btn-continue" onclick="advanceScreen()">המשך</button>
-    <button class="btn-back" onclick="goTo(5)">חזרה</button>
+    <div class="speech-bubble side-bubble s4-bubble" data-reveal="2">كيف ظهرت في الصورة؟</div>
+    <button class="btn-continue" onclick="advanceScreen()">متابعة</button>
+    <button class="btn-back" onclick="goTo(5)">رجوع</button>
   </section>
 
 <!-- ══ S5 — deck slides 8-19 · the carousel, TWELVE steps on one screen.
@@ -193,18 +183,18 @@
      has played to its END (content team, monday 02-01-003, 2026-10). ══ -->
   <section class="screen" data-screen="6" id="s6">
     <div class="transition-content ts-content">
-      <h1 class="ts-title">טבלת פרופורציה</h1>
+      <h1 class="ts-title">جدول التناسب</h1>
       <!-- deck slides 20-21 are the VIDEO SCRIPT. The produced clip arrived
            04.10.26 as a YouTube link (QGF81fTZDGE). The slot is replaced by
            the iframe on the first visit (unit.js videoGateEnter): built by us,
            never by the YouTube API, so the launch URL never reaches Google
            (guide §6.9.1). -->
       <div class="video-frame" data-reveal="2" data-reveal-fade>
-        <div id="s6-yt" data-yt-video="QGF81fTZDGE" data-title="טבלת פרופורציה"></div>
+        <div id="s6-yt" data-yt-video="QGF81fTZDGE" data-title="جدول التناسب"></div>
       </div>
     </div>
-    <button class="btn-continue" onclick="advanceScreen()" disabled>המשך</button>
-    <button class="btn-back" onclick="goTo(5)">חזרה</button>
+    <button class="btn-continue" onclick="advanceScreen()" disabled>متابعة</button>
+    <button class="btn-back" onclick="goTo(5)">رجوع</button>
   </section>
 
 <!-- ══ S7 — deck slide 22 · TransitionScreen. The note asks for BOTH
@@ -213,12 +203,12 @@
      FLAG-PRODUCER. ══ -->
   <section class="screen" data-screen="7" id="s7">
     <div class="transition-content ts-content">
-      <p class="ts-lead"><strong>עוד מעט נתחיל לתרגל,</strong></p>
-      <h1 class="ts-title ts-title--regular">רגע לפני, בואו נפתור תרגיל אחד יחד</h1>
+      <p class="ts-lead"><strong>بعد قليل سنبدأ التدريب،</strong></p>
+      <h1 class="ts-title ts-title--regular">قبل ذلك، هيا نحلّ تمرينًا واحدًا معًا</h1>
       <div class="transition-character ts-character char-slot" id="s7-char"></div>
     </div>
-    <button class="btn-continue" onclick="advanceScreen()">המשך</button>
-    <button class="btn-back" onclick="goTo(6)">חזרה</button>
+    <button class="btn-continue" onclick="advanceScreen()">متابعة</button>
+    <button class="btn-back" onclick="goTo(6)">رجوع</button>
   </section>
 
 <!-- ══ S8 — deck slides 23-29 · guided practice, SEVEN steps on one screen.
@@ -228,12 +218,12 @@
 <!-- ══ S9 — deck slide 30 · TransitionScreen into the two warm-ups. ══ -->
   <section class="screen" data-screen="9" id="s9">
     <div class="transition-content ts-content">
-      <h1 class="ts-title">מה נשאר לנו בראש?</h1>
-      <p class="ts-tail">שתי שאלות קלילות לחימום לפני שנתקדם</p>
+      <h1 class="ts-title">ماذا بقي لنا في الذهن؟</h1>
+      <p class="ts-tail">سؤالان خفيفان للتحمية قبل أن نتقدّم</p>
       <div class="transition-character ts-character char-slot" id="s9-char"></div>
     </div>
-    <button class="btn-continue" onclick="advanceScreen()">קחו אותי לשאלות</button>
-    <button class="btn-back" onclick="goTo(8)">חזרה</button>
+    <button class="btn-continue" onclick="advanceScreen()">خذوني إلى الأسئلة</button>
+    <button class="btn-back" onclick="goTo(8)">رجوع</button>
   </section>
 
 
@@ -253,7 +243,7 @@
        rebuild. The old PNG pair is gone: its hover export was a stale
        SCIENCE-mode render (#019DE5), which is what made hover look wrong in
        a maths unit. The glyph is live SVG driven by currentColor. -->
-  <button class="flag-btn" id="flag-btn" type="button" aria-label="מצאתם בעיה?">
+  <button class="flag-btn" id="flag-btn" type="button" aria-label="وجدتم مشكلة؟">
         <span class="flag-btn-icon">
           <span class="flag-btn-glyph" aria-hidden="true">
             <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none">
@@ -268,7 +258,7 @@
             </svg>
           </span>
         </span>
-        <span class="flag-btn-label">מצאתם בעיה?</span>
+        <span class="flag-btn-label">وجدتم مشكلة؟</span>
       </button>
 
   <!-- Screen 0 — slide 3: hook question (SingleChoiceQuestionImage; green indication only) -->
@@ -283,7 +273,7 @@
        generated by js/unit.js; question screens by js/quiz-engine.js -->
 
   <!-- Quiz hint overlay — shared, outside all .screen divs -->
-  <div id="quiz-hint-overlay" class="hidden m-popup" role="dialog" aria-modal="true" aria-label="רמז">
+  <div id="quiz-hint-overlay" class="hidden m-popup" role="dialog" aria-modal="true" aria-label="تلميح">
     <div class="hint-popup">
       <!-- 07.09: the bulb the hint card was missing. Plain-bulb variant
            (viewBox 0 0 20.997 27.9988), the one the approved build uses in
@@ -292,48 +282,48 @@
            without deleting the icon. -->
       <h3 class="hint-title"><svg class="hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg><span class="hint-title-text"></span></h3>
       <p class="hint-body"></p>
-      <button class="hint-close-btn" onclick="quizCloseHint()">חזרה לשאלה</button>
+      <button class="hint-close-btn" onclick="quizCloseHint()">العودة إلى السؤال</button>
     </div>
   </div>
 
   <!-- Problem-report modal (approved-units pattern; posts to the shared Google Form) -->
   <div id="report-modal" class="report-modal-overlay m-popup" hidden role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
     <div class="report-modal-box">
-      <button class="report-close-btn" onclick="tryCloseReportModal()" aria-label="סגור">&#10005;</button>
-      <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
-      <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך? ספרו לנו מה קרה כדי שנטפל.</p>
+      <button class="report-close-btn" onclick="tryCloseReportModal()" aria-label="أغلق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">الإبلاغ عن مشكلة</h2>
+      <p class="report-modal-body">هل هناك شيء غير واضح أو لا يعمل كما يجب؟ أخبرونا بما حدث حتى نتمكن من المعالجة.</p>
       <div class="report-field">
-        <label class="report-label" for="report-type">מה סוג הבעיה <span class="required-star">*</span></label>
+        <label class="report-label" for="report-type">ما نوع المسألة <span class="required-star">*</span></label>
         <select class="report-select" id="report-type">
-          <option value="" disabled selected>בחרו סוג בעיה</option>
-          <option value="technical">תקלה טכנית או שמשהו לא עובד</option>
-          <option value="unclear">משהו לא ברור לי</option>
-          <option value="other">אחר</option>
+          <option value="" disabled selected>اختاروا نوع المشكلة</option>
+          <option value="technical">خلل تقني أو شيء لا يعمل</option>
+          <option value="unclear">شيء غير واضح لي</option>
+          <option value="other">آخر</option>
         </select>
       </div>
       <div class="report-field">
-        <label class="report-label" for="report-text">מה קרה? <span class="required-star">*</span></label>
-        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="תארו את הבעיה..."></textarea>
+        <label class="report-label" for="report-text">ماذا حدث؟ <span class="required-star">*</span></label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="صفوا المشكلة..."></textarea>
         <span class="report-char-count" id="report-char-count">0 / 250</span>
       </div>
-      <p class="report-error" id="report-error" hidden>נא לבחור סוג בעיה ולתאר מה קרה.</p>
+      <p class="report-error" id="report-error" hidden>يرجى اختيار نوع المشكلة ووصف ما حدث.</p>
       <div class="report-actions">
-        <button class="report-submit-btn" onclick="submitReport()">שליחה</button>
-        <button class="report-cancel-btn" onclick="tryCloseReportModal()">ביטול</button>
+        <button class="report-submit-btn" onclick="submitReport()">إرسال</button>
+        <button class="report-cancel-btn" onclick="tryCloseReportModal()">إلغاء</button>
       </div>
       <div class="report-thanks" id="report-thanks" hidden>
-        <p>תודה! הדיווח נשלח. נטפל בהקדם.</p>
-        <button class="report-submit-btn" onclick="forceCloseReportModal()">סגירה</button>
+        <p>شكرًا! تم إرسال البلاغ. سنعالج الأمر في أقرب وقت.</p>
+        <button class="report-submit-btn" onclick="forceCloseReportModal()">إغلاق</button>
       </div>
     </div>
   </div>
   <div id="report-confirm-modal" class="report-modal-overlay m-popup" hidden role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
     <div class="report-modal-box report-confirm-box">
-      <h2 class="report-modal-title" id="confirm-modal-title">בטוח לסגור את החלון?</h2>
-      <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+      <h2 class="report-modal-title" id="confirm-modal-title">هل أنت متأكد من إغلاق النافذة؟</h2>
+      <p class="report-modal-body">بالضغط على إغلاق لن يتم إرسال البلاغ</p>
       <div class="report-actions">
-        <button class="report-cancel-btn" onclick="forceCloseReportModal()">סגור חלון</button>
-        <button class="report-submit-btn" onclick="backToReportForm()">אני רוצה לדווח</button>
+        <button class="report-cancel-btn" onclick="forceCloseReportModal()">أغلق النافذة</button>
+        <button class="report-submit-btn" onclick="backToReportForm()">أريد الإبلاغ</button>
       </div>
     </div>
   </div>
@@ -346,23 +336,23 @@
        720-core engine and this unit's screens, the glue (70-platform.js), and 90-boot.js LAST in
        its own tag (guide §3). One ?v= on every code reference, identical in all seven components
        (§3.4). -->
-  <script src="../unit-js/10-identity.js?v=20261114b"></script>
-  <script src="../unit-js/20-xapi.js?v=20261114b"></script>
-  <script src="../unit-js/40-resume.js?v=20261114b"></script>
-  <script src="../unit-js/50-loader.js?v=20261114b"></script>
-  <script src="script.js?v=20261114b"></script>
-  <script src="../unit-js/motion.js?v=20261114b"></script>
-  <script src="../unit-js/quiz-engine.js?v=20261114b"></script>
-  <script src="../unit-js/applet-dino.js?v=20261114b"></script>
-  <script src="../unit-js/classtask.js?v=20261114b"></script>
-  <script src="../unit-js/questions.js?v=20261114b"></script>
-  <script src="../unit-js/carousel.js?v=20261114b"></script>
-  <script src="../unit-js/guided.js?v=20261114b"></script>
-  <script src="../unit-js/unit.js?v=20261114b"></script>
-  <script src="../unit-js/report-modal.js?v=20261114b"></script>
-  <script src="../unit-js/engine.js?v=20261114b"></script>
-  <script src="../unit-js/70-platform.js?v=20261114b"></script>
-  <script src="../unit-js/90-boot.js?v=20261114b"></script>
+  <script src="../unit-js/10-identity.js?v=20261116ar4"></script>
+  <script src="../unit-js/20-xapi.js?v=20261116ar4"></script>
+  <script src="../unit-js/40-resume.js?v=20261116ar4"></script>
+  <script src="../unit-js/50-loader.js?v=20261116ar4"></script>
+  <script src="script.js?v=20261116ar4"></script>
+  <script src="../unit-js/motion.js?v=20261116ar4"></script>
+  <script src="../unit-js/quiz-engine.js?v=20261116ar4"></script>
+  <script src="../unit-js/applet-dino.js?v=20261116ar4"></script>
+  <script src="../unit-js/classtask.js?v=20261116ar4"></script>
+  <script src="../unit-js/questions.js?v=20261116ar4"></script>
+  <script src="../unit-js/carousel.js?v=20261116ar4"></script>
+  <script src="../unit-js/guided.js?v=20261116ar4"></script>
+  <script src="../unit-js/unit.js?v=20261116ar4"></script>
+  <script src="../unit-js/report-modal.js?v=20261116ar4"></script>
+  <script src="../unit-js/engine.js?v=20261116ar4"></script>
+  <script src="../unit-js/70-platform.js?v=20261116ar4"></script>
+  <script src="../unit-js/90-boot.js?v=20261116ar4"></script>
 </div>
 </div>
 </body>

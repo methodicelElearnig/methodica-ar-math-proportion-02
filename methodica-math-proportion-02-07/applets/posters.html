@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../unit-assets/fonts/fonts.css">
-    <title>סידור פוסטרים על קיר האולם (יחס 3:4)</title>
+    <title>ترتيب ملصقات على جدار القاعة (نسبة 3:4)</title>
     <style>
         :root {
             --primary-color: #2b5c8f;
@@ -316,29 +316,44 @@
             padding: 3px 6px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
         }
+    
+        /* ═══ Arabic version: Calibri for Arabic glyphs + digits ═══ */
+        @font-face {
+          font-family: 'Calibri Arabic';
+          src: local('Calibri');
+          font-weight: 100 599;
+          unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+        @font-face {
+          font-family: 'Calibri Arabic';
+          src: local('Calibri Bold'), local('Calibri-Bold');
+          font-weight: 600 1000;
+          unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+        body, body * { font-family: 'Calibri Arabic', 'Assistant', 'Segoe UI', Arial, sans-serif !important; }
+
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>סידור פוסטרים על קיר האולם</h1>
+        <h1>ترتيب ملصقات على جدار القاعة</h1>
     </header>
 
     <div class="main-layout">
         <div class="controls-card">
-            <h2>נתונים</h2>
+            <h2>معطيات</h2>
             <div class="rule-notice">
-                📌 <strong>נתוני הקיר והמרווחים:</strong>
-                <ul>
-                    <li>אורך הקיר: 4.5 מטרים (450 ס"מ)</li>
-                    <li>גובה הקיר: 2.8 מטרים (280 ס"מ)</li>
+                📌 <strong>معطيات الجدار والفراغات:</strong><ul>
+                    <li>طول الجدار: 4.5 أمتار (450 سم)</li>
+                    <li>ارتفاع الجدار: 2.8 متر (280 سم)</li>
                 </ul>
-                יש לשמור על מרווח של 10 ס"מ בין כל זוג פוסטרים ומשולי הקירות בצדדים.
+                يجب الحفاظ على مسافة 10 سم بين كل زوج من الملصقات ومن حواف الجدران على الجانبين.
             </div>
 
             <div class="form-group">
-                <label for="posterCountSlider">בחירת כמות פוסטרים (2 עד 10):</label>
+                <label for="posterCountSlider">اختيار عدد الملصقات (2 إلى 10):</label>
                 <div class="slider-container">
                     <input type="range" id="posterCountSlider" min="2" max="10" value="3">
                     <span class="slider-value" id="posterCountVal">3</span>
@@ -346,19 +361,19 @@
             </div>
 
             <div class="stats-box">
-                <div><span>כמות פוסטרים:</span><strong id="statCount">3</strong></div>
-                <div><span>מרווח אופקי:</span><strong>10 ס"מ</strong></div>
-                <div><span>יחס הפוסטר:</span><strong>3:4 (לאורך)</strong></div>
+                <div><span>عدد الملصقات:</span><strong id="statCount">3</strong></div>
+                <div><span>المسافة الأفقية:</span><strong>10 سم</strong></div>
+                <div><span>نسبة الملصق:</span><strong>3:4 (للطول)</strong></div>
             </div>
         </div>
 
         <div class="wall-container">
-            <div class="wall-title">תצוגת סידור הפוסטרים לאורך על הקיר</div>
+            <div class="wall-title">عرض ترتيب الملصقات بالطول على الحائط</div>
             
             <div class="wall-outer-wrapper">
-                <div class="dimension-width-label">→ 450 ס"מ ←</div>
+                <div class="dimension-width-label">→ 450 سم ←</div>
                 <div class="canvas-wrapper" id="canvasWrapper"></div>
-                <div class="dimension-height-label">→ 280 ס"מ ←</div>
+                <div class="dimension-height-label">→ 280 سم ←</div>
             </div>
         </div>
     </div>

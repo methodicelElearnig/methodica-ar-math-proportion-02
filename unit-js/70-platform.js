@@ -576,7 +576,7 @@ function _paintDone(n, q, st) {
   } else {
     var fb = Object.assign({}, q.fb.wrong);
     if (q.type === 'value-input' && st.slotOk && st.slotOk.some(Boolean)) {
-      var partial = ('partial' in q.fb) ? q.fb.partial : 'כמעט! חלק מהתשובות נכונות';
+      var partial = ('partial' in q.fb) ? q.fb.partial : 'تقريبًا! بعض الإجابات صحيحة';
       if (partial) fb.title = partial;
     }
     quizShowFeedback(n, 'wrong', fb);
@@ -619,7 +619,7 @@ function paintChoice(n, q, st) {
     _paintDone(n, q, st);
     return;
   }
-  check.textContent = 'צדקתי?';
+  check.textContent = 'هل إجابتي صحيحة؟';
   if (st.attempts > 0) {
     var hb = _hintBtn(n);
     if (hb) hb.style.visibility = 'visible';
@@ -655,7 +655,7 @@ function paintValue(n, q, st) {
     _paintDone(n, q, st);
     return;
   }
-  check.textContent = 'צדקתי?';
+  check.textContent = 'هل إجابتي صحيحة؟';
   var ready = slots.length > 0 && vals.length === slots.length && !vals.some(function (v) { return !v; });
   if (st.attempts > 0) _paintRetry(n, q, st, quizSig(q, st) === st.lw);
   check.disabled = quizCheckBlocked(q, st, ready);

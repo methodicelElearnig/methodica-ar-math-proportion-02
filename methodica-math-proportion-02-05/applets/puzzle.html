@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מעבדת חקר: פרופורציות בפאזל</title>
+    <title>مختبر استكشاف: تناسب في الأحجية</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -198,6 +198,22 @@
 
         .piece-original { background-color: #3498db; }
         .piece-added { background-color: #9b59b6; }
+    
+        /* ═══ Arabic version: Calibri for Arabic glyphs + digits ═══ */
+        @font-face {
+          font-family: 'Calibri Arabic';
+          src: local('Calibri');
+          font-weight: 100 599;
+          unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+        @font-face {
+          font-family: 'Calibri Arabic';
+          src: local('Calibri Bold'), local('Calibri-Bold');
+          font-weight: 600 1000;
+          unicode-range: U+0030-0039, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+        body, body * { font-family: 'Calibri Arabic', 'Assistant', 'Segoe UI', Arial, sans-serif !important; }
+
     </style>
 </head>
 <body>
@@ -206,26 +222,18 @@
     
     <div class="control-panel">
         <div>
-            <h1>🧩 מעבדת חקר: פרופורציות</h1>
-            <div class="task-description">
-                <strong>האתגר שלכם:</strong> 
-                במצב המקורי, לפאזל יש <strong>12 שורות</strong> ו-<strong>20 חלקים בכל שורה</strong>.
-                <br><br>
-                החברה מתכננת דגם גדול יותר שבו יהיו בדיוק <strong>30 חלקים בכל שורה</strong>. שנו את כמות החלקים בשורה ל-30, ולאחר מכן שנו את מספר השורות כך שהפאזל ישמור על <strong>אותו המבנה והפרופורציה המדויקת</strong>!
+            <h1>🧩 مختبر استكشاف: تناسبات</h1>
+            <div class="task-description"><strong>التحدي:</strong> في الوضع الأصلي، يحتوي البازل على <strong>12 صفًا</strong> و<strong>20 قطعة في كل صف</strong>. <br><br> تخطط الشركة لنموذج أكبر يحتوي على <strong>30 قطعة بالضبط في كل صف</strong>. غيّروا عدد القطع في الصف إلى 30، ثم غيّروا عدد الصفوف بحيث يحافظ البازل على <strong>نفس البنية والتناسب الدقيق</strong>!
             </div>
 
-            <div class="counter-group">
-                <span class="counter-label">מספר שורות (גובה):</span>
-                <div class="counter-controls">
+            <div class="counter-group"><span class="counter-label">عدد الصفوف (الارتفاع):</span><div class="counter-controls">
                     <button class="btn-calc" onclick="changeVal('rows', -1)">-</button>
                     <span id="rows-val" class="counter-value">12</span>
                     <button class="btn-calc" onclick="changeVal('rows', 1)">+</button>
                 </div>
             </div>
 
-            <div class="counter-group">
-                <span class="counter-label">חלקים בשורה (טורים):</span>
-                <div class="counter-controls">
+            <div class="counter-group"><span class="counter-label">أجزاء في الصف (أعمدة):</span><div class="counter-controls">
                     <button class="btn-calc" onclick="changeVal('cols', -1)">-</button>
                     <span id="cols-val" class="counter-value">20</span>
                     <button class="btn-calc" onclick="changeVal('cols', 1)">+</button>
@@ -235,29 +243,23 @@
 
         <div>
             <div class="stats-panel">
-                <div class="stat-line">
-                    <span>סך כל החלקים כרגע:</span>
-                    <span id="total-pieces" class="highlight">240</span>
-                </div>
-                <div class="stat-line">
-                    <span>מבנה המטריצה הנוכחי:</span>
-                    <span id="current-ratio" style="font-weight: bold; color: #f1c40f;">12 שורות על 20 טורים</span>
-                </div>
+                <div class="stat-line"><span>مجموع الأجزاء حاليًا:</span> <span id="total-pieces" class="highlight">240</span></div>
+                <div class="stat-line"><span>هيكل المصفوفة الحالي:</span> <span id="current-ratio" style="font-weight: bold; color: #f1c40f;">12 صفاً على 20 عموداً</span></div>
             </div>
 
-            <button class="btn-check" onclick="checkProportion()">🔍 בדקו את הפרופורציה שלי</button>
+            <button class="btn-check" onclick="checkProportion()">🔍 تحققوا من التناسب الخاص بي</button>
 
             <div id="ratio-status" class="ratio-alert"></div>
         </div>
     </div>
 
     <div class="visual-panel">
-        <h3 style="margin-top:0; color:#ecf0f1;">תצוגה חזותית של הפאזל:</h3>
+        <h3 style="margin-top:0; color:#ecf0f1;">عرض مرئي للأحجية:</h3>
         <div class="grid-container">
             <div id="puzzle-grid" class="puzzle-grid"></div>
         </div>
         <p style="font-size: 14px; color: #bdc3c7; margin-top: 15px;">
-            * כחול = המבנה המקורי (12×20) | סגול = החלקים שהוספתם/שיניתם
+            * أزرق = الهيكل الأصلي (12×20) | بنفسجي = الأجزاء التي أضفتموها/غيّرتموها
         </p>
     </div>
 
@@ -278,7 +280,7 @@
         
         let total = currentRows * currentCols;
         document.getElementById('total-pieces').innerText = total;
-        document.getElementById('current-ratio').innerText = currentRows + " שורות על " + currentCols + " טורים";
+        document.getElementById('current-ratio').innerText = currentRows + " صفوف في " + currentCols + " أعمدة";
         
         // בכל שינוי ערך, נעלים את הודעת הבדיקה הקודמת כדי שיצטרכו ללחוץ שוב
         document.getElementById('ratio-status').style.display = 'none';
@@ -315,16 +317,16 @@
         const currentRatio = currentRows / currentCols;
 
         if (currentCols === correctColsTarget && currentRows === correctRowsTarget) {
-            statusBox.innerText = "🎉 מדהים! פיצחתם את האתגר! הפרופורציה נשמרה בצורה מושלמת (18 שורות על 30 טורים)!";
+            statusBox.innerText = "🎉 مذهل! لقد حللتم التحدي! التناسب تم الحفاظ عليه بشكل مثالي (18 صفاً على 30 عموداً)!";
             statusBox.className = "ratio-alert ratio-match";
         } else if (Math.abs(currentRatio - originalRatio) < 0.0001) {
-            statusBox.innerText = "היחס בין השורות לטורים אמנם נכון, אך האם הגעתם בדיוק ל-30 חלקים בכל שורה כפי שהתבקשתם?";
+            statusBox.innerText = "النسبة بين الصفوف والأعمدة صحيحة بالفعل، لكن هل حصلتم بالضبط على 30 جزءًا في كل صف كما طُلب منكم؟";
             statusBox.className = "ratio-alert ratio-mismatch";
         } else {
             if (currentRatio > originalRatio) {
-                statusBox.innerText = "❌ לא מדויק. המבנה כרגע 'גבוה' או 'ארוך' מדי בהשוואה לפרופורציה המקורית. נסו שוב!";
+                statusBox.innerText = "❌ غير دقيق. الهيكل حاليًا 'مرتفع' أو 'طويل' جدًا مقارنة بالتناسب الأصلي. حاولوا مرة أخرى!";
             } else {
-                statusBox.innerText = "❌ לא מדויק. המבנה כרגע 'רחב' או 'פחוס' מדי בהשוואה לפרופורציה המקורית. נסו שוב!";
+                statusBox.innerText = "❌ غير دقيق. الشكل حاليًا 'عريض' أو 'مسطّح' أكثر من اللازم مقارنة بالتناسب الأصلي. حاولوا مرة أخرى!";
             }
             statusBox.className = "ratio-alert ratio-mismatch";
         }

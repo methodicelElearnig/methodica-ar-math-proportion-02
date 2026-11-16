@@ -49,9 +49,14 @@ function eqfigWire(sec) {
       den: target.querySelector('.frac-bottom'),
     };
     const F = fig.getBoundingClientRect();
-    svg.setAttribute('viewBox', `0 0 ${Math.round(F.width)} ${Math.round(F.height)}`);
-    svg.setAttribute('width', Math.round(F.width));
-    svg.setAttribute('height', Math.round(F.height));
+    /* the stage is CSS-scaled to the window: getBoundingClientRect() gives SCALED
+       pixels while the svg draws in the fig's own (unscaled) pixels — convert, or
+       the lines shrink toward the corner whenever the window is not full size */
+    const k = F.width ? fig.offsetWidth / F.width : 1;
+    const W = fig.offsetWidth, H = fig.offsetHeight;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
     let d = '';
     fig.querySelectorAll('[data-from]').forEach(box => {
       const a = anchors[box.dataset.from];
@@ -61,8 +66,8 @@ function eqfigWire(sec) {
       /* 5px of air before the glyph — the line used to land ON the numerator
          and denominator of the y fraction. 10px was too much (producer 06.10). */
       const GAP = 5;
-      const x1 = b.left - F.left, y1 = b.top - F.top + b.height / 2;
-      const x2 = t.right - F.left + GAP, y2 = t.top - F.top + t.height / 2;
+      const x1 = (b.left - F.left) * k, y1 = (b.top - F.top + b.height / 2) * k;
+      const x2 = (t.right - F.left) * k + GAP, y2 = (t.top - F.top + t.height / 2) * k;
       d += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" />`;
     });
     svg.innerHTML = d;
@@ -70,17 +75,17 @@ function eqfigWire(sec) {
 }
 
 /* the explanation both drag steps share under their feedback table */
-const EXPL = 'זוהי טבלת הפרופורציה הנכונה ממנה נוכל ליצור את המשוואה ולמצוא את הנעלם.';
+const EXPL = 'هذا هو جدول التناسب الصحيح الذي يمكننا من خلاله إنشاء المعادلة وإيجاد المجهول.';
 
 const CAR_STEPS = 12;
 const CAR_TITLE = {
-  1: 'איך מוודאים שפרופורציה נשמרת?', 2: 'איך מוודאים שפרופורציה נשמרת?',
-  3: 'אביבית אופה עוגה',
-  4: 'איך נמיר גרמים לכוסות מדידה?', 5: 'איך נמיר גרמים לכוסות מדידה?',
-  6: 'איך נמיר גרמים לכוסות מדידה?', 7: 'איך נמיר גרמים לכוסות מדידה?',
-  8: 'כמה כוסות קמח לבן צריך במתכון?',
-  9: 'כמה כוסות סוכר אביבית צריכה?', 10: 'כמה כוסות סוכר אביבית צריכה?',
-  11: 'כמה כוסות סוכר אביבית צריכה?', 12: 'כמה כוסות סוכר אביבית צריכה?',
+  1: 'كيف نتأكد من أن التناسب محفوظ؟', 2: 'كيف نتأكد من أن التناسب محفوظ؟',
+  3: 'ياسمين تخبز كعكة',
+  4: 'كيف نحوّل الغرامات إلى أكواب قياس؟', 5: 'كيف نحوّل الغرامات إلى أكواب قياس؟',
+  6: 'كيف نحوّل الغرامات إلى أكواب قياس؟', 7: 'كيف نحوّل الغرامات إلى أكواب قياس؟',
+  8: 'كم كوب طحين أبيض يحتاج الوصفة؟',
+  9: 'كم كوبًا من السكر تحتاج ياسمين؟', 10: 'كم كوبًا من السكر تحتاج ياسمين؟',
+  11: 'كم كوبًا من السكر تحتاج ياسمين؟', 12: 'كم كوبًا من السكر تحتاج ياسمين؟',
 };
 
 const fr = (n, d) => `<span class="fraction fr-inline"><span class="frac-top">${n}</span><span class="frac-bottom">${d}</span></span>`;
@@ -90,7 +95,7 @@ const eqp = (a, b) => `<span class="car-eq" dir="ltr">${a}<span class="car-eq-op
    drop target for the drag steps. */
 function carTable(head2, rows, cells) {
   const td = (v, slot) => v === null
-    ? `<td class="car-drop" data-slot="${slot}" aria-label="שחררו כאן"></td>`
+    ? `<td class="car-drop" data-slot="${slot}" aria-label="اسحبوا إلى هنا"></td>`
     : `<td>${v}</td>`;
   return `<table class="car-table"><thead><tr><th></th><th>${head2[0]}</th><th>${head2[1]}</th></tr></thead>
     <tbody>
@@ -100,159 +105,147 @@ function carTable(head2, rows, cells) {
 }
 
 const CAR = [
-  { /* 1 · deck 8 */ img: 'car-kitchen.jpg', alt: 'מטבח ביתי עם מרכיבי אפייה',
-    body: `<p>ניקח דוגמה מהמטבח של אביבית:</p>
-      <p>במתכוני אפייה, כמויות המרכיבים יכולות להופיע בגרמים (יחידת משקל)<br>או בכוסות מדידה (המודדות את נפח המרכיבים).</p>
-      <p>כיצד נוכל לעבוד עם כוסות מדידה, כאשר מתכון רשום בגרמים?</p>`,
-    bubble: 'כמה גרמים יש<br>בכוס אחת?', bubbleAt: 'step1' },
+  { /* 1 · deck 8 */ img: 'car-kitchen-AR.jpg', alt: 'مطبخ منزلي مع مكونات خبز',
+    body: `<p>لنأخذ مثالاً من مطبخ ياسمين:</p>
+      <p>في وصفات الخبز، يمكن أن تظهر كميات المكونات بالغرامات (وحدة وزن)<br>أو بأكواب القياس (التي تقيس حجم المكونات).</p>
+      <p>كيف يمكننا العمل بأكواب القياس، عندما تكون الوصفة مكتوبة بالغرامات؟</p>`,
+    bubble: 'كم غراماً يوجد<br>في كوب واحد؟', bubbleAt: 'step1' },
 
-  { /* 2 · deck 9 */ img: 'car-cups.jpg', alt: 'כוסות מדידה עם קמח וסוכר',
-    body: `<p>כמות הגרמים שמכילה כוס מדידה שונה בין מרכיבים שונים.<br>
-      לדוגמה, <strong>כוס קמח </strong>שוקלת <strong>פחות מכוס סוכר</strong>.</p>
-      <p>ניתן להיעזר בפרופורציה (שוויון בין יחסים) בכדי להעביר כמויות<br>
-      מגרמים לכוסות מדידה באופן מדויק.</p>`,
-    under: `<img class="car-scales" src="assets/img/car-scales.png"
-        alt="שני משקלי מטבח: כוס סוכר לבן 200 גרם, כוס קמח לבן 140 גרם">`,
-    bubble: 'דיוק הוא המפתח<br>לעוגה מוצלחת!', bubbleAt: 'mouth' },
+  { /* 2 · deck 9 */ img: 'car-cups-AR.jpg', alt: 'أكواب قياس مع طحين وسكر',
+    body: `<p>كمية الغرامات التي يحتويها كوب القياس تختلف بين المكونات المختلفة.<br> على سبيل المثال، <strong>كوب الطحين </strong>يزن <strong>أقل من كوب السكر</strong>.</p>
+      <p>يمكن الاستعانة بالتناسب (تساوي النسب) لتحويل الكميات<br> من غرامات إلى أكواب قياس بشكل دقيق.</p>`,
+    under: `<img class="car-scales" src="assets/img/car-scales-AR.png"
+        alt="ميزانان للمطبخ: كوب سكر أبيض 200 غرام، كوب طحين أبيض 140 غرام">`,
+    bubble: 'الدقة هي المفتاح<br>لكعكة ناجحة!', bubbleAt: 'mouth' },
 
-  { /* 3 · deck 10 */ img: 'car-baking.jpg', alt: 'אביבית אופה עוגה',
-    body: `<p>אביבית רוצה לאפות עוגה לכבוד יום ההולדת של אמא שלה.</p>
-      <p>כמויות המרכיבים במתכון מצוינות בגרמים, אבל המשקל הדיגיטלי<br>שלה התקלקל ויש לה רק כוסות מדידה.</p>
-      <p>במתכון כתוב שצריך 280 גרם קמח.</p>
-      <p>אביבית חיפשה באינטרנט ומצאה:</p>`,
-    under: '<div class="car-chip-note"><strong>1 כוס קמח לבן = 140 גרם</strong></div>' },
+  { /* 3 · deck 10 */ img: 'car-baking-AR.jpg', alt: 'ياسمين تخبز كعكة',
+    body: `<p>ياسمين تريد أن تخبز كعكة بمناسبة عيد ميلاد أمّها.</p>
+      <p>كميات المكونات في الوصفة مذكورة بالغرامات، لكن الميزان الرقمي<br>الخاص بها تعطّل وليس لديها سوى أكواب قياس.</p>
+      <p>في الوصفة مكتوب أنها تحتاج 280 غرام من الطحين.</p>
+      <p>ياسمين بحثت في الإنترنت ووجدت:</p>`,
+    under: '<div class="car-chip-note"><strong>1 كوب طحين أبيض = 140 غرام</strong></div>' },
 
   { /* 4 · deck 11 — GRADED, drag the numbers into the table */
-    img: 'car-recipe.jpg', alt: 'מתכון ומרכיבים',
-    body: `<p>היחס עבור קמח הוא: <strong>1 כוס קמח לבן = 140 גרם</strong></p>
-      <p>לפי המתכון, צריך 280 גרם קמח.<br>נסמן: x - כמות כוסות הקמח הדרושות לאביבית.</p>
-      <p>השלימו את טבלת הפרופורציה על ידי גרירה:</p>`,
+    img: 'car-recipe-AR.jpg', alt: 'وصفة ومكوّنات',
+    body: `<p>النسبة للطحين هي: <strong>1 كوب طحين أبيض = 140 غرام</strong></p>
+      <p>وفقًا للوصفة، نحتاج 280 غرام من الطحين.<br>نرمز: x - عدد أكواب الطحين اللازمة لياسمين.</p>
+      <p>أكملوا جدول التناسب عن طريق السحب:</p>`,
     grade: { kind: 'drag', pool: ['280', '140', 'x'],
-      table: () => carTable(['יחס ידוע', 'המתכון של אביבית'], ['מספר כוסות', 'כמות בגרמים'], ['1', null, null, null]),
+      table: () => carTable(['نسبة معروفة', 'وصفة ياسمين'], ['عدد الأكواب', 'الكمية بالغرامات'], ['1', null, null, null]),
       correct: ['x', '140', '280'],   /* slots 1,2,3 in order */
       /* deck slide 11 holds THREE tables: the canvas one plus a FILLED copy
          inside each feedback popup. Both popups were shipping without it. */
-      fb: () => carTable(['יחס ידוע', 'המתכון של אביבית'], ['מספר כוסות', 'כמות בגרמים'], ['1', 'x', '140', '280']),
-      ok: { t: 'נכון!', b: `${EXPL}` },
-      no: { t: 'לא מדויק, הנה התשובה וההסבר:', b: `${EXPL}` } } },
+      fb: () => carTable(['نسبة معروفة', 'وصفة ياسمين'], ['عدد الأكواب', 'الكمية بالغرامات'], ['1', 'x', '140', '280']),
+      ok: { t: 'صحيح!', b: `${EXPL}` },
+      no: { t: 'ليس دقيقًا، إليك الإجابة والشرح:', b: `${EXPL}` } } },
 
   { /* 5 · deck 12 — the deck does NOT split this screen: the copy runs across
        the top and image17 sits UNDER it at (70,433) 846x329, i.e. two thirds
        of the stage width. */
     stack: true, mediaW: 846,
-    img: 'car-writing.jpg', alt: 'אביבית רושמת את המתכון',
-    body: `<p>כדי לשמור על דיוק, ניעזר בפרופורציה –<br>שוויון יחסים בין מספר כוסות המדידה לכמות בגרמים.</p>
-      <p><strong>בכתיבת פרופורציה, יש חשיבות גדולה לסדר המילים והמספרים.</strong></p>` },
+    img: 'car-writing-AR.jpg', alt: 'ياسمين تسجّل الوصفة',
+    body: `<p>للحفاظ على الدقة، سنستعين بالتناسب –<br>تساوي النسب بين عدد أكواب القياس والكمية بالغرامات.</p>
+      <p><strong>عند كتابة التناسب، هناك أهمية كبيرة لترتيب الكلمات والأعداد.</strong></p>` },
 
   { /* 6 · deck 13 — GRADED, multi-select: TWO equations are right */
-    body: `<p>בהנתן טבלת הפרופורציה המלאה:</p>
-      ${carTable(['יחס ידוע', 'המתכון של אביבית'], ['מספר כוסות', 'כמות גרמים'], ['1', 'x', '140', '280'])}
-      <p><strong>קבעו - מה משוואת הפרופורציה המתאימה? בחרו בכל התשובות המתאימות.</strong></p>`,
+    body: `<p>بالنظر إلى جدول التناسب المكتمل:</p>
+      ${carTable(['نسبة معروفة', 'وصفة ياسمين'], ['عدد الأكواب', 'كمية الغرامات'], ['1', 'x', '140', '280'])}
+      <p><strong>حددوا - ما هي معادلة التناسب المناسبة؟ اختاروا جميع الإجابات المناسبة.</strong></p>`,
     grade: { kind: 'multi',
       opts: [eqp(fr('x', '140'), fr('1', '280')), eqp(fr('1', '140'), fr('x', '280')),
              eqp(fr('1', '140'), fr('280', 'x')), eqp(fr('280', 'x'), fr('140', '1'))],
       correct: [1, 3],
-      ok: { t: 'תשובה נכונה, כל הכבוד!', b: `<p>אם נכתוב את היחס בין כוסות (1) לגרמים (140),<br>
-        אז היחס המתאים בפרופורציה ייכתב כך שמספר<br>
-        הכוסות במונה וכמות הגרמים במכנה.</p>
-      ${eqfig('היחס הידוע בין כוסות<br>לגרמים עבור קמח לבן',
-              'מספר כוסות הקמח<br>שאביבית רוצה לחשב',
-              'כמות הגרמים של<br>קמח במתכון',
+      ok: { t: 'إجابة صحيحة، أحسنت!', b: `<p>إذا كتبنا النسبة بين الأكواب (1) والغرامات (140)،<br> فإن النسبة المناظرة في التناسب تُكتب بحيث يكون عدد<br> الأكواب في البسط وكمية الغرامات في المقام.</p>
+      ${eqfig('النسبة المعروفة بين الكؤوس<br>والغرامات لطحين أبيض',
+              'عدد كؤوس الطحين<br>التي تريد ياسمين حسابها',
+              'كمية الغرامات من<br>الطحين في الوصفة',
               eqp(fr('1', '140'), fr('x', '280')), { lines: false, tight: true })}
-      <p>אפשר גם לכתוב את היחס בין גרמים (140)<br>
-        לכוסות (1), ואז היחס המתאים בפרופורציה ייכתב<br>
-        באותו סדר - גרמים במונה וכוסות במכנה.</p>
-      ${eqfig('היחס הידוע בין גרמים<br>לכוסות עבור קמח לבן',
-              'כמות הגרמים של<br>קמח במתכון',
-              'מספר כוסות הקמח<br>שאביבית רוצה לחשב',
+      <p>يمكن أيضًا كتابة النسبة بين الغرامات (140)<br> والأكواب (1)، وعندها النسبة المقابلة في التناسب ستُكتب<br> بنفس الترتيب - الغرامات في البسط والأكواب في المقام.</p>
+      ${eqfig('النسبة المعروفة بين الغرامات<br>والأكواب لدقيق أبيض',
+              'كمية الغرامات من<br>الطحين في الوصفة',
+              'عدد كؤوس الطحين<br>التي تريد ياسمين حسابها',
               eqp(fr('280', 'x'), fr('140', '1')), { lines: false, tight: true, mirror: true })}
-      <p><strong>ולכן יש שתי תשובות נכונות.</strong></p>` },
-      no: { t: 'טעית בחלק מהסעיפים או בכולם. התשובה הנכונה מוצגת.', b: `<p>אם נכתוב את היחס בין כוסות (1) לגרמים (140),<br>
-        אז היחס המתאים בפרופורציה ייכתב כך שמספר<br>
-        הכוסות במונה וכמות הגרמים במכנה.</p>
-      ${eqfig('היחס הידוע בין כוסות<br>לגרמים עבור קמח לבן',
-              'מספר כוסות הקמח<br>שאביבית רוצה לחשב',
-              'כמות הגרמים של<br>קמח במתכון',
+      <p><strong>ولذلك هناك إجابتان صحيحتان.</strong></p>` },
+      no: { t: 'أخطأت في بعض البنود أو جميعها. الإجابة الصحيحة معروضة.', b: `<p>إذا كتبنا النسبة بين الأكواب (1) والغرامات (140)،<br> فإن النسبة المناظرة في التناسب تُكتب بحيث يكون عدد<br> الأكواب في البسط وكمية الغرامات في المقام.</p>
+      ${eqfig('النسبة المعروفة بين الكؤوس<br>والغرامات لطحين أبيض',
+              'عدد كؤوس الطحين<br>التي تريد ياسمين حسابها',
+              'كمية الغرامات من<br>الطحين في الوصفة',
               eqp(fr('1', '140'), fr('x', '280')), { lines: false, tight: true })}
-      <p>אפשר גם לכתוב את היחס בין גרמים (140)<br>
-        לכוסות (1), ואז היחס המתאים בפרופורציה ייכתב<br>
-        באותו סדר - גרמים במונה וכוסות במכנה.</p>
-      ${eqfig('היחס הידוע בין גרמים<br>לכוסות עבור קמח לבן',
-              'כמות הגרמים של<br>קמח במתכון',
-              'מספר כוסות הקמח<br>שאביבית רוצה לחשב',
+      <p>يمكن أيضًا كتابة النسبة بين الغرامات (140)<br> والأكواب (1)، وعندها النسبة المقابلة في التناسب ستُكتب<br> بنفس الترتيب - الغرامات في البسط والأكواب في المقام.</p>
+      ${eqfig('النسبة المعروفة بين الغرامات<br>والأكواب لدقيق أبيض',
+              'كمية الغرامات من<br>الطحين في الوصفة',
+              'عدد كؤوس الطحين<br>التي تريد ياسمين حسابها',
               eqp(fr('280', 'x'), fr('140', '1')), { lines: false, tight: true, mirror: true })}
-      <p><strong>ולכן יש שתי תשובות נכונות.</strong></p>` } } },
+      <p><strong>ولذلك هناك إجابتان صحيحتان.</strong></p>` } } },
 
   { /* 7 · deck 14 — the annotated equation: three callouts with connector
        lines into the fraction, plus the companion and its bubble. */
-    body: `<p><strong>נדגיש שוב:</strong></p>
-      <p>אם נבחר לכתוב את היחס בין כוסות (1) לגרמים<br>
-         (140), יש לכתוב כל יחס נוסף בפרופורציה כך<br>
-         שהכמות בכוסות תהיה במונה והכמות בגרמים במכנה.</p>
-      ${eqfig('יחס ההמרה בין כוסות<br>לגרמים עבור קמח לבן',
-              'מספר כוסות הקמח<br>שאביבית רוצה לחשב',
-              'כמות הגרמים של<br>קמח במתכון',
+    body: `<p><strong>نؤكّد مرة أخرى:</strong></p>
+      <p>إذا اخترنا كتابة النسبة بين الأكواب (1) والغرامات<br> (140)، يجب كتابة كل نسبة إضافية في التناسب بحيث<br> تكون الكمية بالأكواب في البسط والكمية بالغرامات في المقام.</p>
+      ${eqfig('نسبة التحويل بين الكؤوس<br>والغرامات للطحين الأبيض',
+              'عدد كؤوس الطحين<br>التي تريد ياسمين حسابها',
+              'كمية الغرامات من<br>الطحين في الوصفة',
               eqp(fr('1', '140'), fr('x', '280')))}`,
     /* deck slide 14 puts the companion bottom-left (image3 at -11,459) */
-    monster: 'standing', bubble: 'זה ממש חשוב, טוב<br>שחזרתם על זה!' },
+    monster: 'standing', bubble: 'هذا مهم جدًا، جيد<br>أنكم راجعتم ذلك!' },
 
-  { /* 8 · deck 15 */ img: 'car-measuring.jpg', alt: 'מדידת קמח בכוס',
+  { /* 8 · deck 15 */ img: 'car-measuring-AR.jpg', alt: 'قياس الطحين بالكوب',
     /* the deck sets this line above the photo; producer asked for it as the
        companion's speech bubble rather than a body paragraph (27.09) */
-    bubble: 'אם הגרמים גדלו פי 2 –<br>גם הכוסות גדלות פי 2!', bubbleAt: 'abovepic',
-    body: `<p>נשים לב ש: <span dir="ltr">140 · <strong>2</strong> = 280</span></p>
-      <p>כדי שיתקיים שוויון, השבר ${fr('x', '280')}<br>צריך להיות הרחבה פי 2 של השבר ${fr('1', '140')}</p>
+    bubble: 'إذا تضاعفت الغرامات –<br>فالأكواب أيضًا تتضاعف!', bubbleAt: 'abovepic',
+    body: `<p>نلاحظ أنّ: <span dir="ltr">140 · <strong>2</strong> = 280</span></p>
+      <p>لكي يتحقق التساوي، يجب أن يكون الكسر ${fr('x', '280')}<br>توسيعًا بمقدار 2 للكسر ${fr('1', '140')}</p>
       <!-- the deck draws the two ·2 arcs as shapes; cropped from the rendered
            deck page rather than re-drawn (producer 27.09) -->
       <img class="car-eqpic" src="assets/img/car-eq-times2.png"
-           alt="1 חלקי 140 שווה x חלקי 280, שני האגפים מוכפלים ב-2">
-      <p>ולכן: <span dir="ltr">x = 1 · <strong>2</strong> = 2</span></p>
-      <p><strong>כלומר, אביבית צריכה 2 כוסות קמח.</strong></p>` },
+           alt="1 من 140 يساوي x من 280، طرفا المعادلة مضروبان في 2">
+      <p>ولذلك: <span dir="ltr">x = 1 · <strong>2</strong> = 2</span></p>
+      <p><strong>أي أن ياسمين تحتاج إلى 2 كوب طحين.</strong></p>` },
 
   { /* 9 · deck 16 — GRADED, drag again (sugar) */
-    img: 'car-sugar.jpg', alt: 'כוס סוכר',
-    body: `<p>במתכון כתוב שצריך 300 גרם סוכר.</p>
-      <p>אביבית חיפשה שוב באינטרנט ומצאה:</p>
-      <div class="car-chip-note"><strong>1 כוס סוכר = 200 גרם</strong></div>
-      <p>נסמן: y - כמות כוסות הסוכר הדרושות לאביבית.</p>
-      <p>השלימו את טבלת הפרופורציה ע"י גרירת המספרים למקום הנכון:</p>`,
+    img: 'car-sugar-AR.png', alt: 'كوب سكر',
+    body: `<p>في الوصفة مكتوب أنه يجب 300 غرام سكر.</p>
+      <p>بحثت ياسمين مرة أخرى على الإنترنت ووجدت:</p>
+      <div class="car-chip-note"><strong>1 كوب سكر = 200 غرام</strong></div>
+      <p>نرمز: y - عدد أكواب السكر اللازمة لياسمين.</p>
+      <p>أكملوا جدول التناسب عن طريق سحب الأعداد إلى المكان الصحيح:</p>`,
     grade: { kind: 'drag', pool: ['300', '200', '1'],
-      table: () => carTable(['יחס ידוע', 'המתכון של אביבית'], ['מספר כוסות סוכר', 'כמות סוכר בגרמים'], [null, 'y', null, null]),
+      table: () => carTable(['نسبة معروفة', 'وصفة ياسمين'], ['عدد أكواب السكر', 'كمية السكر بالغرامات'], [null, 'y', null, null]),
       slots: [0, 2, 3], correct: ['1', '200', '300'],
       /* deck slide 16, same as 11: the filled table lives in BOTH popups — and
          the wrong-answer title literally promises it ("הנה הטבלה הנכונה:").
-         NOTE the deck names the second row 'כמות בגרמים' inside the popups but
-         'כמות סוכר בגרמים' on the canvas; each is built as written. */
-      fb: () => carTable(['יחס ידוע', 'המתכון של אביבית'], ['מספר כוסות סוכר', 'כמות בגרמים'], ['1', 'y', '200', '300']),
-      ok: { t: 'התשובה נכונה. זה מראה על הבנה!', b: `${EXPL}` },
-      no: { t: 'לא מדויק, הנה הטבלה הנכונה:', b: `${EXPL}` } } },
+         NOTE the deck names the second row 'الكمية بالغرامات' inside the popups but
+         'كمية السكر بالغرامات' on the canvas; each is built as written. */
+      fb: () => carTable(['نسبة معروفة', 'وصفة ياسمين'], ['عدد أكواب السكر', 'الكمية بالغرامات'], ['1', 'y', '200', '300']),
+      ok: { t: 'الإجابة صحيحة. هذا يدلّ على فهم!', b: `${EXPL}` },
+      no: { t: 'ليس دقيقًا، إليكم الجدول الصحيح:', b: `${EXPL}` } } },
 
   { /* 10 · deck 17 — GRADED, single choice.  The slide's image3 IS the
        companion, bottom-left (it was missing from the build entirely). */
     monster: 'standing',
-    body: `${carTable(['יחס ההמרה', 'המתכון של אביבית'], ['מספר כוסות סוכר', 'כמות סוכר בגרמים'], ['1', 'y', '200', '300'])}
-      <p>היעזרו בטבלת הפרופורציה ובחרו במשוואת הפרופורציה המתאימה:</p>`,
+    body: `${carTable(['نسبة التحويل', 'وصفة ياسمين'], ['عدد أكواب السكر', 'كمية السكر بالغرامات'], ['1', 'y', '200', '300'])}
+      <p>استعينوا بجدول التناسب واختاروا معادلة التناسب المناسبة:</p>`,
     grade: { kind: 'single',
       opts: [eqp(fr('1', '200'), fr('y', '300')), eqp(fr('y', '200'), fr('1', '300')), eqp(fr('1', '200'), fr('300', 'y'))],
       correct: [0],
-      ok: { t: 'נכון!', b: 'היחס נכתב באותו סדר בשני האגפים — כוסות במונה, גרמים במכנה.' },
-      no: { t: 'לא מדויק, הנה ההסבר:', b: 'היחס נכתב באותו סדר בשני האגפים — כוסות במונה, גרמים במכנה.' } } },
+      ok: { t: 'صحيح!', b: 'النسبة تُكتب بنفس الترتيب في كلا الطرفين — الأكواب في البسط، والغرامات في المقام.' },
+      no: { t: 'ليس دقيقًا، إليك التوضيح:', b: 'النسبة تُكتب بنفس الترتيب في كلا الطرفين — الأكواب في البسط، والغرامات في المقام.' } } },
 
-  { /* 11 · deck 18 */ body: `${carTable(['יחס ההמרה', 'המתכון של אביבית'], ['מספר כוסות סוכר', 'כמות סוכר בגרמים'], ['1', 'y', '200', '300'])}
-      <p>אם y מייצג את כמות כוסות הסוכר שמתאימה ל-300 גרם,<br>נכתוב את משוואת הפרופורציה כך:</p>
-      ${eqfig('יחס ההמרה בין כוסות<br>לגרמים עבור סוכר',
-              'כמות כוסות הסוכר<br>שאביבית רוצה לחשב',
-              'כמות הגרמים של<br>סוכר במתכון',
+  { /* 11 · deck 18 */ body: `${carTable(['نسبة التحويل', 'وصفة ياسمين'], ['عدد أكواب السكر', 'كمية السكر بالغرامات'], ['1', 'y', '200', '300'])}
+      <p>إذا كان y يمثّل كمية أكواب السكر المناسبة لـ 300 غرام،<br>نكتب معادلة التناسب كالتالي:</p>
+      ${eqfig('نسبة التحويل بين الكؤوس<br>والغرامات للسكر',
+              'كمية كؤوس السكر<br>التي تريد ياسمين حسابها',
+              'كمية الغرامات من<br>السكر في الوصفة',
               eqp(fr('1', '200'), fr('y', '300')))}` },
 
   { /* 12 · deck 19 — image34 runs 757px wide in the deck, not the column's 430 */
     mediaW: 700,
-    img: 'car-solving.jpg', alt: 'אביבית פותרת את התרגיל במטבח', body: `<p>כדי למצוא את y (כמות כוסות הסוכר),<br>הפעם נפתור את המשוואה על ידי הכפלה במכנה המשותף:</p>
-      <p class="car-center" dir="ltr">${eqp(fr('1', '200'), fr('y', '300'))} <span class="car-mul">/ · 600</span> <span class="car-denom-note" dir="rtl">המכנה<br>המשותף</span></p>
+    img: 'car-solving-AR.png', alt: 'ياسمين تحلّ التمرين في المطبخ', body: `<p>لإيجاد y (كمية أكواب السكر)،<br>هذه المرة سنحل المعادلة عن طريق الضرب بالمقام المشترك:</p>
+      <p class="car-center" dir="ltr">${eqp(fr('1', '200'), fr('y', '300'))} <span class="car-mul">/ · 600</span> <span class="car-denom-note" dir="rtl">المقام<br>المشترك</span></p>
       <p class="car-solve" dir="ltr">2 · y = 1 · 3<br>2y = 3 &nbsp;/ :2<br>y = 1.5</p>
-      <p><strong>כלומר, אביבית צריכה להכנת העוגה 1.5 כוסות סוכר.</strong></p>`,
+      <p><strong>أي أن ياسمين تحتاج لتحضير الكعكة إلى 1.5 كوب سكر.</strong></p>`,
     /* deck 19 draws the bubble ABOVE the photo with a downward tail */
-    bubble: 'זו משוואה שקל לי<br>לפתור!', bubbleAt: 'abovepic' },
+    bubble: 'هذه معادلة سهلة<br>الحلّ بالنسبة لي!', bubbleAt: 'abovepic' },
 ];
 
 /* ─── runtime ───────────────────────────────────────────────────────── */
@@ -272,7 +265,7 @@ function carRender() {
     const held = carState.held && carState.held[i];
     interaction = `<div class="car-drag">
         ${g.table()}
-        <div class="car-pool" aria-label="גררו או בחרו מספר ואז את התא בטבלה">
+        <div class="car-pool" aria-label="اسحبوا أو اختاروا رقماً ثم الخلية في الجدول">
           ${g.pool.map(v => `<button type="button" class="car-chip${used.includes(v) ? ' is-used' : ''}${held === v ? ' is-held' : ''}"
              ${used.includes(v) || done ? 'disabled' : ''} draggable="${!done && !used.includes(v)}" data-v="${v}">${v}</button>`).join('')}
         </div>
@@ -298,17 +291,17 @@ function carRender() {
     </div>
     ${cfg.monster ? `<div class="car-char">
       ${cfg.bubble ? `<div class="speech-bubble car-bubble car-bubble--overchar">${cfg.bubble}</div>` : ''}
-      <img id="car-char" alt="הדמות המלווה">
+      <img id="car-char" alt="الشخصية المرافقة">
     </div>` : ''}
-    <div class="car-dots" role="progressbar" aria-valuemin="1" aria-valuemax="${CAR_STEPS}" aria-valuenow="${i}" aria-label="שלב ${i} מתוך ${CAR_STEPS}">
+    <div class="car-dots" role="progressbar" aria-valuemin="1" aria-valuemax="${CAR_STEPS}" aria-valuenow="${i}" aria-label="خطوة ${i} من ${CAR_STEPS}">
       ${/* the dots say WHERE YOU ARE, nothing else — the done/missed states are
             gone (producer 06.10). The stepper above the practice screens is
             where progress is reported. */''}
       ${Array.from({ length: CAR_STEPS }, (_, k) => `<span class="car-dot${k + 1 === i ? ' is-on' : ''}"></span>`).join('')}
     </div>
     <div class="car-fb" id="car-fb"></div>
-    <button class="btn-continue" id="car-next">${g && !done ? 'צדקתי?' : 'המשך'}</button>
-    <button class="btn-back" id="car-prev">חזרה</button>`;
+    <button class="btn-continue" id="car-next"${g && !done && !carGradedReady(i) ? ' disabled' : ''}>${g && !done ? 'هل إجابتي صحيحة؟' : 'متابعة'}</button>
+    <button class="btn-back" id="car-prev">رجوع</button>`;
 
   if (done && g) carShowFeedback(i, carState.answered[i] === 'ok');
   carWire();
@@ -397,7 +390,7 @@ function carWire() {
     cell.classList.add('is-filled');
     cell.textContent = v;
     if (carState.answered[i]) return;
-    cell.title = 'גררו החוצה או לחצו כדי להחזיר';
+    cell.title = 'اسحبوا للخارج أو اضغطوا للإرجاع';
     cell.draggable = true;
     cell.ondragstart = e => {
       e.dataTransfer.setData('text/plain', v);
